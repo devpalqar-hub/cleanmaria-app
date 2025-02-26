@@ -1,7 +1,8 @@
-import 'package:cleanby_maria/Screens/BookingScreen/BookingScreen.dart';
-import 'package:cleanby_maria/Screens/DashBoardScreen/Views/DutyCard.dart';
-import 'package:cleanby_maria/Screens/DashBoardScreen/Views/OverViewCard.dart';
-import 'package:cleanby_maria/Screens/DashBoardScreen/Views/StatusDuty.dart' show Statusduty;
+
+import 'package:cleanby_maria/Screens/staff_cleanbymaria/BookingScreen/BookingScreen.dart';
+import 'package:cleanby_maria/Screens/staff_cleanbymaria/DashBoardScreen/Controller/Views/DutyCard.dart';
+import 'package:cleanby_maria/Screens/staff_cleanbymaria/DashBoardScreen/Controller/Views/OverViewCard.dart';
+import 'package:cleanby_maria/Screens/staff_cleanbymaria/DashBoardScreen/Controller/Views/StatusDuty.dart';
 import 'package:cleanby_maria/Src/appText.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
