@@ -3,56 +3,70 @@ import 'package:cleanby_maria/Src/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+
 class OverViewCard extends StatelessWidget {
    OverViewCard({super.key});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-    // height: 300.h, 
-      child: SingleChildScrollView(
+      child:SingleChildScrollView( 
         scrollDirection: Axis.horizontal,
-        child: Row(
+       child: Row(
           children: [
-            _buildCard(
-              imagePath: "assets/pie.png",
-              title: "Duty\nAssigned",
-              count: "10 nos",
-              subtitle: "Total Duty Assigned",
+            _overview(
+             imagePath:"assets/home.png" ,
+              color: Color(0xffE5FDF3
+),
+              count: "120",
+              subtitle: "Total Clients"
+              ,
             ),
             SizedBox(width: 20.w),
-            _buildCard(
+            _overview(
               imagePath: "assets/pie.png",
-              title: "Duty\nCompleted",
-              count: "4 nos",
-              subtitle: "Total Duty Today",
+              color: Colors.green,
+             
+              count: "1200 ",
+              subtitle: "Total Earnings",
+            ),
+             SizedBox(width: 20.w),
+            _overview(
+              imagePath: "assets/pie.png",
+             color: Colors.green,
+              count: "3",
+              subtitle: "Total Staff",
             ),
         
           ],
-        ),
-      ),
-    );
+        ),),
+       
+       
+      );
+   
   }
+}
 
-  Widget _buildCard({
+  Widget _overview({
     required String imagePath,
-    required String title,
+  
     required String count,
     required String subtitle,
+    required color
   }) {
     return Container(
-      width: 164.w,
-      height: 90.h,
+      width: 100.w,
+      height: 60.h,
       padding: EdgeInsets.fromLTRB(18.w, 14.h, 18.w, 6.h),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.r),
-        color: Colors.white,
+        borderRadius: BorderRadius.circular(10.w),
+        color: color,
         boxShadow: [
           BoxShadow(
             offset: Offset(0, 4),
            blurRadius: 10, 
         spreadRadius: 2, 
-        color: Colors.black.withOpacity(0.1), 
+       
            
           )
         ],
@@ -63,32 +77,27 @@ class OverViewCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Image.asset(imagePath, width: 24.w, height: 24.w),
+              Image.asset(imagePath, width: 16.w, height: 18.w),
               SpacerW(4.w),
               appText.primaryText(
-                text: title,
-                fontSize: 10.sp,
-                fontWeight: FontWeight.w400,
+                text: count,
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w600,
                 color: Colors.black,
               ),
+              SizedBox(height: 3.h),
+         
+
             ],
           ),
-          SizedBox(height: 3.h),
-          appText.primaryText(
-            text: count,
-            fontSize: 14.sp,
+           appText.primaryText(
+            text: subtitle,
+            fontSize: 10.sp,
             fontWeight: FontWeight.w500,
             color: Colors.black,
           ),
-          SizedBox(height: 1.2.h),
-          appText.primaryText(
-            text: subtitle,
-            fontSize: 8.sp,
-            fontWeight: FontWeight.w300,
-            color: Colors.black,
-          ),
+         
         ],
       ),
     );
   }
-}
