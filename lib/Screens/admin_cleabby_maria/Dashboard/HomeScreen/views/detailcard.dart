@@ -52,21 +52,14 @@ class detailcardScreen extends StatelessWidget {
     required String subtitle,
   }) {
     return Container(
-      width: 45.w,
-      height: 20.h,
-      padding: EdgeInsets.fromLTRB(18.w, 14.h, 18.w, 6.h),
+      width: 105.w,
+      height: 72.h,
+      padding: EdgeInsets.only(left:5.w),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.w),
-       color: Colors.grey.shade300,
-        boxShadow: [
-          BoxShadow(
-            offset: Offset(0, 4),
-           blurRadius: 10, 
-        spreadRadius: 2, 
-       
-           
-          )
-        ],
+       color: Color(0xffF6F6F6),
+       border: Border.all(color: Colors.grey.shade300,width: 0.5.w)
+      
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,7 +83,7 @@ class detailcardScreen extends StatelessWidget {
             color: Colors.black,
           ),SizedBox(height: 3.h),
            appText.primaryText(
-            text: count,
+            text: subtitle,
             fontSize: 10.sp,
             fontWeight: FontWeight.w400,
             color: Colors.black,

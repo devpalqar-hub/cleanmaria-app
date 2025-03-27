@@ -15,7 +15,7 @@ class OverViewCard extends StatelessWidget {
        child: Row(
           children: [
             _overview(
-             imagePath:"assets/home.png" ,
+             imagePath:"assets/client.png" ,
               color: Color(0xffE5FDF3
 ),
               count: "120",
@@ -24,16 +24,18 @@ class OverViewCard extends StatelessWidget {
             ),
             SizedBox(width: 20.w),
             _overview(
-              imagePath: "assets/pie.png",
-              color: Colors.green,
+              imagePath: "assets/earnings.png",
+              color: Color(0xffFDFDE5
+),
              
               count: "1200 ",
               subtitle: "Total Earnings",
             ),
              SizedBox(width: 20.w),
             _overview(
-              imagePath: "assets/pie.png",
-             color: Colors.green,
+              imagePath: "assets/person.png",
+             color: Color(0xffFDE5E5)
+,
               count: "3",
               subtitle: "Total Staff",
             ),
@@ -56,20 +58,14 @@ class OverViewCard extends StatelessWidget {
   }) {
     return Container(
       width: 100.w,
-      height: 60.h,
-      padding: EdgeInsets.fromLTRB(18.w, 14.h, 18.w, 6.h),
+      height: 65.h,
+      margin: EdgeInsets.only(left: 5.w),
+      alignment: Alignment.center,
+      padding: EdgeInsets.only(left: 10.w),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.w),
         color: color,
-        boxShadow: [
-          BoxShadow(
-            offset: Offset(0, 4),
-           blurRadius: 10, 
-        spreadRadius: 2, 
        
-           
-          )
-        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,11 +74,11 @@ class OverViewCard extends StatelessWidget {
           Row(
             children: [
               Image.asset(imagePath, width: 16.w, height: 18.w),
-              SpacerW(4.w),
+              SpacerW(2.w),
               appText.primaryText(
                 text: count,
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w600,
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w500,
                 color: Colors.black,
               ),
               SizedBox(height: 3.h),
@@ -92,7 +88,7 @@ class OverViewCard extends StatelessWidget {
           ),
            appText.primaryText(
             text: subtitle,
-            fontSize: 10.sp,
+            fontSize: 9.sp,
             fontWeight: FontWeight.w500,
             color: Colors.black,
           ),

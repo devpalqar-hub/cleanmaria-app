@@ -15,26 +15,29 @@ class _ShopscreenState extends State<Shopscreen> {
     return  Scaffold(
      appBar: PreferredSize(preferredSize: Size.fromHeight(70.h), child: AppBar(
         leading: Icon(Icons.arrow_back_ios),
-        title: appText.primaryText(text: "Cleaning History"),
+        title: appText.primaryText(text: "Cleaning History",fontSize: 18.sp,fontWeight: FontWeight.w700),
       )),
       
         body: Column(
+           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
               Container(
             width: 343.w,
             height: 50.h,
+             margin: EdgeInsets.only(left: 15.w),
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.w),color: Colors.grey.shade200),
             child: Row(
               children: [
-                Icon(Icons.search_off_rounded),
+                Icon(Icons.search),
                 appText.primaryText(text: "Search for booking"),
               ],
             ),
           ),
+          SizedBox(height: 10.h,),
             _buildStatusCard("Completed", Color(0xFF03AE9D)),
-            SizedBox(height: 4.h),
+            SizedBox(height: 10.h),
             _buildStatusCard("Cancelled", Color(0xFFAE1D03)),
-            SizedBox(height:4.h),
+            SizedBox(height:10.h),
             _buildStatusCard("Pending", Color(0xFFE89F18)),
           ],
         ),
@@ -47,6 +50,7 @@ class _ShopscreenState extends State<Shopscreen> {
       width: 352.w,
       height: 88.h,
       padding: EdgeInsets.all(10),
+       margin: EdgeInsets.only(left: 15.w),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.r),
         color: Colors.white,
