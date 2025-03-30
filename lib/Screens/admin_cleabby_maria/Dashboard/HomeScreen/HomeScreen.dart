@@ -1,125 +1,191 @@
+
+import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/Dashboard/DashboardScreen.dart';
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HomeScreen/views/Graphcard.dart';
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HomeScreen/views/cancellationcard.dart';
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HomeScreen/views/detailcard.dart';
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HomeScreen/views/overview.dart';
-import 'package:cleanby_maria/Src/appButton.dart';
+import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/ClientScreen/ClientScreen.dart';
+import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HistoryScreen/BookingsScreen.dart';
+import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/StaffScreen/StaffScreen.dart';
+import 'package:cleanby_maria/Screens/staff_cleanbymaria/BookingScreen/BookingScreen.dart';
 import 'package:cleanby_maria/Src/appText.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Homescreen extends StatefulWidget {
-   Homescreen({super.key});
+  Homescreen({super.key});
 
   @override
   State<Homescreen> createState() => _HomescreenState();
 }
 
 class _HomescreenState extends State<Homescreen> {
+  int indexnum = 0;
+
+  final List<Widget> _pages = [
+    HomeContent(),
+    ClientScreen(),
+    BookingsaScreen(),
+    StaffScreen(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      
       child: Scaffold(
-        appBar: PreferredSize(preferredSize: Size.fromHeight(70.h), child: AppBar(
-        
-        leading:  Padding(
-          padding: EdgeInsets.only(left: 10.w),
-          child: SizedBox(
-            width: 115.w,
-            height: 50.h,
-            child:Image.asset("assets/bname.png",fit: BoxFit.fill,),
+      backgroundColor: Colors.white,
+        body: _pages[indexnum],
+        bottomNavigationBar: BottomNavigationBar(
+          items: [
+            BottomNavigationBarItem(
+              icon: Image.asset("assets/home.png", color: (indexnum != 0) ? Color(0xff9DB2CE) : Color(0xff17A5C6), height: 24.h),
+              label: "Home",
+            ),
+            BottomNavigationBarItem(
+              icon: Image.asset("assets/search.png", color: (indexnum != 1) ? Color(0xff9DB2CE) : Color(0xff17A5C6), height: 24.h),
+              label: "Client",
+            ),
+            BottomNavigationBarItem(
+              icon: Image.asset("assets/shop.png", color: (indexnum != 2) ? Color(0xff9DB2CE) : Color(0xff17A5C6), height: 24.h),
+              label: "History",
+            ),
+            BottomNavigationBarItem(
+              icon: Image.asset("assets/cart.png", color: (indexnum != 3) ? Color(0xff9DB2CE) : Color(0xff17A5C6), height: 24.h),
+              label: "Chart",
+            ),
+          ],
+          iconSize: 24.w,
+          selectedFontSize: 11.sp,
+          showSelectedLabels: true,
+          showUnselectedLabels: true,
+          currentIndex: indexnum,
+          unselectedFontSize: 11.sp,
+          selectedItemColor: Color(0xff17A5C6),
+          unselectedItemColor: Color(0xff9DB2CE),
+          selectedLabelStyle: GoogleFonts.lexend(fontWeight: FontWeight.w400, fontSize: 10.sp),
+          unselectedLabelStyle: GoogleFonts.lexend(fontWeight: FontWeight.w400, fontSize: 10.sp),
+          onTap: (int index) {
+            setState(() {
+              indexnum = index;
+            });
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class HomeContent extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(16.w,41.h,16.w,0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                      Row(
+                        children: [
+                          Image.asset("assets/bname.png",
+                                        height:50.h,
+                                        width:115.w
+                                        ),
+                                        SizedBox(width:211.w ,),
+                          
+                        ],
+                      ),
+                  SizedBox(height: 15.h),
+                  Padding(
+                    padding: EdgeInsets.only(left: 14.w),
+                    child: Row(
+                      children: [
+                        appText.primaryText(text: "Nice day, George", fontSize: 18.sp, fontWeight: FontWeight.w700,),
+                        Expanded(child: Container()),
+                        appText.primaryText(text: "Last week",fontSize: 11.sp, fontWeight: FontWeight.w400,),
+                        Icon(Icons.arrow_drop_down_sharp),
+                        SizedBox(width: 20.w),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 15.h),
+                  OverViewCard(),
+                  SizedBox(height: 15.h),
+                  appText.primaryText(text: "Performance Analysis", fontSize: 18.sp, fontWeight: FontWeight.w700),
+                  SizedBox(height: 15.h),
+                  Row(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          appText.primaryText(text: "From date", fontSize: 12.sp, fontWeight: FontWeight.w600),
+                          Container(
+                            width: 110.w,
+                            height: 28.h,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(6.w),
+                              border: Border.all(color: Colors.grey.shade100),
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SizedBox(width: 11.w, height: 20.h, child: Icon(Icons.calendar_month_outlined)),
+                                SizedBox(width: 15.w),
+                                appText.primaryText(text: "22/10/2022", fontSize: 10.sp, fontWeight: FontWeight.w500),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                      SizedBox(width: 15.w),
+                      Column(
+                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          appText.primaryText(text: "To date", fontSize: 12.sp, fontWeight: FontWeight.w600),
+                          Container(
+                            width: 100.w,
+                            height: 28.h,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(6.w),
+                              border: Border.all(color: Colors.grey.shade100),
+                            ),
+                            child: Row(
+                              children: [
+                                SizedBox(width: 11.w, height: 20.h, child: Icon(Icons.calendar_month_outlined)),
+                                SizedBox(width: 15.w),
+                                appText.primaryText(text: "22/10/2022", fontSize: 10.sp, fontWeight: FontWeight.w500),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                      SizedBox(width:12.w),
+                      Padding(
+                        padding:  EdgeInsets.only(top:20.h),
+                        child: Container(height:26.h ,width:89.w,decoration: BoxDecoration(borderRadius:BorderRadius.circular(5.r) ,color: const Color(0xFF17A5C6),),child: Center(child: Text("Today",style: TextStyle(color:Colors.white ),)),),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 15.h),
+                  detailcardScreen(),
+                  SizedBox(height: 20.h),
+                  LineChartWidget(),
+                  appText.primaryText(text: "Cancellation", fontSize: 18.sp, fontWeight: FontWeight.w700),
+                  Cancellationcard(),
+                ],
+              ),
+            ),
           ),
         ),
-        
-       actions: [
-        Icon(Icons.notifications,color: Colors.lightBlue,),
-        SizedBox(width: 6.w,)
-       ],
-       )),
-       body: SingleChildScrollView(
-         child: Padding(
-           padding: EdgeInsets.only(left: 20.w),
-           child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                   
-            children: [
-              SizedBox(height: 15.h,),
-               Padding(
-                 padding:EdgeInsets.only(left: 10.w),
-                 child: Row(
-                  children: [
-                    appText.primaryText(text: "Nice day,George",fontSize: 18.sp,fontWeight: FontWeight.w700 ),
-                    Expanded(child: Container()),
-                     appText.primaryText(text: "Last week"),
-                     Icon(Icons.arrow_drop_down),
-                     SizedBox(width: 20.w,)
-                          
-                  ],
-                             ),
-               ),
-                SizedBox(height: 15.h,),
-              OverViewCard(),
-               SizedBox(height: 15.h,),
-              appText.primaryText(text: "Performance Analysis",fontSize: 18.sp,fontWeight: FontWeight.w700 ),
-                SizedBox(height: 15.h,),
-             Row(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                     appText.primaryText(text: "From date",fontSize: 12.sp,fontWeight: FontWeight.w600 ),
-                        Container(width: 110.w,height: 28.h,
-                          decoration: BoxDecoration( color: Colors.white,borderRadius: BorderRadius.circular(6.w),border: Border.all(color: Colors.grey.shade100)
-                              ),
-                         child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SizedBox(width: 11.w,height: 20.h,child: Icon(Icons.calendar_month_outlined),),
-                            SizedBox(width: 15.w,)
-                            ,appText.primaryText(text: "22/10/2022",fontSize: 10.sp,fontWeight: FontWeight.w500 ),
-                          ],
-                         ),
-                        )
-                  ],
-                ),
-                 SizedBox(width: 15.w,),
-                  Column(
-                  children: [
-                     appText.primaryText(text: "To date",fontSize: 12.sp,fontWeight: FontWeight.w600 ),
-                        Container(width: 100.w,height: 28.h,
-                        decoration: BoxDecoration( color: Colors.white,borderRadius: BorderRadius.circular(6.w),border: Border.all(color: Colors.grey.shade100)
-                              ),
-                         child: Row(
-                          children: [
-                            SizedBox(width: 11.w,height: 20.h,child: Icon(Icons.calendar_month_outlined),),  SizedBox(width: 15.w,)
-                            ,appText.primaryText(text: "22/10/2022",fontSize: 10.sp,fontWeight: FontWeight.w500 ),
-                          ],
-                         ),
-                        )
-                  ],
-                ),
- SizedBox(width: 35.w,),
-                          
-                Container(width:100.w,height: 40.h,
-                decoration: BoxDecoration( color: Colors.blueAccent,borderRadius: BorderRadius.circular(6.w) ),
-               
-                alignment: Alignment.center,
-                child:Text("Today",style: TextStyle(color: Colors.white, ),),)
-                  
-              ],
-             ),
-               SizedBox(height: 15.h,),
-             detailcardScreen(),
-              SizedBox(height: 15.h,),
-             LineChartWidget(),
-             appText.primaryText(text: "Cancellation",fontSize: 18.sp,fontWeight: FontWeight.w700 ),
-             Cancellationcard(),
-            ],
-           ),
-         ),
-       ),
-      
-      ),
+      ],
     );
   }
 }

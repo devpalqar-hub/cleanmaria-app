@@ -58,7 +58,7 @@ class OverViewCard extends StatelessWidget {
   }) {
     return Container(
       width: 100.w,
-      height: 65.h,
+      height: 60.h,
       margin: EdgeInsets.only(left: 5.w),
       alignment: Alignment.center,
       padding: EdgeInsets.only(left: 10.w),

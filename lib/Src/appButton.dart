@@ -2,23 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-class appButton extends StatefulWidget {
+class AppButton extends StatefulWidget {
   final String text;
   final VoidCallback onPressed;
   final bool isPrimary;
+  final double? width;
+  final double? height;
+  final double? fontSize;
+  final FontWeight? fontWeight;
 
-  const appButton({
+  const AppButton({
     Key? key,
     required this.text,
     required this.onPressed,
     this.isPrimary = true,
+    this.width, // Allow width customization
+    this.height, // Allow height customization
+    this.fontSize, // Allow font size customization
+    this.fontWeight, // Allow font weight customization
   }) : super(key: key);
 
   @override
   _AppButtonState createState() => _AppButtonState();
 }
 
-class _AppButtonState extends State<appButton> {
+class _AppButtonState extends State<AppButton> {
   bool _isLoading = false;
 
   void _handlePress() async {
@@ -38,8 +46,8 @@ class _AppButtonState extends State<appButton> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 330.w,
-      height: 60.h,
+      width: widget.width ?? 0.85.sw, // Default width 85% of screen width
+      height: widget.height ?? 55.h, // Default height using ScreenUtil
       child: widget.isPrimary
           ? ElevatedButton(
               onPressed: _isLoading ? null : _handlePress,
@@ -52,13 +60,14 @@ class _AppButtonState extends State<appButton> {
               child: _isLoading
                   ? LoadingAnimationWidget.staggeredDotsWave(
                       color: Colors.white,
-                      size: 30,
+                      size: 30.sp,
                     )
                   : Text(
                       widget.text,
                       style: TextStyle(
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.w700,
+                        fontSize: widget.fontSize , // Default font size
+                        fontWeight:
+                            widget.fontWeight ,// Default weight
                         color: Colors.white,
                       ),
                     ),
@@ -68,16 +77,19 @@ class _AppButtonState extends State<appButton> {
               child: _isLoading
                   ? LoadingAnimationWidget.staggeredDotsWave(
                       color: const Color(0xFF19A4C6),
-                      size: 30,
+                      size: 30.sp,
                     )
-                  : Text(
-                      widget.text,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFF19A4C6),
+                  : Center(
+                    child: Text(
+                        widget.text,
+                        style: TextStyle(
+                          fontSize: widget.fontSize , // Default font size
+                          fontWeight:
+                              widget.fontWeight, // Default weight
+                          color: const Color(0xFF19A4C6),
+                        ),
                       ),
-                    ),
+                  ),
             ),
     );
   }

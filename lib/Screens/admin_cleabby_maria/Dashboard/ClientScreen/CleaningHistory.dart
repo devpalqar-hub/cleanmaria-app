@@ -1,21 +1,27 @@
+
+import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/ClientScreen/CleaningDetails.dart';
 import 'package:cleanby_maria/Src/appText.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class Shopscreen extends StatefulWidget {
-  const Shopscreen({super.key});
+class CleaningHistory extends StatefulWidget {
+  const CleaningHistory({super.key});
 
   @override
-  State<Shopscreen> createState() => _ShopscreenState();
+  State<CleaningHistory> createState() => _CleaningHistoryState();
 }
 
-class _ShopscreenState extends State<Shopscreen> {
+class _CleaningHistoryState extends State<CleaningHistory> {
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
+      backgroundColor: Colors.white,
      appBar: PreferredSize(preferredSize: Size.fromHeight(70.h), child: AppBar(
-        leading: Icon(Icons.arrow_back_ios),
-        title: appText.primaryText(text: "Cleaning History",fontSize: 18.sp,fontWeight: FontWeight.w700),
+      leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_new_outlined, color: Colors.black),
+            onPressed: () => Navigator.pop(context),
+          ),
+      title: appText.primaryText(text: "Cleaning History",fontSize: 18.sp,fontWeight: FontWeight.w700),
       )),
       
         body: Column(
@@ -34,11 +40,41 @@ class _ShopscreenState extends State<Shopscreen> {
             ),
           ),
           SizedBox(height: 10.h,),
-            _buildStatusCard("Completed", Color(0xFF03AE9D)),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context, 
+                  MaterialPageRoute(
+                    builder: (context) => CleaningDetails(),
+                  ),
+                );
+              },
+              child: _buildStatusCard("Completed", Color(0xFF03AE9D)),
+            ),
             SizedBox(height: 10.h),
-            _buildStatusCard("Cancelled", Color(0xFFAE1D03)),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CleaningDetails(),
+                  ),
+                );
+              },
+              child: _buildStatusCard("Cancelled", Color(0xFFAE1D03)),
+            ),
             SizedBox(height:10.h),
-            _buildStatusCard("Pending", Color(0xFFE89F18)),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>  CleaningDetails(),
+                  ),
+                );
+              },
+              child: _buildStatusCard("Pending", Color(0xFFE89F18)),
+            ),
           ],
         ),
       
@@ -136,4 +172,3 @@ class _ShopscreenState extends State<Shopscreen> {
       ),
     );
   }
-

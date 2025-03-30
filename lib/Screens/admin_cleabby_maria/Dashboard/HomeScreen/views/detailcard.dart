@@ -66,6 +66,8 @@ class detailcardScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Column(
+             crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
             
               SpacerW(4.w),

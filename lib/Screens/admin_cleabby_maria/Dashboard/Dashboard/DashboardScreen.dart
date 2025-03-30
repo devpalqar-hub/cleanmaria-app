@@ -1,7 +1,9 @@
 
+//import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/ClientScreen/CleaningHistory.dart';
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HomeScreen/HomeScreen.dart';
-import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/SearchScreen/searchScreen.dart';
-import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/ShopScreen/ShopScreen.dart';
+//import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/ClientScreen/ClientScreen.dart';
+import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/ClientScreen/CleaningHistory.dart';
+import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/ClientScreen/ClientScreen.dart';
 import 'package:cleanby_maria/Src/appText.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -28,19 +30,19 @@ class _DashScreenScreenState extends State<DashScreenScreen> {
       BottomNavigationBarItem(icon:Image.asset("assets/home.png",color:(indexnum!=0)?Color(0xff9DB2CE):Color(0xff17A5C6),
       height: 4.h,
       ) ,
-      label: "Home"),
+      label: "Forms"),
        BottomNavigationBarItem(icon:Image.asset("assets/search.png",color:(indexnum!=1)?Color(0xff9DB2CE):Color(0xff17A5C6),
       height: 4.h,
       ) ,
-      label: "Search"),
+      label: "Client"),
        BottomNavigationBarItem(icon:Image.asset("assets/shop.png",color:(indexnum!=2)?Color(0xff9DB2CE):Color(0xff17A5C6),
       height: 4.h,
       ) ,
-      label: "Shop"),
+      label: "History"),
        BottomNavigationBarItem(icon:Image.asset("assets/cart.png",color:(indexnum!=0)?Color(0xff9DB2CE):Color(0xff17A5C6),
       height: 4.h,
       ) ,
-      label: "Cart"),
+      label: "Chart"),
       
       
       ],
@@ -67,9 +69,9 @@ class _DashScreenScreenState extends State<DashScreenScreen> {
     case 0:
       return Homescreen();
      case 1:
-      return SearchScreen();
+      return ClientScreen();
        case 2:
-      return Shopscreen();
+      return CleaningHistory();
       default:
          return Container();
 

@@ -1,0 +1,149 @@
+import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HistoryScreen/Views/BookingCard.dart';
+import 'package:cleanby_maria/Src/appButton.dart';
+import 'package:cleanby_maria/Src/appText.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+
+class BookingsaScreen extends StatefulWidget {
+  const BookingsaScreen({super.key});
+
+  @override
+  _BookingsaScreenState createState() => _BookingsaScreenState();
+}
+
+class _BookingsaScreenState extends State<BookingsaScreen> {
+  DateTime? startDate;
+  DateTime? endDate;
+
+  void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
+    setState(() {
+      if (args.value is PickerDateRange) {
+        startDate = args.value.startDate;
+        endDate = args.value.endDate;
+      }
+    });
+  }
+
+  void _showDatePicker() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.all(20.w),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "Select Booking Dates",
+                style: GoogleFonts.poppins(fontSize: 16.sp, fontWeight: FontWeight.w600),
+              ),
+              SizedBox(height: 10.h),
+              SfDateRangePicker(
+                selectionMode: DateRangePickerSelectionMode.range,
+                onSelectionChanged: _onSelectionChanged,
+                startRangeSelectionColor: Colors.blue,
+                endRangeSelectionColor: Colors.blue,
+                rangeSelectionColor: Colors.blue.withOpacity(0.2),
+                todayHighlightColor: Colors.blue,
+                backgroundColor: Colors.white,
+                initialSelectedRange: PickerDateRange(
+                  startDate ?? DateTime.now(),
+                  endDate ?? DateTime.now().add(Duration(days: 7)),
+                ),
+              ),
+              SizedBox(height: 10.h),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context); // Close the modal
+                  setState(() {}); // Update UI with selected dates
+                },
+                child: Text("Apply"),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(70.h),
+        child: AppBar(
+          leading: const Icon(Icons.arrow_back_ios),
+          title: appText.primaryText(
+            text: "Bookings",
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 15.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: 47.h,
+              width: 358.w,
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF7F6F5),
+                borderRadius: BorderRadius.circular(14.r),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  appText.primaryText(
+                    text: 'Bookings',
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      elevation: 0,
+                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+                    ),
+                    onPressed: _showDatePicker, // Open the filter modal
+                    icon: Icon(Icons.filter_list, color: const Color(0xFF77838F), size: 18.sp),
+                    label: Text('Filter', style: GoogleFonts.poppins(fontSize: 12.sp, color: Colors.black)),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 15.h),
+            //Text(
+              //startDate != null && endDate != null
+                //  ? "Selected Dates: ${startDate!.toLocal()} - ${endDate!.toLocal()}"
+                 // : "No Dates Selected",
+              //style: GoogleFonts.poppins(fontSize: 14.sp, fontWeight: FontWeight.w500),
+            //),
+              BookingCard(
+  name: "Jhon Martins",
+  phone: "+91 9956786723",
+  bookingDate: "Mon, July 21",
+  bookingTime: "09:00 - 12:00 AM",
+  onCallTap: () {
+    // Implement call functionality
+  },
+  onBookingTap: () {
+    // Handle booking button tap
+  },
+),
+
+          ],
+        ),
+      ),
+    );
+  }
+}

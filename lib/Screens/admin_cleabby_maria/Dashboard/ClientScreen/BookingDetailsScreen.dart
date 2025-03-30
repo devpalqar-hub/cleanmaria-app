@@ -1,11 +1,13 @@
+//import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/ClientScreen/CleaningHistory.dart';
+import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/ClientScreen/CleaningHistory.dart';
 import 'package:cleanby_maria/Src/appButton.dart';
 import 'package:cleanby_maria/Src/appText.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class BookingScreen extends StatelessWidget {
-  const BookingScreen({super.key});
+class BookingDetailsScreen extends StatelessWidget {
+  const BookingDetailsScreen({super.key});
 
   Widget _infoText({required String title, required String value}) {
     return Column(
@@ -27,34 +29,42 @@ class BookingScreen extends StatelessWidget {
       ],
     );
   }
+  void _showCancelDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Cancel Subscription"),
+        content: Text("Are you sure you want to cancel?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context), // Close dialog
+            child: Text("No", style: TextStyle(color: Colors.black)),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // Close dialog
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("Subscription Cancelled")),
+              );
+            },
+            child: Text("Yes", style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: Text(
-          'Booking Details',
-          style: GoogleFonts.poppins(
-            color: Colors.black,
-            fontSize: 20.sp,
-            fontWeight: FontWeight.w600,
+      appBar:PreferredSize(preferredSize: Size.fromHeight(70.h), child: AppBar(
+         leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_new_outlined, color: Colors.black),
+            onPressed: () => Navigator.pop(context),
           ),
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_outlined, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(1.0.h),
-          child: Container(
-            color: const Color(0xFFF2F2F2),
-            height: 1.0.h,
-          ),
-        ),
-      ),
+        title: appText.primaryText(text: "Booking Details",fontSize: 18.sp,fontWeight: FontWeight.w700 ),
+      )),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 15.h),
         child: Column(
@@ -132,14 +142,20 @@ class BookingScreen extends StatelessWidget {
                 ),
                ],
              ),
-             appText.primaryText(text: "Cleaning items given",color: Color(0xFF1C9F0B),fontSize:14.sp, ),
-             SizedBox(height:25.h),
-             AppButton(text: "Mark as Completed", onPressed:() { print("Task marked as completed");
-              }, ),
-               SizedBox(height:8.h),
-              Center(child: appText.primaryText(text: "Not Completed",color: Color(0xFF000000),fontSize:18.sp,fontWeight: FontWeight.w500 )),
-            
+             appText.primaryText(text: "Cleaning items given",color: Color(0xFF1C9F0B),fontSize:1.sp, ),
+             SizedBox(height:40.h),
+               GestureDetector(onTap: () {
+               Navigator.push(context,MaterialPageRoute(builder: (context) => CleaningHistory()),);
+ 
+              },
+                child: Center(child: appText.primaryText(text: "View Cleaning History",color: Colors.black,fontSize:12.sp,fontWeight: FontWeight.w600 ))),
+                SizedBox(height:10.h),
+               GestureDetector(
+                onTap: () => _showCancelDialog(context),
+                child: Center(child: appText.primaryText(text: "Cancelation of Subscription",color: Colors.red,fontSize:12.sp,fontWeight: FontWeight.w600 ))),
           ],
+          
+             
         ),
       ),
     );
