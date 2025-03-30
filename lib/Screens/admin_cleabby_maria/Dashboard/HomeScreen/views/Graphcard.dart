@@ -12,7 +12,7 @@ class LineChartWidget extends StatelessWidget {
       width: 298.w, // Providing a fixed height
       child: LineChart(
         LineChartData(
-          gridData: FlGridData(show:true),
+          gridData: FlGridData(show:false),
           titlesData: FlTitlesData(
             leftTitles: AxisTitles(
               sideTitles: SideTitles(showTitles: true, reservedSize: 50),

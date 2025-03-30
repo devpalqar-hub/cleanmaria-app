@@ -29,8 +29,8 @@ class Cancellationcard extends StatelessWidget {
 Widget _buildStatusCard(String status, Color color) {
     return Container(
       width: 352.w,
-      height: 88.h,
-      padding: EdgeInsets.all(10),
+      height: 85.h,
+      padding: EdgeInsets.all(8.w),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.r),
         color: Colors.white,
@@ -63,7 +63,7 @@ Widget _buildStatusCard(String status, Color color) {
                           fontWeight: FontWeight.w500,
                           color: Colors.black,
                         ),
-                        SizedBox(height: 3.h),
+                        SizedBox(height: 2.h),
                         Row(
                           children: [
                             Image.asset(

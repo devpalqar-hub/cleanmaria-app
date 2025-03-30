@@ -58,7 +58,7 @@ class OverViewCard extends StatelessWidget {
   }) {
     return Container(
       width: 100.w,
-      height: 65.h,
+      height: 60.h,
       margin: EdgeInsets.only(left: 5.w),
       alignment: Alignment.center,
       padding: EdgeInsets.only(left: 10.w),
@@ -74,11 +74,11 @@ class OverViewCard extends StatelessWidget {
           Row(
             children: [
               Image.asset(imagePath, width: 16.w, height: 18.w),
-              SpacerW(2.w),
+              SpacerW(4.w),
               appText.primaryText(
                 text: count,
-                fontSize: 13.sp,
-                fontWeight: FontWeight.w500,
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w600,
                 color: Colors.black,
               ),
               SizedBox(height: 3.h),
@@ -88,7 +88,7 @@ class OverViewCard extends StatelessWidget {
           ),
            appText.primaryText(
             text: subtitle,
-            fontSize: 9.sp,
+            fontSize: 10.sp,
             fontWeight: FontWeight.w500,
             color: Colors.black,
           ),

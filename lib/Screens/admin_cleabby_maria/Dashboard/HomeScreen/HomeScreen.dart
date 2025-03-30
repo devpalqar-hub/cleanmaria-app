@@ -19,24 +19,28 @@ class _HomescreenState extends State<Homescreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: PreferredSize(preferredSize: Size.fromHeight(70.h), child: AppBar(
-        
-        leading:  Padding(
-          padding: EdgeInsets.only(left: 10.w),
-          child: SizedBox(
-            width: 115.w,
-            height: 50.h,
-            child:Image.asset("assets/bname.png",fit: BoxFit.fill,),
-          ),
-        ),
-        
-       actions: [
-        Icon(Icons.notifications,color: Colors.lightBlue,),
-        SizedBox(width: 6.w,)
-       ],
-       )),
+       
+  
        body: SingleChildScrollView(
-         child: Padding(
+         child: Column(
+           children: [
+             Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                 Padding(
+              padding: EdgeInsets.only(left: 14.w,top:41.h ),
+              child: SizedBox(
+                width: 115.w,
+                height: 50.h,
+                child:Image.asset("assets/bname.png",fit: BoxFit.fill,),
+              ),
+                     ),
+                     Expanded(child: Container()),
+             Icon(Icons.notifications,color: Colors.lightBlue,),
+                     SizedBox(width: 6.w,)
+              ],
+             ),
+              Padding(
            padding: EdgeInsets.only(left: 20.w),
            child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,9 +51,17 @@ class _HomescreenState extends State<Homescreen> {
                  padding:EdgeInsets.only(left: 10.w),
                  child: Row(
                   children: [
-                    appText.primaryText(text: "Nice day,George",fontSize: 18.sp,fontWeight: FontWeight.w700 ),
+                    Text(
+                      "Nice day,George",
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w700,
+                        fontFamily: "NunitoSans",
+                        color: Colors.black,
+                      ),
+                    ),
                     Expanded(child: Container()),
-                     appText.primaryText(text: "Last week"),
+                     appText.primaryText(text: "Last week",fontWeight: FontWeight.w400,fontSize: 11.sp),
                      Icon(Icons.arrow_drop_down),
                      SizedBox(width: 20.w,)
                           
@@ -59,25 +71,33 @@ class _HomescreenState extends State<Homescreen> {
                 SizedBox(height: 15.h,),
               OverViewCard(),
                SizedBox(height: 15.h,),
-              appText.primaryText(text: "Performance Analysis",fontSize: 18.sp,fontWeight: FontWeight.w700 ),
-                SizedBox(height: 15.h,),
+              Text(
+                      "Performance Analysis",
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w700,
+                        fontFamily: "NunitoSans",
+                        color: Colors.black,
+                      ),
+                    ),  SizedBox(height: 15.h,),
              Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                     appText.primaryText(text: "From date",fontSize: 12.sp,fontWeight: FontWeight.w600 ),
-                        Container(width: 110.w,height: 28.h,
+                     Text( "From date",style:TextStyle(fontSize: 12.sp,fontWeight: FontWeight.w700 ,fontFamily: "NunitoSans")),
+                        Container(width: 99.w,height: 28.h,
                           decoration: BoxDecoration( color: Colors.white,borderRadius: BorderRadius.circular(6.w),border: Border.all(color: Colors.grey.shade100)
                               ),
                          child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            SizedBox(width: 11.w,height: 20.h,child: Icon(Icons.calendar_month_outlined),),
-                            SizedBox(width: 15.w,)
-                            ,appText.primaryText(text: "22/10/2022",fontSize: 10.sp,fontWeight: FontWeight.w500 ),
-                          ],
+                            SizedBox(width: 11.w,height: 20.h,child: Icon(Icons.calendar_month_outlined,size: 15.sp,),),
+                            SizedBox(width: 8.w,)
+                            ,Text( "22/10/2022",style:TextStyle(fontSize: 10.sp,fontWeight: FontWeight.w600 ,fontFamily: "NunitoSans")),
+                       ],
                          ),
                         )
                   ],
@@ -85,14 +105,15 @@ class _HomescreenState extends State<Homescreen> {
                  SizedBox(width: 15.w,),
                   Column(
                   children: [
-                     appText.primaryText(text: "To date",fontSize: 12.sp,fontWeight: FontWeight.w600 ),
-                        Container(width: 100.w,height: 28.h,
+                      Text( "From date",style:TextStyle(fontSize: 12.sp,fontWeight: FontWeight.w700 ,fontFamily: "NunitoSans")),
+                       Container(width: 99.w,height: 28.h,
                         decoration: BoxDecoration( color: Colors.white,borderRadius: BorderRadius.circular(6.w),border: Border.all(color: Colors.grey.shade100)
                               ),
                          child: Row(
                           children: [
-                            SizedBox(width: 11.w,height: 20.h,child: Icon(Icons.calendar_month_outlined),),  SizedBox(width: 15.w,)
-                            ,appText.primaryText(text: "22/10/2022",fontSize: 10.sp,fontWeight: FontWeight.w500 ),
+                            SizedBox(width: 11.w,height: 20.h,child: Icon(Icons.calendar_month_outlined,size: 15.sp),),  SizedBox(width: 8.w,)
+                            ,  Text( "22/10/2022",style:TextStyle(fontSize: 10.sp,fontWeight: FontWeight.w600 ,fontFamily: "NunitoSans")),
+                     
                           ],
                          ),
                         )
@@ -100,11 +121,11 @@ class _HomescreenState extends State<Homescreen> {
                 ),
  SizedBox(width: 35.w,),
                           
-                Container(width:100.w,height: 40.h,
+                Container(width:89.w,height: 26.h,
                 decoration: BoxDecoration( color: Colors.blueAccent,borderRadius: BorderRadius.circular(6.w) ),
                
                 alignment: Alignment.center,
-                child:Text("Today",style: TextStyle(color: Colors.white, ),),)
+                child:Text("Today",style:TextStyle(fontSize: 12.sp,fontWeight: FontWeight.w700 ,fontFamily: "NunitoSans",color: Colors.white),),),
                   
               ],
              ),
@@ -112,11 +133,15 @@ class _HomescreenState extends State<Homescreen> {
              detailcardScreen(),
               SizedBox(height: 15.h,),
              LineChartWidget(),
-             appText.primaryText(text: "Cancellation",fontSize: 18.sp,fontWeight: FontWeight.w700 ),
-             Cancellationcard(),
+           Text("Cancellation",style:TextStyle(fontSize: 18.sp,fontWeight: FontWeight.w700 ,fontFamily: "NunitoSans",color: Colors.black),),
+                    Cancellationcard(),
             ],
            ),
          ),
+           ],
+         ),
+         
+        
        ),
       
       ),

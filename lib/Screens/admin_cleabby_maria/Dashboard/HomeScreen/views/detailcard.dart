@@ -33,7 +33,7 @@ class detailcardScreen extends StatelessWidget {
              Title: "Cancellation",
              
               count: "1",
-              subtitle: "Cancelled Booking",
+              subtitle: "Cancelled/Booking",
             ),
         
           ],
@@ -53,12 +53,13 @@ class detailcardScreen extends StatelessWidget {
   }) {
     return Container(
       width: 105.w,
-      height: 72.h,
-      padding: EdgeInsets.only(left:5.w),
+      height: 74.h,
+      
+      padding: EdgeInsets.only(left:10.w),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.w),
        color: Color(0xffF6F6F6),
-       border: Border.all(color: Colors.grey.shade300,width: 0.5.w)
+      
       
       ),
       child: Column(
@@ -66,28 +67,33 @@ class detailcardScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
             
               SpacerW(4.w),
-              appText.primaryText(
-                text: Title,
-                fontSize: 12.sp,
+              Text(Title,style: TextStyle( fontSize: 12.sp,
                 fontWeight: FontWeight.w700,
                 color: Colors.black,
-              ),
+                fontFamily: "NunitoSans"
+                
+                ),),
+               
+               
+              
               SizedBox(height: 3.h),
-          appText.primaryText(
-            text: count,
-            fontSize: 12.sp,
-            fontWeight: FontWeight.w500,
-            color: Colors.black,
-          ),SizedBox(height: 3.h),
-           appText.primaryText(
-            text: subtitle,
-            fontSize: 10.sp,
-            fontWeight: FontWeight.w400,
-            color: Colors.black,
-          ),
+               Text(count,style: TextStyle( fontSize: 16.sp,
+                fontWeight: FontWeight.w700,
+                color: Colors.black,
+                fontFamily: "NunitoSans"
+                
+                ),),
+          SizedBox(height: 3.h),
+           Text(subtitle,style: TextStyle( fontSize: 9.sp,
+                fontWeight: FontWeight.w500,
+                color: Colors.black,
+                fontFamily: "NunitoSans"
+                
+                ),),
 
             ],
           ),
