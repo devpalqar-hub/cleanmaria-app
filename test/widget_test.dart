@@ -13,7 +13,7 @@ import 'package:cleanby_maria/main.dart';
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const cleanby_maria());
+    await tester.pumpWidget(cleanby_maria());
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

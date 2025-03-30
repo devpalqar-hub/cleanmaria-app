@@ -1,5 +1,5 @@
 
-import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/Dashboard/DashboardScreen.dart';
+
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HomeScreen/views/Graphcard.dart';
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HomeScreen/views/cancellationcard.dart';
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HomeScreen/views/detailcard.dart';
@@ -7,6 +7,7 @@ import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HomeScreen/v
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/ClientScreen/ClientScreen.dart';
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HistoryScreen/BookingsScreen.dart';
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/StaffScreen/StaffScreen.dart';
+
 import 'package:cleanby_maria/Screens/staff_cleanbymaria/BookingScreen/BookingScreen.dart';
 import 'package:cleanby_maria/Src/appText.dart';
 import 'package:flutter/material.dart';
@@ -96,7 +97,10 @@ class HomeContent extends StatelessWidget {
                                         width:115.w
                                         ),
                                         SizedBox(width:211.w ,),
-                          
+                          Image.asset("assets/Bell_fill.png",
+                                        height:32.h,
+                                        width:32.w
+                                        ),
                         ],
                       ),
                   SizedBox(height: 15.h),

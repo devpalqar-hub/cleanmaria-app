@@ -1,4 +1,5 @@
-import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HistoryScreen/Views/BookingCard.dart';
+import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/ClientScreen/CleaningDetails.dart';
+import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/ClientScreen/Views/StatusCard.dart';
 import 'package:cleanby_maria/Src/appButton.dart';
 import 'package:cleanby_maria/Src/appText.dart';
 import 'package:flutter/material.dart';
@@ -128,18 +129,21 @@ class _BookingsaScreenState extends State<BookingsaScreen> {
                  // : "No Dates Selected",
               //style: GoogleFonts.poppins(fontSize: 14.sp, fontWeight: FontWeight.w500),
             //),
-              BookingCard(
-  name: "Jhon Martins",
-  phone: "+91 9956786723",
-  bookingDate: "Mon, July 21",
-  bookingTime: "09:00 - 12:00 AM",
-  onCallTap: () {
-    // Implement call functionality
-  },
-  onBookingTap: () {
-    // Handle booking button tap
-  },
-),
+                        StatusCard(
+            status: "Completed",
+            color: const Color(0xFF03AE9D),
+            customerName: "Customer name",
+            time: "10:00 AM - 11:00 AM",
+            location: "Los Angeles, USA, 955032 - Washington DC.",
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CleaningDetails(),
+                ),
+              );
+            },
+          ),
 
           ],
         ),

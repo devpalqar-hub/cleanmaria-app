@@ -100,6 +100,8 @@ class CleaningDetails extends StatelessWidget {
               ],
             ),
             _infoText(title: "Email", value: "jhonedoe@gmail.com"),
+             _infoText(title: "Completed by", value: "Reema Shareen"),
+              _infoText(title: "Status", value: "Completed"),
             _infoText(
               title: "Address",
               value: "House name, House number, Street name, City name, and all the address details.",
