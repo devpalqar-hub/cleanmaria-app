@@ -45,8 +45,8 @@ class LineChartWidget extends StatelessWidget {
             topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
           ),
           borderData: FlBorderData(
-            show: true,
-            border: Border.all(color: Colors.blue, width: 1),
+            show: false,
+           
           ),
           minX: 0,
           maxX: 5,

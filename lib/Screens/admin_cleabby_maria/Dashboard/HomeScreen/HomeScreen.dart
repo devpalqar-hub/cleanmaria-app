@@ -13,6 +13,7 @@ import 'package:cleanby_maria/Src/appText.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 class Homescreen extends StatefulWidget {
   Homescreen({super.key});
@@ -78,8 +79,35 @@ class _HomescreenState extends State<Homescreen> {
   }
 }
 
-class HomeContent extends StatelessWidget {
+
+
+
+class HomeContent extends StatefulWidget {
   @override
+  State<HomeContent> createState() => _HomeContentState();
+}
+
+class _HomeContentState extends State<HomeContent> {
+  TextEditingController _fromdatecontroller = TextEditingController();
+   TextEditingController _todatecontroller = TextEditingController();
+    Future<void> _selectDate(BuildContext context) async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+    );
+
+    if (pickedDate != null) {
+      setState(() {
+        _fromdatecontroller.text = 
+        DateFormat('dd/MM/yyyy').format(pickedDate);
+      });
+    }
+  }
+  @override
+ 
+
   Widget build(BuildContext context) {
     return Column(
       children: [
@@ -129,21 +157,30 @@ class HomeContent extends StatelessWidget {
                         children: [
                           appText.primaryText(text: "From date", fontSize: 12.sp, fontWeight: FontWeight.w600),
                           Container(
-                            width: 110.w,
+                            width: 100.w,
                             height: 28.h,
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(6.w),
                               border: Border.all(color: Colors.grey.shade100),
                             ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                SizedBox(width: 11.w, height: 20.h, child: Icon(Icons.calendar_month_outlined)),
-                                SizedBox(width: 15.w),
-                                appText.primaryText(text: "22/10/2022", fontSize: 10.sp, fontWeight: FontWeight.w500),
-                              ],
-                            ),
+                            child:TextField(
+           controller: _fromdatecontroller,
+           readOnly: true,
+         //  enabled: true,
+         
+            decoration: InputDecoration(
+              border: InputBorder.none,
+         
+              prefixIcon: IconButton(onPressed: ()=>_selectDate(context), icon: Icon(Icons.calendar_month_outlined,size: 15.sp,)),
+             
+              
+            
+            ),
+          
+           
+          ),
+                          
                           )
                         ],
                       ),
@@ -161,13 +198,22 @@ class HomeContent extends StatelessWidget {
                               borderRadius: BorderRadius.circular(6.w),
                               border: Border.all(color: Colors.grey.shade100),
                             ),
-                            child: Row(
-                              children: [
-                                SizedBox(width: 11.w, height: 20.h, child: Icon(Icons.calendar_month_outlined)),
-                                SizedBox(width: 15.w),
-                                appText.primaryText(text: "22/10/2022", fontSize: 10.sp, fontWeight: FontWeight.w500),
-                              ],
-                            ),
+                            child:TextField(
+           controller: _todatecontroller,
+           readOnly: true,
+          
+            decoration: InputDecoration(
+              border: InputBorder.none,
+         
+              prefixIcon: IconButton(onPressed: ()=>_selectDate(context), icon: Icon(Icons.calendar_month_outlined,size: 15.sp)),
+             
+              
+            
+            ),
+          
+           
+          ),
+                          
                           )
                         ],
                       ),
