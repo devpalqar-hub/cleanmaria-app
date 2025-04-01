@@ -7,8 +7,6 @@ import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HomeScreen/v
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/ClientScreen/ClientScreen.dart';
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HistoryScreen/BookingsScreen.dart';
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/StaffScreen/StaffScreen.dart';
-
-import 'package:cleanby_maria/Screens/staff_cleanbymaria/BookingScreen/BookingScreen.dart';
 import 'package:cleanby_maria/Src/appText.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -90,21 +88,34 @@ class HomeContent extends StatefulWidget {
 class _HomeContentState extends State<HomeContent> {
   TextEditingController _fromdatecontroller = TextEditingController();
    TextEditingController _todatecontroller = TextEditingController();
-    Future<void> _selectDate(BuildContext context) async {
-    DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2100),
-    );
+   String _selectedField = "from"; 
+    Future<void> _selectDate(BuildContext context, TextEditingController controller,String field) async {
+  DateTime? pickedDate = await showDatePicker(
+    context: context,
+    initialDate: DateTime.now(),
+    firstDate: DateTime(2000),
+    lastDate: DateTime(2100),
+  );
 
-    if (pickedDate != null) {
-      setState(() {
-        _fromdatecontroller.text = 
-        DateFormat('dd/MM/yyyy').format(pickedDate);
-      });
-    }
+  if (pickedDate != null) {
+    setState(() {
+      controller.text = DateFormat('dd/MM/yyyy').format(pickedDate);
+       _selectedField = field;
+    });
   }
+}
+void _setTodayDate() {
+    setState(() {
+      String today = DateFormat('dd/MM/yyyy').format(DateTime.now());
+      if (_selectedField == "from") {
+        _fromdatecontroller.text = today;
+      } else {
+        _todatecontroller.text = today;
+      }
+    });
+  }
+
+
   @override
  
 
@@ -156,32 +167,32 @@ class _HomeContentState extends State<HomeContent> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           appText.primaryText(text: "From date", fontSize: 12.sp, fontWeight: FontWeight.w600),
-                          Container(
-                            width: 100.w,
-                            height: 28.h,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(6.w),
-                              border: Border.all(color: Colors.grey.shade100),
-                            ),
-                            child:TextField(
-           controller: _fromdatecontroller,
-           readOnly: true,
-         //  enabled: true,
-         
-            decoration: InputDecoration(
-              border: InputBorder.none,
-         
-              prefixIcon: IconButton(onPressed: ()=>_selectDate(context), icon: Icon(Icons.calendar_month_outlined,size: 15.sp,)),
-             
-              
-            
-            ),
-          
-           
-          ),
-                          
-                          )
+                           Container(
+  width: 120.w, // Adjust width if needed
+  height: 40.h, // Increased height
+  decoration: BoxDecoration(
+    color: Colors.white,
+    borderRadius: BorderRadius.circular(6.w),
+    border: Border.all(color: Colors.grey.shade300),
+  ),
+  child: TextField(
+    controller: _fromdatecontroller,
+    readOnly: true,
+     textAlign: TextAlign.center,  // Center align text
+    style: TextStyle(fontSize: 10.sp), 
+    decoration: InputDecoration(
+      border: InputBorder.none,
+      contentPadding: EdgeInsets.symmetric(vertical: 5.h,horizontal: 5.w), // Adjust padding
+      prefixIcon: IconButton(
+        onPressed: () => _selectDate(context,_fromdatecontroller,"from"),
+        icon: Icon(Icons.calendar_month_outlined, size: 18.sp),
+      ),
+    ),
+  ),
+),
+
+
+
                         ],
                       ),
                       SizedBox(width: 15.w),
@@ -190,37 +201,43 @@ class _HomeContentState extends State<HomeContent> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           appText.primaryText(text: "To date", fontSize: 12.sp, fontWeight: FontWeight.w600),
-                          Container(
-                            width: 100.w,
-                            height: 28.h,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(6.w),
-                              border: Border.all(color: Colors.grey.shade100),
-                            ),
-                            child:TextField(
-           controller: _todatecontroller,
-           readOnly: true,
-          
-            decoration: InputDecoration(
-              border: InputBorder.none,
-         
-              prefixIcon: IconButton(onPressed: ()=>_selectDate(context), icon: Icon(Icons.calendar_month_outlined,size: 15.sp)),
-             
-              
-            
-            ),
-          
-           
-          ),
+                             Container(
+  width: 120.w, // Increased width
+  height: 40.h, // Adjusted height
+  decoration: BoxDecoration(
+    color: Colors.white,
+    borderRadius: BorderRadius.circular(6.w),
+    border: Border.all(color: Colors.grey.shade300),
+  ),
+  child: TextField(
+    controller: _todatecontroller,
+    readOnly: true,
+    textAlign: TextAlign.center,  // Center align text
+    style: TextStyle(fontSize: 10.sp), // Adjust text size
+    decoration: InputDecoration(
+      border: InputBorder.none,
+      contentPadding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 5.w), // Adjust padding
+      prefixIcon:  IconButton(
+          onPressed: () => _selectDate(context,_todatecontroller,"to"),
+          icon: Icon(Icons.calendar_month_outlined, size: 18.sp),
+        ),
+      
+    ),
+  ),
+),
+
                           
-                          )
+                         
+
+
                         ],
                       ),
                       SizedBox(width:12.w),
                       Padding(
                         padding:  EdgeInsets.only(top:20.h),
-                        child: Container(height:26.h ,width:89.w,decoration: BoxDecoration(borderRadius:BorderRadius.circular(5.r) ,color: const Color(0xFF17A5C6),),child: Center(child: Text("Today",style: TextStyle(color:Colors.white ),)),),
+                        child: GestureDetector(
+                          onTap:_setTodayDate,
+                          child:  Container(height:26.h ,width:89.w,decoration: BoxDecoration(borderRadius:BorderRadius.circular(5.r) ,color: const Color(0xFF17A5C6),),child: Center(child: Text("Today",style: TextStyle(color:Colors.white ),)),)),
                       ),
                     ],
                   ),
