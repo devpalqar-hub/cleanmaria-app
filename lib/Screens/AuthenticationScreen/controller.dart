@@ -1,17 +1,21 @@
+import 'dart:convert';
+
+import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HomeScreen/HomeScreen.dart';
+//import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HomeScreen/Services/homeController.dart';
+import 'package:cleanby_maria/Screens/staff_cleanbymaria/DashBoardScreen/Controller/DashBoardScreen.dart';
 import 'package:cleanby_maria/main.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/get_navigation.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HomeScreen/HomeScreen.dart';
-import 'package:cleanby_maria/Screens/staff_cleanbymaria/DashBoardScreen/Controller/DashBoardScreen.dart';
 
 class AuthenticationController extends GetxController {
-  var isLoading = false.obs; // Observable boolean for loading state
-
+  var isLoading = false.obs; 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  //final HomeController homeController = Get.find<HomeController>();
 
   Future<void> handleLogin() async {
     if (emailController.text.isEmpty || passwordController.text.isEmpty) {
@@ -19,7 +23,7 @@ class AuthenticationController extends GetxController {
       return;
     }
 
-    isLoading.value = true; // Show loading
+    isLoading.value = true; 
 
     try {
       final response = await login(emailController.text, passwordController.text);
@@ -29,7 +33,8 @@ class AuthenticationController extends GetxController {
 
         SharedPreferences prefs = await SharedPreferences.getInstance();
         String? role = prefs.getString("role");
-
+        String? userName = prefs.getString("user_name"); 
+       
         print("User role: $role");
 
         if (role == 'admin') {
@@ -43,7 +48,7 @@ class AuthenticationController extends GetxController {
     } catch (e) {
       showSnackBar('An error occurred: $e');
     } finally {
-      isLoading.value = false; // Hide loading
+      isLoading.value = false;
     }
   }
 
@@ -54,16 +59,16 @@ class AuthenticationController extends GetxController {
       final response = await http.post(
         Uri.parse(loginUrl),
         body: jsonEncode({"email": email, "password": password}),
-        headers: {"Content-Type": "application/json"},
+        headers: authHeader,
       );
 
       final Map<String, dynamic> data = json.decode(response.body);
 
       if (response.statusCode == 201 && data.containsKey('access_token')) {
-        // Store user token and role
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString("access_token", data['access_token']);
         await prefs.setString("role", data['user']['role'] ?? "user");
+        await prefs.setString("user_name", data['user']['name'] ?? "User"); // Store user's name
 
         return {"success": true, "accessToken": data['access_token'], "user": data['user']};
       } else {

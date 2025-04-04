@@ -1,5 +1,8 @@
 import 'package:cleanby_maria/Screens/AuthenticationScreen/AutheticationScreen.dart';
+import 'package:get/get.dart'; // Import Get package
+//import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HomeScreen/Services/homeController.dart'; // Import HomeController
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HomeScreen/HomeScreen.dart';
+
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HomeScreen/views/overview.dart';
 import 'package:cleanby_maria/Screens/staff_cleanbymaria/DashBoardScreen/Controller/DashBoardScreen.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +27,8 @@ void main()async {
       "Content-Type": "application/json"
     };
 
-  runApp( cleanby_maria());
+ // Get.put(HomeController()); 
+  runApp(cleanby_maria());
 }
 
 class cleanby_maria extends StatelessWidget {

@@ -1,4 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Add this line to disable OpenGL ES version requirement -->
+    <uses-feature android:glEsVersion="0x00020000" android:required="false"/>
+
     <application
         android:label="cleanby_maria"
         android:name="${applicationName}"
