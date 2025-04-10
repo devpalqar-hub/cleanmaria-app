@@ -1,16 +1,18 @@
+import 'package:cleanby_maria/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/StaffScreen/Models/StaffModel.dart';
 
 class StaffCard extends StatelessWidget {
-  final bool isActive;
+  final Map<String, String> staff;
   final VoidCallback onEdit;
   final VoidCallback onEnable;
   final VoidCallback onDisable;
 
   const StaffCard({
     Key? key,
-    required this.isActive,
+    required this.staff,
     required this.onEdit,
     required this.onEnable,
     required this.onDisable,
@@ -44,7 +46,7 @@ class StaffCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Staff Name",
+                    staff['name'] ?? 'No name available',
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 14.sp,
@@ -53,7 +55,7 @@ class StaffCard extends StatelessWidget {
                   ),
                   SizedBox(height: 3.h),
                   Text(
-                    "Description",
+                    staff['email'] ?? 'No email available',
                     style: TextStyle(
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w500,
@@ -67,12 +69,12 @@ class StaffCard extends StatelessWidget {
               height: 18.h,
               width: 56.w,
               decoration: BoxDecoration(
-                color: isActive ? const Color(0xFF1C9F0B) : Colors.red,
+                color: staff['status'] == "active" ? const Color(0xFF1C9F0B) : Colors.red,
                 borderRadius: BorderRadius.circular(20.w),
               ),
               child: Center(
                 child: Text(
-                  isActive ? "Active" : "Disabled",
+                  staff['status'] == "active" ? "Active" : "Disabled",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 8.sp,

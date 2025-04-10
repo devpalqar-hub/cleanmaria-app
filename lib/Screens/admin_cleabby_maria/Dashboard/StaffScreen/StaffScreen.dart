@@ -1,11 +1,10 @@
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/StaffScreen/StaffCard.dart';
+import 'package:cleanby_maria/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/StaffScreen/Views/CreateBottomsheet.dart';
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/StaffScreen/Views/EditBottomsheet.dart';
-import 'package:cleanby_maria/Src/appButton.dart';
-
 
 class StaffScreen extends StatefulWidget {
   const StaffScreen({super.key});
@@ -15,7 +14,14 @@ class StaffScreen extends StatefulWidget {
 }
 
 class _StaffScreenState extends State<StaffScreen> {
-  List<bool> _staffStatus = List.generate(5, (index) => true);
+  // Sample staff data with status included
+  List<Map<String, String>> staffList = [
+    {"name": "John Doe", "email": "john@example.com", "status": "active"},
+    {"name": "Jane Smith", "email": "jane@example.com", "status": "inactive"},
+    {"name": "Alice Brown", "email": "alice@example.com", "status": "active"},
+    {"name": "Bob White", "email": "bob@example.com", "status": "inactive"},
+    {"name": "Charlie Green", "email": "charlie@example.com", "status": "active"},
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +59,13 @@ class _StaffScreenState extends State<StaffScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
                     ),
-                    builder: (context) => CreateStaffBottomSheet(),
+                    builder: (context) => CreateStaffBottomSheet(onUpdate: () {
+                        setState(() {
+                          // You can add logic to update the staff list after adding a new staff
+                        });
+                      },
+                      baseUrl: "$baseUrl",
+                      token: "$token"),
                   );
                 },
               ),
@@ -71,10 +83,10 @@ class _StaffScreenState extends State<StaffScreen> {
             SizedBox(height: 15.h),
             Expanded(
               child: ListView.builder(
-                itemCount: _staffStatus.length,
+                itemCount: staffList.length,
                 itemBuilder: (context, index) {
                   return StaffCard(
-                    isActive: _staffStatus[index],
+                    staff: staffList[index],  // Passing the staff data
                     onEdit: () {
                       showModalBottomSheet(
                         context: context,
@@ -82,17 +94,24 @@ class _StaffScreenState extends State<StaffScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
                         ),
-                        builder: (context) => EditStaffBottomSheet(),
-                      );
-                    },
+                       builder: (context) => EditStaffBottomSheet(
+      staff: staffList[index],  // Pass the staff data to the EditStaffBottomSheet
+      onUpdate: () {
+        setState(() {
+          // You can add logic to update the staff list after editing
+        });
+      },
+    ),
+  );
+},
                     onEnable: () {
                       setState(() {
-                        _staffStatus[index] = true;
+                        staffList[index]['status'] = 'active'; // 
                       });
                     },
                     onDisable: () {
                       setState(() {
-                        _staffStatus[index] = false;
+                        staffList[index]['status'] = 'inactive'; // Update staff status to inactive
                       });
                     },
                   );

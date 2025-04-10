@@ -1,52 +1,54 @@
-import 'package:cleanby_maria/Screens/AuthenticationScreen/AutheticationScreen.dart';
-import 'package:get/get.dart'; // Import Get package
-//import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HomeScreen/Services/homeController.dart'; // Import HomeController
-import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HomeScreen/HomeScreen.dart';
-
-import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HomeScreen/views/overview.dart';
-import 'package:cleanby_maria/Screens/staff_cleanbymaria/DashBoardScreen/Controller/DashBoardScreen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sizer/sizer.dart';
-String baseUrl = "https://app.cleanmaria.com/api";
-String login = "";
-var authHeader;
-String userType = "";
-String? token;
-void main()async { 
-  await WidgetsFlutterBinding.ensureInitialized();
-  SharedPreferences preferences = await SharedPreferences.getInstance();
-  login = preferences.getString("LOGIN") ?? "";
-  token = preferences.getString("accessToken") ?? "";
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-  if (login == "IN")
+import 'Screens/AuthenticationScreen/AutheticationScreen.dart';
+import 'Screens/admin_cleabby_maria/Dashboard/HomeScreen/HomeScreen.dart';
+import 'Screens/staff_cleanbymaria/DashBoardScreen/Controller/DashBoardScreen.dart';
+
+String baseUrl = "https://app.cleanmaria.com/api";
+
+String login = "";
+String? userType = "";
+String? token;
+
+Map<String, String> authHeader = {};
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  login = prefs.getString("LOGIN") ?? "";
+  token = prefs.getString("accessToken") ?? "";
+  userType = prefs.getString("userType") ?? "";
+
+  if (token != null && token!.isNotEmpty) {
     authHeader = {
       "Authorization": "Bearer $token",
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     };
+    print("AuthHeader Initialized: $authHeader");
+  }
 
- // Get.put(HomeController()); 
-  runApp(cleanby_maria());
+  runApp(const CleanbyMaria());
 }
 
-class cleanby_maria extends StatelessWidget {
-  const cleanby_maria({super.key});
+class CleanbyMaria extends StatelessWidget {
+  const CleanbyMaria({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       designSize: const Size(390, 850),
       builder: (context, child) => GetMaterialApp(
-          home: (login == "IN")
-              ? (userType == "admin")
-                  ? Homescreen()
-                  : AuthenticationScreen()
-              : DashBoardScreen()),
-       
-        
-      
+        debugShowCheckedModeBanner: false,
+        home: (login == "IN")
+            ? (userType == "admin"
+                ?  DashBoardScreen()
+                :  AuthenticationScreen())
+            :  Homescreen(),
+      ),
     );
   }
 }

@@ -1,11 +1,44 @@
-import 'package:cleanby_maria/Src/appButton.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:cleanby_maria/Src/appButton.dart';
 
+class EditStaffBottomSheet extends StatefulWidget {
+  final Map<String, String> staff;
+  final VoidCallback onUpdate;
 
-class EditStaffBottomSheet extends StatelessWidget {
-  const EditStaffBottomSheet({super.key});
+  const EditStaffBottomSheet({
+    super.key,
+    required this.staff,
+    required this.onUpdate,
+  });
+
+  @override
+  State<EditStaffBottomSheet> createState() => _EditStaffBottomSheetState();
+}
+
+class _EditStaffBottomSheetState extends State<EditStaffBottomSheet> {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    nameController.text = widget.staff["name"] ?? '';
+    emailController.text = widget.staff["email"] ?? '';
+    phoneController.text = widget.staff["phone"] ?? '';
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    phoneController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,13 +63,12 @@ class EditStaffBottomSheet extends StatelessWidget {
               ),
             ),
             SizedBox(height: 20.h),
-            _buildInputField("Staff Name", "Enter Staff Name"),
-            _buildInputField("Email", "Enter Staff Email"),
-            _buildInputField("Phone", "Enter Staff Phone"),
-            _buildInputField("Password", "Enter Password", obscureText: true),
+            _buildInputField("Staff Name", "Enter Staff Name", nameController),
+            _buildInputField("Email", "Enter Staff Email", emailController),
+            _buildInputField("Phone", "Enter Staff Phone", phoneController),
+            _buildInputField("Password", "Enter New Password", passwordController, obscureText: true),
             SizedBox(height: 20.h),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
                   child: AppButton(
@@ -51,8 +83,10 @@ class EditStaffBottomSheet extends StatelessWidget {
                 SizedBox(width: 10.w),
                 Expanded(
                   child: AppButton(
-                    text: "Done",
+                    text: "Save",
                     onPressed: () {
+                      // Just close modal and call the callback
+                      widget.onUpdate();
                       Navigator.pop(context);
                     },
                     width: 150.w,
@@ -67,17 +101,14 @@ class EditStaffBottomSheet extends StatelessWidget {
     );
   }
 
-  
-  Widget _buildInputField(String label, String hint, {bool obscureText = false}) {
+  Widget _buildInputField(String label, String hint, TextEditingController controller, {bool obscureText = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: GoogleFonts.poppins(fontSize: 14.sp, fontWeight: FontWeight.w600),
-        ),
+        Text(label, style: GoogleFonts.poppins(fontSize: 14.sp, fontWeight: FontWeight.w600)),
         SizedBox(height: 5.h),
         TextFormField(
+          controller: controller,
           obscureText: obscureText,
           decoration: InputDecoration(
             hintText: hint,
