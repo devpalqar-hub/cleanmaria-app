@@ -5,7 +5,7 @@ import 'package:cleanby_maria/Src/appButton.dart';
 
 class EditStaffBottomSheet extends StatefulWidget {
   final Map<String, String> staff;
-  final VoidCallback onUpdate;
+  final Function(Map<String, String>) onUpdate; // Pass updated staff data
 
   const EditStaffBottomSheet({
     super.key,
@@ -85,8 +85,16 @@ class _EditStaffBottomSheetState extends State<EditStaffBottomSheet> {
                   child: AppButton(
                     text: "Save",
                     onPressed: () {
-                      // Just close modal and call the callback
-                      widget.onUpdate();
+                      // Gather the updated staff data
+                      Map<String, String> updatedStaff = {
+                        'name': nameController.text.trim(),
+                        'email': emailController.text.trim(),
+                        'phone': phoneController.text.trim(),
+                        // Optionally, add the password field if you want to update it
+                        'password': passwordController.text.trim(),
+                      };
+                      // Pass the updated staff data to the parent
+                      widget.onUpdate(updatedStaff);
                       Navigator.pop(context);
                     },
                     width: 150.w,

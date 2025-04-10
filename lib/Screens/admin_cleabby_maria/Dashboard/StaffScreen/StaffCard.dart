@@ -1,18 +1,20 @@
-import 'package:cleanby_maria/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/StaffScreen/Models/StaffModel.dart';
 
 class StaffCard extends StatelessWidget {
-  final Map<String, String> staff;
+  final String name;
+  final String description;
+  final bool isActive;
   final VoidCallback onEdit;
   final VoidCallback onEnable;
   final VoidCallback onDisable;
 
   const StaffCard({
     Key? key,
-    required this.staff,
+    required this.name,
+    required this.description,
+    required this.isActive,
     required this.onEdit,
     required this.onEnable,
     required this.onDisable,
@@ -21,7 +23,6 @@ class StaffCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
       child: Container(
         margin: EdgeInsets.only(bottom: 10.h),
         padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 15.w),
@@ -46,8 +47,8 @@ class StaffCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    staff['name'] ?? 'No name available',
-                    style: TextStyle(
+                    name,
+                    style: GoogleFonts.poppins(
                       color: Colors.black,
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
@@ -55,8 +56,8 @@ class StaffCard extends StatelessWidget {
                   ),
                   SizedBox(height: 3.h),
                   Text(
-                    staff['email'] ?? 'No email available',
-                    style: TextStyle(
+                    description,
+                    style: GoogleFonts.poppins(
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w500,
                       color: Colors.grey,
@@ -69,12 +70,12 @@ class StaffCard extends StatelessWidget {
               height: 18.h,
               width: 56.w,
               decoration: BoxDecoration(
-                color: staff['status'] == "active" ? const Color(0xFF1C9F0B) : Colors.red,
+                color: isActive ? const Color(0xFF1C9F0B) : Colors.red,
                 borderRadius: BorderRadius.circular(20.w),
               ),
               child: Center(
                 child: Text(
-                  staff['status'] == "active" ? "Active" : "Disabled",
+                  isActive ? "Active" : "Disabled",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 8.sp,
@@ -87,19 +88,23 @@ class StaffCard extends StatelessWidget {
             PopupMenuButton<String>(
               icon: Icon(Icons.more_vert, size: 18.sp, color: Colors.grey),
               onSelected: (String value) {
-                if (value == "Edit") {
-                  onEdit();
-                } else if (value == "Enable") {
-                  onEnable();
-                } else if (value == "Disable") {
-                  onDisable();
+                switch (value) {
+                  case "Edit":
+                    onEdit();
+                    break;
+                  case "Enable":
+                    onEnable();
+                    break;
+                  case "Disable":
+                    onDisable();
+                    break;
                 }
               },
               itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
                 _buildMenuItem("Edit", Icons.edit),
                 _buildMenuItem("Enable", Icons.toggle_on),
                 _buildMenuItem("Disable", Icons.toggle_off),
-                _buildMenuItem("Delete", Icons.delete),
+                _buildMenuItem("Delete", Icons.delete), // Optional
               ],
             ),
           ],
@@ -115,7 +120,13 @@ class StaffCard extends StatelessWidget {
         children: [
           Icon(icon, size: 18, color: Colors.black),
           SizedBox(width: 10),
-          Text(title, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500)),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
         ],
       ),
     );

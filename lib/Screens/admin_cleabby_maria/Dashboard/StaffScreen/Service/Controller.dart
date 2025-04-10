@@ -1,71 +1,97 @@
 import 'dart:convert';
-import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/StaffScreen/Models/StaffModel.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cleanby_maria/main.dart';
 
-class CreateStaffController {
-  final String baseUrl;
-  final String token;
+class StaffController {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
-  CreateStaffController({required this.baseUrl, required this.token});
+  bool isLoading = false;
 
-  Future<void> createStaff({
-    required String name,
-    required String email,
-    required String phone,
-    required String password,
-    required Function onSuccess,
-    required Function(String errorMessage) onError,
-  }) async {
-    if (name.isEmpty || email.isEmpty || phone.isEmpty || password.isEmpty) {
-      onError("Please fill all fields");
+  Future<void> createStaff(BuildContext context, VoidCallback onComplete) async {
+    final name = nameController.text.trim();
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+
+    if (name.isEmpty || email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please fill all required fields")),
+      );
       return;
     }
 
-    final url = '$baseUrl/auth/register';
+    isLoading = true;
+    onComplete();
 
     try {
       final response = await http.post(
-        Uri.parse(url),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-        body: json.encode({
-          'name': name,
-          'email': email,
-          'password': password,
-          'role': 'staff',
+        Uri.parse("$baseUrl/auth/register"),
+        headers: authHeader,
+        body: jsonEncode({
+          "name": name,
+          "email": email,
+          "password": password,
+          "role": "staff",
         }),
       );
 
-      if (response.statusCode == 201) {
-        onSuccess();
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Staff created successfully")),
+        );
       } else {
-        onError('Failed to create staff: ${response.body}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(data['message'] ?? "Failed to create staff")),
+        );
       }
     } catch (e) {
-      onError('An error occurred: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Something went wrong: $e")),
+      );
+    } finally {
+      isLoading = false;
+      onComplete();
     }
   }
-}
 
+  Future<List<dynamic>> fetchStaffList() async {
+    final url = Uri.parse('$baseUrl/users/staff');
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('access_token');
 
+      if (token == null) {
+        debugPrint('Token is null. Please login first.');
+        return [];
+      }
 
+      final response = await http.get(
+        url,
+        headers: {
+          //'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
 
-Future<void> fetchStaffData(String baseUrl, String token) async {
-  final response = await http.get(
-    Uri.parse('$baseUrl/users/staff'),
-    headers: {'Authorization': 'Bearer $token'},
-  );
+      final decodedJson = json.decode(response.body);
+      return decodedJson['data'] ?? [];
+    } catch (e) {
+      debugPrint('Error fetching staff list: $e');
+      return [];
+    }
+  }
 
- if (response.statusCode == 200) {
-    final data = json.decode(response.body);
-    List<Staff> staffList = (data['data'] as List)
-        .map((staffJson) => Staff.fromJson(staffJson))
-        .toList();
-
-    // Use staffList in your widget
-  } else {
-    throw Exception('Failed to load staff data');
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    phoneController.dispose();
+    passwordController.dispose();
   }
 }

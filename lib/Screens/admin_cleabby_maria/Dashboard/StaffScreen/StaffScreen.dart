@@ -1,10 +1,12 @@
-import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/StaffScreen/StaffCard.dart';
-import 'package:cleanby_maria/main.dart';
+import 'dart:convert';
+import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/StaffScreen/Service/Controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/StaffScreen/Views/CreateBottomsheet.dart';
-import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/StaffScreen/Views/EditBottomsheet.dart';
+import 'package:http/http.dart' as http;
+import 'StaffCard.dart';
+import 'Views/CreateBottomsheet.dart';
+import 'Views/EditBottomsheet.dart';
 
 class StaffScreen extends StatefulWidget {
   const StaffScreen({super.key});
@@ -14,14 +16,29 @@ class StaffScreen extends StatefulWidget {
 }
 
 class _StaffScreenState extends State<StaffScreen> {
-  // Sample staff data with status included
-  List<Map<String, String>> staffList = [
-    {"name": "John Doe", "email": "john@example.com", "status": "active"},
-    {"name": "Jane Smith", "email": "jane@example.com", "status": "inactive"},
-    {"name": "Alice Brown", "email": "alice@example.com", "status": "active"},
-    {"name": "Bob White", "email": "bob@example.com", "status": "inactive"},
-    {"name": "Charlie Green", "email": "charlie@example.com", "status": "active"},
-  ];
+  List<dynamic> staffList = [];
+  bool isLoading = true;
+  final StaffController staffController = StaffController();
+
+  @override
+  void initState() {
+    super.initState();
+    fetchStaffData();
+  }
+
+  Future<void> fetchStaffData() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    final staffData = await staffController.fetchStaffList();
+    setState(() {
+      staffList = staffData;
+      isLoading = false;
+    });
+
+    print("Fetched Staff List: $staffList"); // For debugging
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +63,10 @@ class _StaffScreenState extends State<StaffScreen> {
                 icon: Icon(Icons.add, color: Colors.white, size: 16.sp),
                 label: Text(
                   "Create Staff",
-                  style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.w600, color: Colors.white),
+                  style: TextStyle(
+                      fontSize: 10.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white),
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
@@ -57,15 +77,10 @@ class _StaffScreenState extends State<StaffScreen> {
                     context: context,
                     isScrollControlled: true,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(20.r)),
                     ),
-                    builder: (context) => CreateStaffBottomSheet(onUpdate: () {
-                        setState(() {
-                          // You can add logic to update the staff list after adding a new staff
-                        });
-                      },
-                      baseUrl: "$baseUrl",
-                      token: "$token"),
+                    builder: (context) => CreateStaffBottomSheet(),
                   );
                 },
               ),
@@ -76,47 +91,57 @@ class _StaffScreenState extends State<StaffScreen> {
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 15.w),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 15.h),
             _buildSearchBox(),
             SizedBox(height: 15.h),
             Expanded(
-              child: ListView.builder(
-                itemCount: staffList.length,
-                itemBuilder: (context, index) {
-                  return StaffCard(
-                    staff: staffList[index],  // Passing the staff data
-                    onEdit: () {
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-                        ),
-                       builder: (context) => EditStaffBottomSheet(
-      staff: staffList[index],  // Pass the staff data to the EditStaffBottomSheet
-      onUpdate: () {
+              child: isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : staffList.isEmpty
+                      ? Center(
+                          child: Text(
+                            "No staff available",
+                            style: TextStyle(fontSize: 16.sp),
+                          ),
+                        )
+                      : ListView.builder(
+                          itemCount: staffList.length,
+                          itemBuilder: (context, index) {
+                            final staff = staffList[index];
+                            return StaffCard(
+                              name: staff['name'] ?? 'No Name',
+                              description: staff['email'] ?? 'No Email',
+                              isActive: staff['status'] == 'active',
+                              onEdit: () {
+                                showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(20.r)),
+                                  ),
+                                  builder: (context) => EditStaffBottomSheet(staff: staff, 
+      onUpdate: (updatedStaff) {
         setState(() {
-          // You can add logic to update the staff list after editing
+          staffList[index] = updatedStaff; 
         });
-      },
-    ),
-  );
-},
-                    onEnable: () {
-                      setState(() {
-                        staffList[index]['status'] = 'active'; // 
-                      });
-                    },
-                    onDisable: () {
-                      setState(() {
-                        staffList[index]['status'] = 'inactive'; // Update staff status to inactive
-                      });
-                    },
-                  );
-                },
-              ),
+      },),
+                                );
+                              },
+                              onEnable: () {
+                                setState(() {
+                                  staffList[index]['status'] = 'active';
+                                });
+                              },
+                              onDisable: () {
+                                setState(() {
+                                  staffList[index]['status'] = 'inactive';
+                                });
+                              },
+                            );
+                          },
+                        ),
             ),
           ],
         ),
@@ -127,7 +152,6 @@ class _StaffScreenState extends State<StaffScreen> {
   Widget _buildSearchBox() {
     return Container(
       height: 47.h,
-      width: 358.w,
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
       decoration: BoxDecoration(
         color: const Color(0xFFF7F6F5),
