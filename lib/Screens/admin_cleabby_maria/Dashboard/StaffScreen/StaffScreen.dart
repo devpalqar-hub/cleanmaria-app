@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/StaffScreen/Models/StaffModel.dart';
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/StaffScreen/Service/Controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -37,7 +38,7 @@ class _StaffScreenState extends State<StaffScreen> {
       isLoading = false;
     });
 
-    print("Fetched Staff List: $staffList"); // For debugging
+    print("Fetched Staff List: $staffList");
   }
 
   @override
@@ -121,12 +122,14 @@ class _StaffScreenState extends State<StaffScreen> {
                                     borderRadius: BorderRadius.vertical(
                                         top: Radius.circular(20.r)),
                                   ),
-                                  builder: (context) => EditStaffBottomSheet(staff: staff, 
-      onUpdate: (updatedStaff) {
-        setState(() {
-          staffList[index] = updatedStaff; 
-        });
-      },),
+                                  builder: (context) => EditStaffBottomSheet(
+                                    staff: staff,
+                                    onUpdate: (updatedStaff) {
+                                      setState(() {
+                                        staffList[index] = updatedStaff;
+                                      });
+                                    },
+                                  ),
                                 );
                               },
                               onEnable: () {
@@ -138,6 +141,9 @@ class _StaffScreenState extends State<StaffScreen> {
                                 setState(() {
                                   staffList[index]['status'] = 'inactive';
                                 });
+                              },
+                              onDelete: () {
+                                onDeleteStaff(context, staff, index);
                               },
                             );
                           },
@@ -177,5 +183,43 @@ class _StaffScreenState extends State<StaffScreen> {
         ],
       ),
     );
+  }
+
+  void onDeleteStaff(BuildContext context, Map<String, dynamic> staff, int index) async {
+    final isConfirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Confirm Deletion'),
+        content: Text('Are you sure you want to delete this staff member?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
+
+    if (isConfirmed ?? false) {
+      // Create a Staff object from the staff data
+      final staffToDelete = Staff(
+        id: staff['id'],
+        name: staff['name'] ?? '',
+        email: staff['email'] ?? '',
+        status: staff['status'] ?? '',
+      );
+
+      // Call the delete API with the staff object
+      await staffController.deleteStaff(context, staffToDelete);
+
+      // After deletion, remove the staff from the list and refetch the staff data
+      setState(() {
+        staffList.removeAt(index);
+      });
+    }
   }
 }

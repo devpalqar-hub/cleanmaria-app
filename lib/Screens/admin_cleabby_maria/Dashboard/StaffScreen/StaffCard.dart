@@ -1,3 +1,4 @@
+import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/StaffScreen/Views/EditBottomsheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,6 +10,7 @@ class StaffCard extends StatelessWidget {
   final VoidCallback onEdit;
   final VoidCallback onEnable;
   final VoidCallback onDisable;
+  final VoidCallback onDelete;
 
   const StaffCard({
     Key? key,
@@ -18,6 +20,7 @@ class StaffCard extends StatelessWidget {
     required this.onEdit,
     required this.onEnable,
     required this.onDisable,
+    required this.onDelete,
   }) : super(key: key);
 
   @override
@@ -90,7 +93,7 @@ class StaffCard extends StatelessWidget {
               onSelected: (String value) {
                 switch (value) {
                   case "Edit":
-                    onEdit();
+                    _showEditStaffBottomSheet(context);
                     break;
                   case "Enable":
                     onEnable();
@@ -98,13 +101,16 @@ class StaffCard extends StatelessWidget {
                   case "Disable":
                     onDisable();
                     break;
+                  case "Delete":
+                    _showDeleteConfirmationDialog(context, onDelete);
+                    break;
                 }
               },
               itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
                 _buildMenuItem("Edit", Icons.edit),
                 _buildMenuItem("Enable", Icons.toggle_on),
                 _buildMenuItem("Disable", Icons.toggle_off),
-                _buildMenuItem("Delete", Icons.delete), // Optional
+                _buildMenuItem("Delete", Icons.delete),
               ],
             ),
           ],
@@ -129,6 +135,50 @@ class StaffCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void _showEditStaffBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return EditStaffBottomSheet(
+          staff: {
+            'name': name,
+            'email': description, // Modify to match your actual data structure
+            'phone': '', // Example placeholder
+            'status': isActive ? 'active' : 'disabled',
+          },
+          onUpdate: (updatedStaff) {
+            // Handle updated staff here
+          },
+        );
+      },
+    );
+  }
+
+  void _showDeleteConfirmationDialog(BuildContext context, VoidCallback onDelete) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Confirm Deletion"),
+          content: const Text("Are you sure you want to delete this staff member?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context), // cancel
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // close the dialog
+                onDelete(); // trigger the actual delete callback
+              },
+              child: const Text("Delete"),
+            ),
+          ],
+        );
+      },
     );
   }
 }

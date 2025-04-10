@@ -23,4 +23,5 @@ class Staff {
       status: json['status'],
     );
   }
+  
 }
