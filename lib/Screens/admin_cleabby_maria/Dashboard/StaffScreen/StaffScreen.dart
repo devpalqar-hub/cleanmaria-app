@@ -233,7 +233,8 @@ class _StaffScreenState extends State<StaffScreen> {
         id: staff['id'],
         name: staff['name'] ?? '',
         email: staff['email'] ?? '',
-        status: staff['status'] ?? '',
+        phone: staff['phone'] ?? '',
+        status: staff['status'] ?? 'inactive',
       );
 
       // Call the delete API with the staff object
