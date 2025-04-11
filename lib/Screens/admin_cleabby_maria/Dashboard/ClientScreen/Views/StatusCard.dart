@@ -28,7 +28,7 @@ class StatusCard extends StatelessWidget {
         width: 352.w,
         height: 88.h,
         padding: EdgeInsets.all(10.w),
-        margin: EdgeInsets.only(left: 15.w, bottom: 10.h),
+        margin: EdgeInsets.only(bottom: 10.h),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.r),
           color: Colors.white,
@@ -42,45 +42,44 @@ class StatusCard extends StatelessWidget {
           ],
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          appText.primaryText(
-                            text: customerName,
-                            fontSize: 15.sp,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black,
-                          ),
-                          SizedBox(height: 3.h),
-                          Row(
-                            children: [
-                              Image.asset(
-                                "assets/clock.png",
-                                height: 15.h,
-                                width: 15.w,
-                              ),
-                              SizedBox(width: 5.w),
-                              appText.primaryText(
-                                text: time,
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w500,
-                                color: Color(0xFF19A4C6),
-                              ),
-                            ],
-                          ),
-                        ],
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            appText.primaryText(
+                              text: customerName,
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black,
+                            ),
+                            SizedBox(height: 3.h),
+                            Row(
+                              children: [
+                                Image.asset(
+                                  "assets/clock.png",
+                                  height: 15.h,
+                                  width: 15.w,
+                                ),
+                                SizedBox(width: 5.w),
+                                appText.primaryText(
+                                  text: time,
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w500,
+                                  color: const Color(0xFF19A4C6),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                      SizedBox(width: 50.w),
                       Container(
                         height: 24.h,
                         width: 82.w,
@@ -106,6 +105,7 @@ class StatusCard extends StatelessWidget {
                     text: location,
                     fontSize: 10.5.sp,
                     fontWeight: FontWeight.w400,
+                    color: const Color(0xFF77838F),
                   ),
                 ],
               ),

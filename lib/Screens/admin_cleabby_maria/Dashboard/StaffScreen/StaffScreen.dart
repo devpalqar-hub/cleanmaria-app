@@ -20,6 +20,7 @@ class _StaffScreenState extends State<StaffScreen> {
   List<dynamic> staffList = [];
   bool isLoading = true;
   final StaffController staffController = StaffController();
+  final TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
@@ -39,6 +40,21 @@ class _StaffScreenState extends State<StaffScreen> {
     });
 
     print("Fetched Staff List: $staffList");
+  }
+
+  // Function to filter staff based on the search query
+  List<dynamic> _filterStaffList() {
+    final query = searchController.text.toLowerCase();
+    return staffList.where((staff) {
+      return staff['name']?.toLowerCase().contains(query) ?? false ||
+          staff['email']?.toLowerCase().contains(query) ?? false;
+    }).toList();
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -107,9 +123,9 @@ class _StaffScreenState extends State<StaffScreen> {
                           ),
                         )
                       : ListView.builder(
-                          itemCount: staffList.length,
+                          itemCount: _filterStaffList().length,
                           itemBuilder: (context, index) {
-                            final staff = staffList[index];
+                            final staff = _filterStaffList()[index];
                             return StaffCard(
                               name: staff['name'] ?? 'No Name',
                               description: staff['email'] ?? 'No Email',
@@ -167,9 +183,16 @@ class _StaffScreenState extends State<StaffScreen> {
         children: [
           SizedBox(width: 8.w),
           Expanded(
-            child: Text(
-              'Search',
-              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500),
+            child: TextField(
+              controller: searchController,
+              onChanged: (value) {
+                setState(() {}); // Trigger a rebuild when the search query changes
+              },
+              decoration: InputDecoration(
+                hintText: 'Search',
+                hintStyle: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500),
+                border: InputBorder.none,
+              ),
             ),
           ),
           GestureDetector(

@@ -1,3 +1,5 @@
+import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/StaffScreen/Models/StaffModel.dart';
+import 'package:cleanby_maria/main.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -55,70 +57,82 @@ class _EditStaffBottomSheetState extends State<EditStaffBottomSheet> {
     super.dispose();
   }
 
-  Future<void> updateStaffStatus(Map<String, String> updatedStaff) async {
-    final String apiUrl = 'https://app.cleanmaria.com/api/users/${widget.staff["id"]}';
+  Future<void> updateStaffStatus(BuildContext context, Staff staff) async {
+  final staffId = staff.id;
+  final url = Uri.parse('$baseUrl/users/$staffId');
 
-    final String status = updatedStaff['status'] ?? 'active';
+  final String status = staff.status ?? 'active';
 
-    final Map<String, dynamic> body = {
-      "status": status,
-    };
+  final Map<String, dynamic> body = {
+    "name": staff.name,
+    "email": staff.email,
+    "phone": staff.phone,
+    // "password": staff.password, // Exclude password if not updating
+    "status": status,
+  };
 
-    try {
-      final response = await http.patch(
-        Uri.parse(apiUrl),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-        body: json.encode(body),
-      );
+  try {
+    final response = await http.patch(
+      url,
+      headers: await _authHeader(),
+      body: json.encode(body),
+    );
 
+    print('🔄 PATCH Request Sent to $url');
+    print('📤 Request Body: ${json.encode(body)}');
+    print('📥 Response Status: ${response.statusCode}');
+    print('📥 Response Body: ${response.body}');
+
+    if (mounted) {
       if (response.statusCode == 200) {
-        print('Staff updated successfully');
-        widget.onUpdate(updatedStaff);
-      } else {
-        print('Failed to update staff: ${response.body}');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Failed to update staff")),
+          SnackBar(content: Text("Staff updated successfully")),
+        );
+      } else {
+        final data = jsonDecode(response.body);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(data['message'] ?? "Failed to update staff")),
         );
       }
-    } catch (e) {
-      print('Error updating staff: $e');
+    }
+  } catch (e) {
+    print('⚠️ Error updating staff: $e');
+    if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Something went wrong: $e")),
       );
     }
   }
+}
 
-  // Show the confirmation dialog when user clicks "Save"
+
   void _showConfirmationDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Confirm Update"),
-          content: Text("Are you sure you want to edit this staff?"),
+          title: const Text("Confirm Update"),
+          content: const Text("Are you sure you want to edit this staff?"),
           actions: <Widget>[
             TextButton(
-              child: Text("Cancel"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+              child: const Text("Cancel"),
+              onPressed: () => Navigator.of(context).pop(),
             ),
             TextButton(
-              child: Text("Yes"),
+              child: const Text("Yes"),
               onPressed: () {
-                Map<String, String> updatedStaff = {
-                  'name': nameController.text.trim(),
-                  'email': emailController.text.trim(),
-                  'phone': phoneController.text.trim(),
-                  'password': passwordController.text.trim(),
-                  'status': selectedStatus,
-                };
-                updateStaffStatus(updatedStaff);
                 Navigator.of(context).pop();
-                Navigator.pop(context); // Close the bottom sheet after update
+                Navigator.pop(context); // Close the bottom sheet
+
+                 Staff updatedStaff = Staff(
+                id: widget.staff["id"] ?? '', // Assuming "id" is in the staff data
+                name: nameController.text.trim(),
+                email: emailController.text.trim(),
+                phone: phoneController.text.trim(),
+              //  password: passwordController.text.trim(),
+                status: selectedStatus,
+              );
+              updateStaffStatus(context, updatedStaff);
               },
             ),
           ],
@@ -142,7 +156,12 @@ class _EditStaffBottomSheetState extends State<EditStaffBottomSheet> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(child: Container(width: 89.w, child: Divider(thickness: 2, color: Colors.grey[300]))),
+              Center(
+                child: Container(
+                  width: 89.w,
+                  child: Divider(thickness: 2, color: Colors.grey[300]),
+                ),
+              ),
               SizedBox(height: 5.h),
               Center(
                 child: Text(
@@ -161,9 +180,7 @@ class _EditStaffBottomSheetState extends State<EditStaffBottomSheet> {
                   Expanded(
                     child: AppButton(
                       text: "Cancel",
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
+                      onPressed: () => Navigator.pop(context),
                       width: 150.w,
                       height: 45.h,
                     ),
@@ -172,7 +189,7 @@ class _EditStaffBottomSheetState extends State<EditStaffBottomSheet> {
                   Expanded(
                     child: AppButton(
                       text: "Save",
-                      onPressed: _showConfirmationDialog,  // Call confirmation dialog
+                      onPressed: _showConfirmationDialog,
                       width: 150.w,
                       height: 45.h,
                     ),
@@ -210,4 +227,13 @@ class _EditStaffBottomSheetState extends State<EditStaffBottomSheet> {
       ],
     );
   }
+}
+Future<Map<String, String>> _authHeader() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String token = prefs.getString('token') ?? ''; // Fetch token from SharedPreferences
+
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer $token', // Add the bearer token to the headers
+  };
 }

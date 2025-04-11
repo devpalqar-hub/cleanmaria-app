@@ -15,7 +15,7 @@ class _OverViewCardState extends State<OverViewCard> {
   @override
   void initState() {
     super.initState();
-    _controller.fetchBusinessOverview(); // Fetch business overview data
+    _controller.fetchBusinessSummary(); 
   }
 
   @override
@@ -29,7 +29,7 @@ class _OverViewCardState extends State<OverViewCard> {
               controller: _controller.totalBookings,
               imagePath: "assets/client.png",
               color: const Color(0xffE5FDF3),
-              subtitle: "Total Bookings",
+              subtitle: "Total Clients",
             ),
             SizedBox(width: 20.w),
             _buildOverviewItem(

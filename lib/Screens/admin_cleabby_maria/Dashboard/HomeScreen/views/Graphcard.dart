@@ -1,80 +1,122 @@
+import 'dart:convert';
+import 'package:cleanby_maria/main.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:http/http.dart' as http;
 
-class LineChartWidget extends StatelessWidget {
-   LineChartWidget({super.key});
+
+class LineChartWidget extends StatefulWidget {
+  final String startDate;
+  final String endDate;
+
+  const LineChartWidget({
+    super.key,
+    required this.startDate,
+    required this.endDate,
+  });
+
+  @override
+  State<LineChartWidget> createState() => _LineChartWidgetState();
+}
+
+class _LineChartWidgetState extends State<LineChartWidget> {
+  List<FlSpot> chartSpots = [];
+  bool isLoading = true;
+
+  List<String> months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchChartData();
+  }
+
+  Future<void> fetchChartData() async {
+  final url = Uri.parse(
+      '$baseUrl/analytics/bookings-over-time?startDate=${widget.startDate}&endDate=${widget.endDate}');
+
+  try {
+    final response = await http.get(url);
+    print("Response Body: ${response.body}");
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      final List data = jsonData['data'];
+
+      if (data.isNotEmpty) {
+        setState(() {
+          chartSpots = data.asMap().entries.map((entry) {
+            int index = months.indexOf(entry.value['month']);
+            double value = double.tryParse(entry.value['value'].toString()) ?? 0.0;
+            return FlSpot(index.toDouble(), value);
+          }).toList();
+          isLoading = false;
+        });
+        print("Chart Data: $chartSpots");
+      } else {
+        print("No data available for the selected range.");
+      }
+    } else {
+      print("API error: ${response.statusCode}");
+    }
+  } catch (e) {
+    print("Exception: $e");
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 211.h,
-      width: 298.w, // Providing a fixed height
-      child: LineChart(
-        LineChartData(
-          gridData: FlGridData(show:false),
-          titlesData: FlTitlesData(
-            leftTitles: AxisTitles(
-              sideTitles: SideTitles(showTitles: true, reservedSize: 50),
-            ),
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                getTitlesWidget: (value, meta) {
-                  switch (value.toInt()) {
-                    case 0:
-                      return Text("Jan");
-                    case 1:
-                      return  Text("Feb");
-                    case 2:
-                      return Text("Mar");
-                    case 3:
-                      return  Text("Apr");
-                    case 4:
-                      return  Text("May");
-                    case 5:
-                      return Text("Jun");
-                    default:
-                      return const Text("");
-                  }
-                },
-                reservedSize: 30,
+      width: 298.w,
+      child: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : LineChart(
+              LineChartData(
+                gridData: FlGridData(show: false),
+                titlesData: FlTitlesData(
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(showTitles: true, reservedSize: 40),
+                  ),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 30,
+                      getTitlesWidget: (value, meta) {
+                        int index = value.toInt();
+                        if (index >= 0 && index < months.length) {
+                          return Text(months[index]);
+                        }
+                        return const Text('');
+                      },
+                    ),
+                  ),
+                  topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                ),
+                borderData: FlBorderData(show: false),
+                minX: 0,
+                maxX: 11,
+                minY: 0,
+                maxY: chartSpots.isEmpty
+                    ? 10
+                    : chartSpots.map((e) => e.y).reduce((a, b) => a > b ? a : b) + 1,
+                lineBarsData: [
+                  LineChartBarData(
+                    spots: chartSpots,
+                    isCurved: true,
+                    color: Colors.blue,
+                    dotData: const FlDotData(show: true),
+                    belowBarData: BarAreaData(
+                      show: true,
+                      color: Colors.blue.withOpacity(0.2),
+                    ),
+                  ),
+                ],
               ),
             ),
-            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          ),
-          borderData: FlBorderData(
-            show: false,
-           
-          ),
-          minX: 0,
-          maxX: 5,
-          minY: 25,
-          maxY: 29,
-          lineBarsData: [
-            LineChartBarData(
-              spots: [
-                const FlSpot(0, 26),
-                const FlSpot(0.5, 26.5),
-                const FlSpot(1, 26.5),
-                const FlSpot(1.5, 26.8),
-                const FlSpot(2, 27.2),
-                const FlSpot(2.5, 27.3),
-                const FlSpot(3, 27.9),
-                const FlSpot(3.5, 27.5),
-                const FlSpot(4, 28),
-                const FlSpot(4.5, 27.7),
-                const FlSpot(5, 28.5),
-              ],
-              isCurved: true,
-              color: Colors.blue,
-              dotData: const FlDotData(show: true),
-              belowBarData: BarAreaData(show: true, color: Colors.blue.withOpacity(0.2)),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
