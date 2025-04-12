@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cleanby_maria/Src/appText.dart';
 
 class BStatusCard extends StatelessWidget {
-  final Booking booking;  
+  final BookingModel booking;
 
   const BStatusCard({
     required this.booking,
@@ -39,7 +39,7 @@ class BStatusCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 appText.primaryText(
-                  text: booking.name, 
+                  text: booking.customer!.name!,
                   fontSize: 15.sp,
                   fontWeight: FontWeight.w500,
                   color: Colors.black,
@@ -54,16 +54,21 @@ class BStatusCard extends StatelessWidget {
                     ),
                     SizedBox(width: 5.w),
                     appText.primaryText(
-                      text: booking.plan, 
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w500,
-                      color: (booking.plan == "By weekly plan" || booking.plan == "2025 MAR 12")
-                          ? const Color(0xFF19A4C6)
-                          : Colors.black,
-                    ),
+                        text: booking.subscriptionType!.name!,
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w500,
+                        color:
+                            // (booking.plan == "By weekly plan" ||
+                            //         booking.plan == "2025 MAR 12")
+                            const Color(0xFF19A4C6)
+                        //: Colors.black,
+                        ),
                     SizedBox(width: 5.w),
                     appText.primaryText(
-                      text: booking.time,  
+                      text: booking.monthSchedules!
+                          .map((value) =>
+                              "${value.weekOfMonth}-${value.dayOfWeek} ")
+                          .join(","),
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w500,
                       color: Colors.black,
@@ -72,7 +77,7 @@ class BStatusCard extends StatelessWidget {
                 ),
                 SizedBox(height: 3.h),
                 appText.primaryText(
-                  text: booking.place,  
+                  text: "",
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w500,
                   color: Colors.black,
@@ -90,7 +95,7 @@ class BStatusCard extends StatelessWidget {
               ),
               SizedBox(height: 5.h),
               appText.primaryText(
-                text: booking.price,  
+                text: booking.price,
                 fontSize: 10.5.sp,
                 fontWeight: FontWeight.w400,
                 color: Colors.black,

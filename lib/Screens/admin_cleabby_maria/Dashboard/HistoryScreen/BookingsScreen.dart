@@ -140,34 +140,34 @@ class _BookingsaScreenState extends State<BookingsaScreen> {
             // : "No Dates Selected",
             //style: GoogleFonts.poppins(fontSize: 14.sp, fontWeight: FontWeight.w500),
             //),
-            Obx(() {
-              if (bookingsController.isLoading.value) {
-                return Center(child: CircularProgressIndicator());
-              }
-              if (bookingsController.errorMessage.value.isNotEmpty) {
-                return Center(
-                    child: Text(bookingsController.errorMessage.value));
-              }
-              return Column(
-                children: bookingsController.bookings
-                    .map((booking) => StatusCard(
-                          status: "Completed",
-                          color: const Color(0xFF03AE9D),
-                          customerName: booking.name,
-                          time: booking.time,
-                          location: booking.place,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => CleaningDetails(),
-                              ),
-                            );
-                          },
-                        ))
-                    .toList(),
-              );
-            }),
+            // Obx(() {
+            //   if (bookingsController.isLoading.value) {
+            //     return Center(child: CircularProgressIndicator());
+            //   }
+            //   if (bookingsController.errorMessage.value.isNotEmpty) {
+            //     return Center(
+            //         child: Text(bookingsController.errorMessage.value));
+            //   }
+            //   return Column(
+            //     children: bookingsController.bookings
+            //         .map((booking) => StatusCard(
+            //               status: "Completed",
+            //               color: const Color(0xFF03AE9D),
+            //               customerName: booking.name,
+            //               time: booking.time,
+            //               location: booking.place,
+            //               onTap: () {
+            //                 Navigator.push(
+            //                   context,
+            //                   MaterialPageRoute(
+            //                     builder: (context) => CleaningDetails(),
+            //                   ),
+            //                 );
+            //               },
+            //             ))
+            //         .toList(),
+            //   );
+            // }),
           ],
         ),
       ),
