@@ -29,8 +29,11 @@ class _HomeContentState extends State<HomeContent> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildTopBar(HomeController()),
-              SizedBox(height: 15.h),
+              Padding(
+                padding: EdgeInsets.only(left:2.w),
+                child: _buildTopBar(HomeController()),
+              ),
+              SizedBox(height: 32.h),
               _buildGreetingAndDropdown(),
               SizedBox(height: 15.h),
               OverViewCard(),
@@ -62,45 +65,51 @@ class _HomeContentState extends State<HomeContent> {
 
   Widget _buildTopBar(HomeController controller) {
     return Row(
+      //crossAxisAlignment: CrossAxisAlignment.start,
+      //mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         Image.asset("assets/bname.png", height: 50.h, width: 115.w),
-        const Spacer(),
+        SizedBox(width: 198.w,),
         GestureDetector(
           onTap: () => _showSettingsDialog(context, controller),
-          child: Image.asset("assets/settings.png", height: 24.w, width: 24.w),
+          child: Image.asset("assets/settings.png", height: 32.w, width: 32.w),
         ),
       ],
     );
   }
 
   Widget _buildGreetingAndDropdown() {
-    return Row(
-      children: [
-        appText.primaryText(
-          text: "Nice day, ${hCtrl.userName}",
-          fontSize: 18.sp,
-          fontWeight: FontWeight.w700,
-        ),
-        const Spacer(),
-        DropdownButton<String>(
-          value: hCtrl.filterRange,
-          hint: Text("Select Range", style: TextStyle(fontSize: 10.sp)),
-          items: ["Last Week", "Last Month", "Last Year"].map((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value, style: TextStyle(fontSize: 10.sp)),
-            );
-          }).toList(),
-          onChanged: (String? newValue) {
-            if (newValue != null) {
-              hCtrl.filterRange = newValue;
-              hCtrl.setDateRangeFromDropdown(newValue);
-            }
-          },
-          icon: const Icon(Icons.arrow_drop_down_sharp),
-        ),
-        SizedBox(width: 20.w),
-      ],
+    return Padding(
+      padding:  EdgeInsets.symmetric(horizontal:16.w),
+      child: Row(
+        
+        children: [
+          appText.primaryText(
+            text: "Nice day, ${hCtrl.userName}",
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w700,
+          ),
+          const Spacer(),
+          DropdownButton<String>(
+            value: hCtrl.filterRange,
+            hint: Text("Select Range", style: TextStyle(fontSize: 10.sp)),
+            items: ["Last Week", "Last Month", "Last Year"].map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value, style: TextStyle(fontSize: 10.sp)),
+              );
+            }).toList(),
+            onChanged: (String? newValue) {
+              if (newValue != null) {
+                hCtrl.filterRange = newValue;
+                hCtrl.setDateRangeFromDropdown(newValue);
+              }
+            },
+            icon: const Icon(Icons.arrow_drop_down_sharp),
+          ),
+          SizedBox(width: 20.w),
+        ],
+      ),
     );
   }
 
