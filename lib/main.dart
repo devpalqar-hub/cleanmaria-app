@@ -22,6 +22,7 @@ void main() async {
   login = prefs.getString("LOGIN") ?? "";
   token = prefs.getString("accessToken") ?? "";
   userType = prefs.getString("userType") ?? "";
+    print("Token retrieved: $token");
 
   if (token != null && token!.isNotEmpty) {
     authHeader = {
@@ -51,17 +52,4 @@ class CleanbyMaria extends StatelessWidget {
     );
   }
 
-  Widget _getInitialScreen() {
-    // Check if login is successful and if the token is available
-    if (login == "IN") {
-      if (userType == "admin") {
-        return DashBoardScreen(); // Admin Dashboard
-      } else {
-        return Homescreen(); // Staff Dashboard or other user type
-      }
-    } else {
-      // Default to AuthenticationScreen if not logged in
-      return AuthenticationScreen();
-    }
-  }
 }
