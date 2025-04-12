@@ -89,24 +89,30 @@ class _HomeContentState extends State<HomeContent> {
             fontSize: 18.sp,
             fontWeight: FontWeight.w700,
           ),
-          const Spacer(),
-          DropdownButton<String>(
-            value: hCtrl.filterRange,
-            hint: Text("Select Range", style: TextStyle(fontSize: 10.sp)),
-            items: ["Last Week", "Last Month", "Last Year"].map((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value, style: TextStyle(fontSize: 10.sp)),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              if (newValue != null) {
-                hCtrl.filterRange = newValue;
-                hCtrl.setDateRangeFromDropdown(newValue);
-              }
-            },
-            icon: const Icon(Icons.arrow_drop_down_sharp),
-          ),
+          SizedBox(width:29.w),
+          DropdownButtonHideUnderline(
+  child: DropdownButton<String>(
+    value: hCtrl.filterRange,
+    icon: const Icon(Icons.arrow_drop_down_sharp),
+    hint: const SizedBox.shrink(), // No visible hint
+    items: ["Last Week", "Last Month", "Last Year"].map((String value) {
+      return DropdownMenuItem<String>(
+        value: value,
+        child: Text(value, style: TextStyle(fontSize: 10.sp)),
+      );
+    }).toList(),
+    onChanged: (String? newValue) {
+      if (newValue != null) {
+        hCtrl.filterRange = newValue;
+        hCtrl.setDateRangeFromDropdown(newValue);
+      }
+    },
+    style: TextStyle(fontSize: 10.sp, color: Colors.black),
+    dropdownColor: Colors.white,
+    underline: SizedBox(), // Removes underline if any
+  ),
+),
+
           SizedBox(width: 20.w),
         ],
       ),
