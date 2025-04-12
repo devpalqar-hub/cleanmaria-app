@@ -140,15 +140,7 @@ class _StaffScreenState extends State<StaffScreen> {
                                   ),
                                   builder: (context) => EditStaffBottomSheet(
                                     staff: staff,
-                                    onUpdate: (updatedStaff) {
-                                      setState(() {
-                                        final i = staffList.indexWhere(
-                                            (s) => s.id == updatedStaff.id);
-                                        if (i != -1) {
-                                          staffList[i] = updatedStaff;
-                                        }
-                                      });
-                                    },
+                                    notify: notify,
                                   ),
                                 );
                               },

@@ -110,37 +110,55 @@ class _StaffCardState extends State<StaffCard> {
               ),
             ),
             SizedBox(width: 5.w),
-            PopupMenuButton<String>(
-              icon: Icon(Icons.more_vert, size: 18.sp, color: Colors.grey),
-              onSelected: (String value) async {
-                switch (value) {
-                  case "Edit":
-                    final updatedStaff = await widget.onEdit(widget.staff);
-                    if (updatedStaff != null) updateLocalStaff(updatedStaff);
-                    break;
-                  case "Enable":
-                    widget.onEnable();
-                    break;
-                  case "Disable":
-                    widget.onDisable();
-                    break;
-                  case "Delete":
-                    _showDeleteConfirmationDialog(context, widget.onDelete);
-                    break;
-                }
-              },
-              itemBuilder: (BuildContext context) {
-                final List<PopupMenuEntry<String>> items = [];
-                items.add(_buildMenuItem("Edit", Icons.edit));
-                if (isActive) {
-                  items.add(_buildMenuItem("Disable", Icons.toggle_off));
-                } else {
-                  items.add(_buildMenuItem("Enable", Icons.toggle_on));
-                }
-                items.add(_buildMenuItem("Delete", Icons.delete));
-                return items;
-              },
-            ),
+                PopupMenuButton<String>(
+  icon: Icon(Icons.more_vert, size: 18.sp, color: Colors.grey),
+  onSelected: (String value) async {
+    switch (value) {
+      case "Edit":
+        final updatedStaff = await widget.onEdit(widget.staff);
+        if (updatedStaff != null) updateLocalStaff(updatedStaff);
+        break;
+      case "Enable":
+        widget.onEnable();
+        setState(() {
+          isActive = true;
+        });
+        break;
+      case "Disable":
+        widget.onDisable();
+        setState(() {
+          isActive = false;
+        });
+        break;
+      case "Delete":
+        _showDeleteConfirmation(context);
+        break;
+    }
+  },
+  itemBuilder: (BuildContext context) {
+    return <PopupMenuEntry<String>>[
+      const PopupMenuItem<String>(
+        value: 'Edit',
+        child: Text('Edit'),
+      ),
+      if (!isActive)
+        const PopupMenuItem<String>(
+          value: 'Enable',
+          child: Text('Enable'),
+        ),
+      if (isActive)
+        const PopupMenuItem<String>(
+          value: 'Disable',
+          child: Text('Disable'),
+        ),
+      const PopupMenuItem<String>(
+        value: 'Delete',
+        child: Text('Delete'),
+      ),
+    ];
+  },
+),
+
           ],
         ),
       ),
@@ -166,28 +184,28 @@ class _StaffCardState extends State<StaffCard> {
     );
   }
 
-  void _showDeleteConfirmationDialog(BuildContext context, VoidCallback onDelete) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Confirm Deletion"),
-          content: const Text("Are you sure you want to delete this staff member?"),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("Cancel"),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                onDelete();
-              },
-              child: const Text("Delete"),
-            ),
-          ],
-        );
-      },
-    );
-  }
+  void _showDeleteConfirmation(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text("Confirm Delete"),
+        content: const Text("Are you sure you want to delete this staff member?"),
+        actions: [
+          TextButton(
+            child: const Text("Cancel"),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          TextButton(
+            child: const Text("Delete"),
+            onPressed: () {
+              widget.onDelete();
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
 }

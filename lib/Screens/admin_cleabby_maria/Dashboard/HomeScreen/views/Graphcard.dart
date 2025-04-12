@@ -44,41 +44,34 @@ Future<Map<String, String>> getAuthHeader() async {
 }
 
 
-  Future<void> fetchChartData() async {
+ Future<void> fetchChartData() async {
   final url = Uri.parse(
     '$baseUrl/analytics/bookings-over-time?startDate=${widget.startDate}&endDate=${widget.endDate}',
   );
 
-  try {
-    final headers = await getAuthHeader();
-    final response = await http.get(url, headers: headers);
+  final headers = await getAuthHeader();
+  final response = await http.get(url, headers: headers);
 
-    if (response.statusCode == 200) {
-      final jsonData = json.decode(response.body);
-      final List data = jsonData['data'];
+  if (response.statusCode == 200) {
+    final jsonData = json.decode(response.body);
+    final List data = jsonData['data'];
 
-      setState(() {
-        chartSpots = data.asMap().entries.map((entry) {
-          int index = months.indexOf(entry.value['month']);
-          double value = double.tryParse(entry.value['value'].toString()) ?? 0.0;
-          return FlSpot(index.toDouble(), value);
-        }).toList();
-        isLoading = false;
-      });
-
-    } else {
-      print("API error: ${response.statusCode} ${response.body}");
-      setState(() {
-        isLoading = false;
-      });
-    }
-  } catch (e) {
-    print("Exception: $e");
+    setState(() {
+      chartSpots = data.asMap().entries.map((entry) {
+        int index = months.indexOf(entry.value['month']);
+        double value = double.tryParse(entry.value['value'].toString()) ?? 0.0;
+        return FlSpot(index.toDouble(), value);
+      }).toList();
+      isLoading = false;
+    });
+  } else {
+    print("API error: ${response.statusCode} ${response.body}");
     setState(() {
       isLoading = false;
     });
   }
 }
+
 
   @override
   Widget build(BuildContext context) {

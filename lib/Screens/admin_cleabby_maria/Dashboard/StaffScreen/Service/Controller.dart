@@ -149,10 +149,12 @@ class StaffController {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+         fetchStaffList();
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Staff edited successfully")),
         );
+        fetchStaffList();
         if (data != null && data['data'] != null) {
           return Staff.fromJson(data['data']);
         } else {
@@ -303,6 +305,6 @@ class StaffController {
     nameController.dispose();
     emailController.dispose();
     phoneController.dispose();
-    passwordController.dispose();
+    //passwordController.dispose();
   }
 }

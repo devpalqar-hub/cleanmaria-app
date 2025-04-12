@@ -1,9 +1,11 @@
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/ClientScreen/BookingDetailsScreen.dart';
-import 'package:cleanby_maria/Screens/staff_cleanbymaria/BookingScreen/BookingScreen.dart';
+import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/ClientScreen/Service/BookingController.dart';
+import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/ClientScreen/Views/BStatusCard.dart';
 import 'package:cleanby_maria/Src/appText.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 class ClientScreen extends StatefulWidget {
   const ClientScreen({super.key});
 
@@ -11,8 +13,21 @@ class ClientScreen extends StatefulWidget {
   State<ClientScreen> createState() => _ClientScreenState();
 }
 
-class _ClientScreenState extends State<ClientScreen> {
-  bool _isSubscriptionSelected = true; // Default selection
+
+class _ClientScreenState extends State <ClientScreen> {
+  final BookingsController bookingsController = Get.put(BookingsController());
+  bool _isSubscriptionSelected = true; 
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchBookings();
+  }
+
+  void _fetchBookings() {
+    final type = _isSubscriptionSelected ? 'subscription' : 'instant';
+    bookingsController.fetchBookings('booked', type);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -129,142 +144,29 @@ class _ClientScreenState extends State<ClientScreen> {
 
           // Conditionally Render Subscription or One-Time Plans
           Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  if (_isSubscriptionSelected)
-                    Column(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => BookingDetailsScreen()),
-                            );
-                          },
-                          child: _buildStatusCard(
-                            "By weekly plan",
-                            "| 1M-2M=3S-4W",
-                            "Los Angeles, USA, 955032 - Washington DC.",
-                            "320",
-                          ),
-                        ),
-                      ],
+            child: Obx(() {
+              if (bookingsController.isLoading.value) {
+                return Center(child: CircularProgressIndicator());
+              }
+              if (bookingsController.errorMessage.value.isNotEmpty) {
+                return Center(child: Text(bookingsController.errorMessage.value));
+              }
+              return SingleChildScrollView(
+                child: Column(
+                  children: bookingsController.bookings.map((booking) => 
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => BookingDetailsScreen()),
+                        );
+                      },
+                      child: BStatusCard(booking: booking),  // Correct way to pass individual booking
                     )
-                  else
-                    Column(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => BookingDetailsScreen()),
-                            );
-                          },
-                          child: _buildStatusCard(
-                            "2025 MAR 12",
-                            "| Single Booking",
-                            "New York, USA, 10001",
-                            "120",
-                          ),
-                        ),
-                      ],
-                    ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Status Card Widget
-  Widget _buildStatusCard(String plan, String time, String place, String price) {
-    return Container(
-      width: 352.w,
-      height: 90.h,
-      margin: EdgeInsets.only(left: 15.w, right: 15.w, bottom: 10.h),
-      padding: EdgeInsets.all(10.w),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.r), // ✅ Used 10.r here for flutter_screenutil
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            offset: const Offset(0, 4),
-            blurRadius: 10,
-            spreadRadius: 2,
-            color: Colors.black.withOpacity(0.1),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                appText.primaryText(
-                  text: "Customer name",
-                  fontSize: 15.sp,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
+                  ).toList(),
                 ),
-                SizedBox(height: 3.h),
-                Row(
-                  children: [
-                    Image.asset(
-                      "assets/clock.png",
-                      height: 15.h,
-                      width: 15.w,
-                    ),
-                    SizedBox(width: 5.w),
-                    appText.primaryText(
-                      text: plan,
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w500,
-                      color: (plan == "By weekly plan" || plan == "2025 MAR 12")
-                          ? const Color(0xFF19A4C6)
-                          : Colors.black,
-                    ),
-                    SizedBox(width: 5.w),
-                    appText.primaryText(
-                      text: time,
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black,
-                    ),
-                  ],
-                ),
-                SizedBox(height: 3.h),
-                appText.primaryText(
-                  text: place,
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
-                ),
-              ],
-            ),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                "assets/call2.png",
-                height: 20.h,
-                width: 20.w,
-              ),
-              SizedBox(height: 5.h),
-              appText.primaryText(
-                text: price,
-                fontSize: 10.5.sp,
-                fontWeight: FontWeight.w400,
-                color: Colors.black,
-              ),
-            ],
+              );
+            }),
           ),
         ],
       ),
