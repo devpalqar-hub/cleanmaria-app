@@ -15,26 +15,29 @@ class detailcardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          _detailcard(
-            Title: "Booking",
-            count: _controller.totalBookings.toString(),
-            subtitle: "Total Booking/Day",
-          ),
-          SizedBox(width: 5.w),
-          _detailcard(
-            Title: "Allocation",
-            count: _controller.avgStaff.toString(),
-            subtitle: "Avg staff/Booking",
-          ),
-          SizedBox(width: 5.w),
-          _detailcard(
-            Title: "Cancellation",
-            count: _controller.totalCancel.toString(),
-            subtitle: "Cancelled/Booking",
-          ),
-        ],
+      child: Padding(
+        padding:  EdgeInsets.symmetric(horizontal:8.w),
+        child: Row(
+          children: [
+            _detailcard(
+              Title: "Booking",
+              count: _controller.totalBookings.toString(),
+              subtitle: "Total Booking/Day",
+            ),
+            SizedBox(width: 7.w),
+            _detailcard(
+              Title: "Allocation",
+              count: _controller.avgStaff.toString(),
+              subtitle: "Avg staff/Booking",
+            ),
+            SizedBox(width: 7.w),
+            _detailcard(
+              Title: "Cancellation",
+              count: _controller.totalCancel.toString(),
+              subtitle: "Cancelled/Booking",
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -45,7 +48,7 @@ class detailcardScreen extends StatelessWidget {
     required String subtitle,
   }) {
     return Container(
-      width: 105.w,
+      width: 106.w,
       height: 74.h,
       padding: EdgeInsets.only(left: 10.w),
       decoration: BoxDecoration(

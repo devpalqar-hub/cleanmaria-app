@@ -16,20 +16,21 @@ class OverViewCard extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
+            SizedBox(width: 4.w),
             _overview(
               count: _controller.totalBookings,
               imagePath: "assets/client.png",
               color: const Color(0xffE5FDF3),
               subtitle: "Total Clients",
             ),
-            SizedBox(width: 20.w),
+            SizedBox(width: 15.w),
             _overview(
               count: _controller.summaryEarnings,
               imagePath: "assets/earnings.png",
               color: const Color(0xffFDFDE5),
               subtitle: "Total Revenue",
             ),
-            SizedBox(width: 20.w),
+            SizedBox(width: 15.w),
             _overview(
               count: _controller.summaryStaff,
               imagePath: "assets/person.png",

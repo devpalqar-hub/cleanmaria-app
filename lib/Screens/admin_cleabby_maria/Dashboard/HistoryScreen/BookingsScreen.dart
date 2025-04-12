@@ -128,6 +128,7 @@ class _BookingsaScreenState extends State<BookingsaScreen> {
               ),
             ),
             SizedBox(height: 15.h),
+            //StatusCard(status: , color: color, customerName: customerName, time: time, location: location)
             //Text(
             //startDate != null && endDate != null
             //  ? "Selected Dates: ${startDate!.toLocal()} - ${endDate!.toLocal()}"

@@ -25,7 +25,7 @@ class Statusduty extends StatelessWidget {
 
   Widget _buildStatusCard(String status, Color color) {
     return Container(
-      width: 352.w,
+      width: 350.w,
       height: 88.h,
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(

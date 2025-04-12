@@ -1,3 +1,4 @@
+import 'package:cleanby_maria/Screens/AuthenticationScreen/AutheticationScreen.dart';
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HomeScreen/Services/homeController.dart';
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HomeScreen/views/Graphcard.dart';
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HomeScreen/views/cancellationcard.dart';
@@ -25,7 +26,7 @@ class _HomeContentState extends State<HomeContent> {
     return GetBuilder<HomeController>(builder: (_) {
       return SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.fromLTRB(16.w, 41.h, 16.w, 0),
+         padding: EdgeInsets.fromLTRB(16.w, 41.h, 16.w, 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -37,25 +38,40 @@ class _HomeContentState extends State<HomeContent> {
               _buildGreetingAndDropdown(),
               SizedBox(height: 15.h),
               OverViewCard(),
-              SizedBox(height: 15.h),
-              appText.primaryText(
-                text: "Performance Analysis",
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w700,
+              SizedBox(height: 30.h),
+              Padding(
+                padding:  EdgeInsets.symmetric(horizontal: 8.w),
+                child: appText.primaryText(
+                  text: "Performance Analysis",
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-              SizedBox(height: 15.h),
+              SizedBox(height: 5.h),
               _buildDateRangePicker(),
               SizedBox(height: 15.h),
               detailcardScreen(),
               SizedBox(height: 20.h),
-              LineChartWidget(),
-              SizedBox(height: 15.h),
-              appText.primaryText(
-                text: "Cancellation",
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w700,
+              Padding(
+                padding:  EdgeInsets.fromLTRB(1.w,0,2.w,0),
+                child: LineChartWidget(),
               ),
-              Cancellationcard(),
+              SizedBox(height: 15.h),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10,0, 9,0),
+                child: appText.primaryText(
+                  text: "Cancellation",
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Cancellationcard(),
+                  ),
+              
+            
             ],
           ),
         ),
@@ -69,7 +85,7 @@ class _HomeContentState extends State<HomeContent> {
       //mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         Image.asset("assets/bname.png", height: 50.h, width: 115.w),
-        SizedBox(width: 198.w,),
+        SizedBox(width: 190.w,),
         GestureDetector(
           onTap: () => _showSettingsDialog(context, controller),
           child: Image.asset("assets/settings.png", height: 32.w, width: 32.w),
@@ -89,7 +105,7 @@ class _HomeContentState extends State<HomeContent> {
             fontSize: 18.sp,
             fontWeight: FontWeight.w700,
           ),
-          SizedBox(width:29.w),
+          SizedBox(width:55.w),
           DropdownButtonHideUnderline(
   child: DropdownButton<String>(
     value: hCtrl.filterRange,
@@ -120,34 +136,37 @@ class _HomeContentState extends State<HomeContent> {
   }
 
   Widget _buildDateRangePicker() {
-    return Row(
-      children: [
-        _buildDateInput("From date", hCtrl.fromDateController),
-        SizedBox(width: 15.w),
-        _buildDateInput("To date", hCtrl.toDateController),
-        SizedBox(width: 12.w),
-        Padding(
-          padding: EdgeInsets.only(top: 20.h),
-          child: GestureDetector(
-            onTap: () {
-              hCtrl.fromDateController.text =
-                  DateFormat("yyyy-MM-dd").format(DateTime.now());
-              hCtrl.fetchPerformanceData();
-            },
-            child: Container(
-              height: 35.h,
-              width: 83.w,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5.r),
-                color: const Color(0xFF17A5C6),
-              ),
-              child: Center(
-                child: Text("Today", style: TextStyle(color: Colors.white)),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          _buildDateInput("From date", hCtrl.fromDateController),
+          SizedBox(width: 15.w),
+          _buildDateInput("To date", hCtrl.toDateController),
+          SizedBox(width: 12.w),
+          Padding(
+            padding: EdgeInsets.only(top: 20.h),
+            child: GestureDetector(
+              onTap: () {
+                hCtrl.fromDateController.text =
+                    DateFormat("yyyy-MM-dd").format(DateTime.now());
+                hCtrl.fetchPerformanceData();
+              },
+              child: Container(
+                height: 35.h,
+                width: 83.w,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5.r),
+                  color: const Color(0xFF17A5C6),
+                ),
+                child: Center(
+                  child: Text("Today", style: TextStyle(color: Colors.white)),
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -158,7 +177,7 @@ class _HomeContentState extends State<HomeContent> {
         appText.primaryText(
             text: label, fontSize: 12.sp, fontWeight: FontWeight.w600),
         Container(
-          width: 120.w,
+          width: 115.w,
           height: 40.h,
           decoration: BoxDecoration(
             color: Colors.white,
@@ -169,10 +188,10 @@ class _HomeContentState extends State<HomeContent> {
             controller: controller,
             readOnly: true,
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 10.sp),
+            style: TextStyle(fontSize: 9.sp),
             decoration: InputDecoration(
               border: InputBorder.none,
-              contentPadding: EdgeInsets.fromLTRB(5.w, 5.h, 15.w, 1.h),
+              contentPadding: EdgeInsets.fromLTRB(2.w, 5.h, 10.w, 1.h),
               prefixIcon: IconButton(
                 onPressed: () => hCtrl.selectDate(context, controller),
                 icon: Icon(Icons.calendar_month_outlined, size: 18.sp),
@@ -252,8 +271,8 @@ class _HomeContentState extends State<HomeContent> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pop(context);
-                    // Add your logout logic here
+                   Get.offAll(()=> AuthenticationScreen(),transition: Transition.rightToLeft);
+                    
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF19A4C6),

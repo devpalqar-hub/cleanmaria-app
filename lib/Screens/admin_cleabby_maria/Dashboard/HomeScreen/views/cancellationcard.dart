@@ -14,11 +14,11 @@ class Cancellationcard extends StatelessWidget {
            
             SizedBox(height: 4.h),
             _buildStatusCard("Cancelled", Color(0xFFAE1D03)),
-              SizedBox(height:4.h),
+              SizedBox(height:8.h),
             _buildStatusCard("Cancelled", Color(0xFFAE1D03)),
-              SizedBox(height:4.h),
+              SizedBox(height:8.h),
             _buildStatusCard("Cancelled", Color(0xFFAE1D03)),
-            SizedBox(height:4.h),
+            SizedBox(height:7.h),
           
           ],
         ),
