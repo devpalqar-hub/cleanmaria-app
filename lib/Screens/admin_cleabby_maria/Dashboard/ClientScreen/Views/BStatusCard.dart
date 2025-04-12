@@ -39,7 +39,7 @@ class BStatusCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 appText.primaryText(
-                  text: booking.name,  // Displaying customer name from the model
+                  text: booking.name, 
                   fontSize: 15.sp,
                   fontWeight: FontWeight.w500,
                   color: Colors.black,

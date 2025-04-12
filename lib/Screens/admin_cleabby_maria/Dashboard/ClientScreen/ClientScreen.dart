@@ -142,7 +142,7 @@ class _ClientScreenState extends State <ClientScreen> {
           ),
           SizedBox(height: 25.h),
 
-          // Conditionally Render Subscription or One-Time Plans
+        
           Expanded(
             child: Obx(() {
               if (bookingsController.isLoading.value) {
@@ -161,7 +161,7 @@ class _ClientScreenState extends State <ClientScreen> {
                           MaterialPageRoute(builder: (context) => BookingDetailsScreen()),
                         );
                       },
-                      child: BStatusCard(booking: booking),  // Correct way to pass individual booking
+                      child: BStatusCard(booking: booking), 
                     )
                   ).toList(),
                 ),

@@ -43,8 +43,7 @@ Future<Map<String, String>> getAuthHeader() async {
   };
 }
 
-
- Future<void> fetchChartData() async {
+Future<void> fetchChartData() async {
   final url = Uri.parse(
     '$baseUrl/analytics/bookings-over-time?startDate=${widget.startDate}&endDate=${widget.endDate}',
   );
@@ -56,19 +55,23 @@ Future<Map<String, String>> getAuthHeader() async {
     final jsonData = json.decode(response.body);
     final List data = jsonData['data'];
 
-    setState(() {
-      chartSpots = data.asMap().entries.map((entry) {
-        int index = months.indexOf(entry.value['month']);
-        double value = double.tryParse(entry.value['value'].toString()) ?? 0.0;
-        return FlSpot(index.toDouble(), value);
-      }).toList();
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        chartSpots = data.asMap().entries.map((entry) {
+          int index = months.indexOf(entry.value['month']);
+          double value = double.tryParse(entry.value['value'].toString()) ?? 0.0;
+          return FlSpot(index.toDouble(), value);
+        }).toList();
+        isLoading = false;
+      });
+    }
   } else {
     print("API error: ${response.statusCode} ${response.body}");
-    setState(() {
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 }
 

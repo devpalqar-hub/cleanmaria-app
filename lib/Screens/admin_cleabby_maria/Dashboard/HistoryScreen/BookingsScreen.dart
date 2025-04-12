@@ -1,6 +1,8 @@
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/ClientScreen/CleaningDetails.dart';
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/ClientScreen/Views/StatusCard.dart';
+import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/ClientScreen/Service/BookingController.dart';
 import 'package:cleanby_maria/Src/appButton.dart';
+import 'package:get/get.dart';
 import 'package:cleanby_maria/Src/appText.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,8 +17,15 @@ class BookingsaScreen extends StatefulWidget {
 }
 
 class _BookingsaScreenState extends State<BookingsaScreen> {
+  final BookingsController bookingsController = Get.put(BookingsController());
   DateTime? startDate;
   DateTime? endDate;
+
+  @override
+  void initState() {
+    super.initState();
+    bookingsController.fetchBookings('completed', 'all');
+  }
 
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
     setState(() {
@@ -129,21 +138,33 @@ class _BookingsaScreenState extends State<BookingsaScreen> {
                  // : "No Dates Selected",
               //style: GoogleFonts.poppins(fontSize: 14.sp, fontWeight: FontWeight.w500),
             //),
-                        StatusCard(
-            status: "Completed",
-            color: const Color(0xFF03AE9D),
-            customerName: "Customer name",
-            time: "10:00 AM - 11:00 AM",
-            location: "Los Angeles, USA, 955032 - Washington DC.",
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CleaningDetails(),
-                ),
+                        Obx(() {
+              if (bookingsController.isLoading.value) {
+                return Center(child: CircularProgressIndicator());
+              }
+              if (bookingsController.errorMessage.value.isNotEmpty) {
+                return Center(child: Text(bookingsController.errorMessage.value));
+              }
+              return Column(
+                children: bookingsController.bookings.map((booking) => 
+                  StatusCard(
+                    status: "Completed",
+                    color: const Color(0xFF03AE9D),
+                    customerName: booking.name,
+                    time: booking.time,
+                    location: booking.place,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CleaningDetails(),
+                        ),
+                      );
+                    },
+                  )
+                ).toList(),
               );
-            },
-          ),
+            }),
 
           ],
         ),
