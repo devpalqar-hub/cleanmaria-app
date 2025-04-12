@@ -1,10 +1,8 @@
-import 'dart:convert';
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/StaffScreen/Models/StaffModel.dart';
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/StaffScreen/Service/Controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
 import 'StaffCard.dart';
 import 'Views/CreateBottomsheet.dart';
 import 'Views/EditBottomsheet.dart';
@@ -17,7 +15,7 @@ class StaffScreen extends StatefulWidget {
 }
 
 class _StaffScreenState extends State<StaffScreen> {
-  List<dynamic> staffList = [];
+  List<Staff> staffList = [];
   bool isLoading = true;
   final StaffController staffController = StaffController();
   final TextEditingController searchController = TextEditingController();
@@ -40,15 +38,6 @@ class _StaffScreenState extends State<StaffScreen> {
     });
 
     print("Fetched Staff List: $staffList");
-  }
-
-  // Function to filter staff based on the search query
-  List<dynamic> _filterStaffList() {
-    final query = searchController.text.toLowerCase();
-    return staffList.where((staff) {
-      return staff['name']?.toLowerCase().contains(query) ?? false ||
-          staff['email']?.toLowerCase().contains(query) ?? false;
-    }).toList();
   }
 
   @override
@@ -81,9 +70,10 @@ class _StaffScreenState extends State<StaffScreen> {
                 label: Text(
                   "Create Staff",
                   style: TextStyle(
-                      fontSize: 10.sp,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white),
+                    fontSize: 10.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
@@ -123,47 +113,51 @@ class _StaffScreenState extends State<StaffScreen> {
                           ),
                         )
                       : ListView.builder(
-                          itemCount: _filterStaffList().length,
+                          itemCount: staffList.length,
                           itemBuilder: (context, index) {
-                            final staff = _filterStaffList()[index];
-                            return StaffCard(
-                              name: staff['name'] ?? 'No Name',
-                              description: staff['email'] ?? 'No Email',
-                              isActive: staff['status'] == 'active',
-                              onEdit: () {
-                                showModalBottomSheet(
-                                  context: context,
-                                  isScrollControlled: true,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(20.r)),
-                                  ),
-                                  builder: (context) => EditStaffBottomSheet(
-                                    staff: staff,
-                                    onUpdate: (updatedStaff) {
-                                      setState(() {
-                                        staffList[index] = updatedStaff;
-                                      });
-                                    },
-                                  ),
-                                );
-                              },
+                            final staff = staffList[index];
+
+                            return  StaffCard(
+  staff: staff,  
+  onEdit: (Staff staff) async {
+  
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+      ),
+      builder: (context) => EditStaffBottomSheet(
+        staff: staff,
+        onUpdate: (updatedStaff) {
+          setState(() {
+            final i = staffList.indexWhere((s) => s.id == updatedStaff.id);
+            if (i != -1) {
+              staffList[i] = updatedStaff;
+            }
+          });
+        },
+      ),
+    );
+  },
                               onEnable: () {
                                 setState(() {
-                                  staffList[index]['status'] = 'active';
+                                 // staffList[index].status = 'active';  // Enable staff status
                                 });
                               },
                               onDisable: () {
                                 setState(() {
-                                  staffList[index]['status'] = 'inactive';
+                                //  staffList[index].status = 'inactive';  // Disable staff status
                                 });
                               },
                               onDelete: () {
-                                onDeleteStaff(context, staff, index);
+                                onDeleteStaff(context, staff, index);  // Handle staff deletion
                               },
                             );
                           },
                         ),
+
+                        
             ),
           ],
         ),
@@ -186,11 +180,12 @@ class _StaffScreenState extends State<StaffScreen> {
             child: TextField(
               controller: searchController,
               onChanged: (value) {
-                setState(() {}); // Trigger a rebuild when the search query changes
+                setState(() {}); // Trigger a rebuild on search input
               },
               decoration: InputDecoration(
                 hintText: 'Search',
-                hintStyle: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500),
+                hintStyle:
+                    TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500),
                 border: InputBorder.none,
               ),
             ),
@@ -208,7 +203,7 @@ class _StaffScreenState extends State<StaffScreen> {
     );
   }
 
-  void onDeleteStaff(BuildContext context, Map<String, dynamic> staff, int index) async {
+  void onDeleteStaff(BuildContext context, Staff staff, int index) async {
     final isConfirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -228,16 +223,8 @@ class _StaffScreenState extends State<StaffScreen> {
     );
 
     if (isConfirmed ?? false) {
-      // Create a Staff object from the staff data
-      final staffToDelete = Staff(
-        id: staff['id'],
-        name: staff['name'] ?? '',
-        email: staff['email'] ?? '',
-        status: staff['status'] ?? '',
-      );
-
       // Call the delete API with the staff object
-      await staffController.deleteStaff(context, staffToDelete);
+      await staffController.deleteStaff(context, staff);
 
       // After deletion, remove the staff from the list and refetch the staff data
       setState(() {

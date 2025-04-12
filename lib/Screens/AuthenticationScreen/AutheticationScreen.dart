@@ -38,7 +38,7 @@ class AuthenticationScreen extends StatelessWidget {
           SizedBox(height: 40.h),
           Apptextfield.primary(
             labelText: 'Email*',
-            hintText: 'test@example.com',
+            hintText: 'Enter your email',
             controller: _authController.emailController,
           ),
           Apptextfield.primary(
@@ -47,32 +47,7 @@ class AuthenticationScreen extends StatelessWidget {
             controller: _authController.passwordController,
           ),
           SizedBox(height: 20.h),
-          Padding(
-            padding: EdgeInsets.fromLTRB(149.w, 0, 30.w, 0),
-            child: RichText(
-              text: TextSpan(
-                children: [
-                  TextSpan(
-                    text: "Having issues? ",
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                      color: const Color(0xFF000000),
-                      fontFamily: 'NunitoSans',
-                    ),
-                  ),
-                  TextSpan(
-                    text: "Reset Password",
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                      color: const Color(0xFF19A4C6),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+         
           SizedBox(height: 100.h),
           Obx(() => _authController.isLoading.value
               ? CircularProgressIndicator()

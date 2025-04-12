@@ -31,6 +31,7 @@ void main() async {
     print("AuthHeader Initialized: $authHeader");
   }
 
+  // Wait for shared preferences to be properly loaded before running the app.
   runApp(const CleanbyMaria());
 }
 
@@ -43,12 +44,22 @@ class CleanbyMaria extends StatelessWidget {
       designSize: const Size(390, 850),
       builder: (context, child) => GetMaterialApp(
         debugShowCheckedModeBanner: false,
-        home: (login == "IN")
-            ? (userType == "admin"
-                ?  DashBoardScreen()
-                :  AuthenticationScreen())
-            :  Homescreen(),
+        home: _getInitialScreen(),
       ),
     );
+  }
+
+  Widget _getInitialScreen() {
+    // Check if login is successful and if the token is available
+    if (login == "IN") {
+      if (userType == "admin") {
+        return DashBoardScreen();  // Admin Dashboard
+      } else {
+        return Homescreen();  // Staff Dashboard or other user type
+      }
+    } else {
+      // Default to AuthenticationScreen if not logged in
+      return AuthenticationScreen();  
+    }
   }
 }

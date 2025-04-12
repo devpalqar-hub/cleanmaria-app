@@ -1,16 +1,14 @@
-import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/StaffScreen/Models/StaffModel.dart';
-import 'package:cleanby_maria/main.dart';
+import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/StaffScreen/Service/Controller.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/StaffScreen/Models/StaffModel.dart';
+//import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/StaffScreen/Service/Controller.dart';
 import 'package:cleanby_maria/Src/appButton.dart';
 
 class EditStaffBottomSheet extends StatefulWidget {
-  final Map<String, String> staff;
-  final Function(Map<String, String>) onUpdate;
+  final Staff staff;
+  final Function(Staff) onUpdate;
 
   const EditStaffBottomSheet({
     super.key,
@@ -23,29 +21,20 @@ class EditStaffBottomSheet extends StatefulWidget {
 }
 
 class _EditStaffBottomSheetState extends State<EditStaffBottomSheet> {
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController phoneController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-
-  String selectedStatus = 'active';
-  String token = '';
+  late TextEditingController nameController;
+  late TextEditingController emailController;
+  late TextEditingController phoneController;
+  late TextEditingController passwordController;
+  bool isLoading = false;
+  final controller = StaffController();
 
   @override
   void initState() {
     super.initState();
-    nameController.text = widget.staff["name"] ?? '';
-    emailController.text = widget.staff["email"] ?? '';
-    phoneController.text = widget.staff["phone"] ?? '';
-    selectedStatus = widget.staff["status"] ?? 'active';
-    loadToken();
-  }
-
-  void loadToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      token = prefs.getString('token') ?? '';
-    });
+    nameController = TextEditingController(text: widget.staff.name);
+    emailController = TextEditingController(text: widget.staff.email);
+    phoneController = TextEditingController(text: widget.staff.phone ?? '');
+    passwordController = TextEditingController();
   }
 
   @override
@@ -57,153 +46,31 @@ class _EditStaffBottomSheetState extends State<EditStaffBottomSheet> {
     super.dispose();
   }
 
-  Future<void> updateStaffStatus(BuildContext context, Staff staff) async {
-  final staffId = staff.id;
-  final url = Uri.parse('$baseUrl/users/$staffId');
+  void updateStaff() async {
+    setState(() => isLoading = true);
 
-  final String status = staff.status ?? 'active';
-
-  final Map<String, dynamic> body = {
-    "name": staff.name,
-    "email": staff.email,
-    "phone": staff.phone,
-    // "password": staff.password, // Exclude password if not updating
-    "status": status,
-  };
-
-  try {
-    final response = await http.patch(
-      url,
-      headers: await _authHeader(),
-      body: json.encode(body),
+    final controller = StaffController();
+    final updatedStaff = await controller.updateStaff(
+      context,
+      staffId: widget.staff.id,
+      name: nameController.text.trim(),
+      email: emailController.text.trim(),
+      phone: phoneController.text.trim(),
+      password: passwordController.text.trim(),
     );
 
-    print('🔄 PATCH Request Sent to $url');
-    print('📤 Request Body: ${json.encode(body)}');
-    print('📥 Response Status: ${response.statusCode}');
-    print('📥 Response Body: ${response.body}');
+    setState(() => isLoading = false);
 
-    if (mounted) {
-      if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Staff updated successfully")),
-        );
-      } else {
-        final data = jsonDecode(response.body);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(data['message'] ?? "Failed to update staff")),
-        );
-      }
-    }
-  } catch (e) {
-    print('⚠️ Error updating staff: $e');
-    if (mounted) {
+    if (updatedStaff != null) {
+      widget.onUpdate(updatedStaff);
+      Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Something went wrong: $e")),
+        const SnackBar(content: Text("Staff updated successfully")),
       );
     }
   }
-}
 
-
-  void _showConfirmationDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Confirm Update"),
-          content: const Text("Are you sure you want to edit this staff?"),
-          actions: <Widget>[
-            TextButton(
-              child: const Text("Cancel"),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            TextButton(
-              child: const Text("Yes"),
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.pop(context); // Close the bottom sheet
-
-                 Staff updatedStaff = Staff(
-                id: widget.staff["id"] ?? '', // Assuming "id" is in the staff data
-                name: nameController.text.trim(),
-                email: emailController.text.trim(),
-                phone: phoneController.text.trim(),
-              //  password: passwordController.text.trim(),
-                status: selectedStatus,
-              );
-              updateStaffStatus(context, updatedStaff);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-      child: SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.all(20.w),
-          height: 680.h,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 89.w,
-                  child: Divider(thickness: 2, color: Colors.grey[300]),
-                ),
-              ),
-              SizedBox(height: 5.h),
-              Center(
-                child: Text(
-                  "Edit Staff",
-                  style: GoogleFonts.poppins(fontSize: 18.sp, fontWeight: FontWeight.w700),
-                ),
-              ),
-              SizedBox(height: 20.h),
-              _buildInputField("Staff Name", "Enter Staff Name", nameController),
-              _buildInputField("Email", "Enter Staff Email", emailController),
-              _buildInputField("Phone", "Enter Staff Phone", phoneController),
-              _buildInputField("Password", "Enter New Password", passwordController, obscureText: true),
-              SizedBox(height: 20.h),
-              Row(
-                children: [
-                  Expanded(
-                    child: AppButton(
-                      text: "Cancel",
-                      onPressed: () => Navigator.pop(context),
-                      width: 150.w,
-                      height: 45.h,
-                    ),
-                  ),
-                  SizedBox(width: 10.w),
-                  Expanded(
-                    child: AppButton(
-                      text: "Save",
-                      onPressed: _showConfirmationDialog,
-                      width: 150.w,
-                      height: 45.h,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInputField(String label, String hint, TextEditingController controller, {bool obscureText = false}) {
+  Widget _buildInputField(String label, TextEditingController controller, {bool obscure = false, String? hint}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -211,9 +78,9 @@ class _EditStaffBottomSheetState extends State<EditStaffBottomSheet> {
         SizedBox(height: 5.h),
         TextFormField(
           controller: controller,
-          obscureText: obscureText,
+          obscureText: obscure,
           decoration: InputDecoration(
-            hintText: hint,
+            hintText: hint ?? '',
             filled: true,
             fillColor: Colors.grey[200],
             border: OutlineInputBorder(
@@ -227,13 +94,64 @@ class _EditStaffBottomSheetState extends State<EditStaffBottomSheet> {
       ],
     );
   }
-}
-Future<Map<String, String>> _authHeader() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  String token = prefs.getString('token') ?? ''; // Fetch token from SharedPreferences
 
-  return {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer $token', // Add the bearer token to the headers
-  };
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      child: Container(
+        padding: EdgeInsets.all(20.w),
+        height: 618.h,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Center(child: Container(width: 89.w, child: Divider(thickness: 2, color: Colors.grey[300]))),
+              SizedBox(height: 5.h),
+              Center(
+                child: Text(
+                  "Edit Staff",
+                  style: GoogleFonts.poppins(fontSize: 18.sp, fontWeight: FontWeight.w700),
+                ),
+              ),
+              SizedBox(height: 20.h),
+              _buildInputField("Staff Name", nameController),
+              _buildInputField("Email", emailController),
+              _buildInputField("Phone", phoneController),
+              _buildInputField("New Password", passwordController, obscure: true, hint: "Leave blank to keep current"),
+              SizedBox(height: 20.h),
+              isLoading
+                  ? const CircularProgressIndicator()
+                  : AppButton(
+                      text: "Update Staff",
+                      onPressed: updateStaff,
+                    ),
+              TextButton(
+                onPressed: () async {
+  final updatedStaff = await controller.updateStaff(
+    context,
+    staffId: widget.staff.id!,
+    name: nameController.text,
+    email: emailController.text,
+    phone: phoneController.text,
+    password: passwordController.text.isEmpty ? null : passwordController.text,
+  );
+
+  if (updatedStaff != null) {
+    widget.onUpdate(updatedStaff);
+    Navigator.pop(context);
+     // Make sure this runs BEFORE Navigator.pop
+  }
+},
+                child: Center(child: Text("Cancel", style: TextStyle(fontSize: 14.sp, color: Colors.black))),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

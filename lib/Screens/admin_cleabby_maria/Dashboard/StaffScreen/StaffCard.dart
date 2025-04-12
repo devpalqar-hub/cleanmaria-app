@@ -1,27 +1,49 @@
-import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/StaffScreen/Views/EditBottomsheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class StaffCard extends StatelessWidget {
-  final String name;
-  final String description;
-  final bool isActive;
-  final VoidCallback onEdit;
+import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/StaffScreen/Models/StaffModel.dart';
+
+class StaffCard extends StatefulWidget {
+  final Staff staff;
+  final Future<Staff?> Function(Staff staff) onEdit;
   final VoidCallback onEnable;
   final VoidCallback onDisable;
   final VoidCallback onDelete;
 
   const StaffCard({
     Key? key,
-    required this.name,
-    required this.description,
-    required this.isActive,
+    required this.staff,
     required this.onEdit,
     required this.onEnable,
     required this.onDisable,
     required this.onDelete,
   }) : super(key: key);
+
+  @override
+  State<StaffCard> createState() => _StaffCardState();
+}
+
+class _StaffCardState extends State<StaffCard> {
+  late String name;
+  late String email;
+  late bool isActive;
+
+  @override
+  void initState() {
+    super.initState();
+    name = widget.staff.name;
+    email = widget.staff.email;
+    isActive = widget.staff.status == 'active';
+  }
+
+  void updateLocalStaff(Staff updated) {
+    setState(() {
+      name = updated.name;
+      email = updated.email;
+      isActive = updated.status == 'active';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +81,7 @@ class StaffCard extends StatelessWidget {
                   ),
                   SizedBox(height: 3.h),
                   Text(
-                    description,
+                    email,
                     style: GoogleFonts.poppins(
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w500,
@@ -90,28 +112,34 @@ class StaffCard extends StatelessWidget {
             SizedBox(width: 5.w),
             PopupMenuButton<String>(
               icon: Icon(Icons.more_vert, size: 18.sp, color: Colors.grey),
-              onSelected: (String value) {
+              onSelected: (String value) async {
                 switch (value) {
                   case "Edit":
-                    _showEditStaffBottomSheet(context);
+                    final updatedStaff = await widget.onEdit(widget.staff);
+                    if (updatedStaff != null) updateLocalStaff(updatedStaff);
                     break;
                   case "Enable":
-                    onEnable();
+                    widget.onEnable();
                     break;
                   case "Disable":
-                    onDisable();
+                    widget.onDisable();
                     break;
                   case "Delete":
-                    _showDeleteConfirmationDialog(context, onDelete);
+                    _showDeleteConfirmationDialog(context, widget.onDelete);
                     break;
                 }
               },
-              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                _buildMenuItem("Edit", Icons.edit),
-                _buildMenuItem("Enable", Icons.toggle_on),
-                _buildMenuItem("Disable", Icons.toggle_off),
-                _buildMenuItem("Delete", Icons.delete),
-              ],
+              itemBuilder: (BuildContext context) {
+                final List<PopupMenuEntry<String>> items = [];
+                items.add(_buildMenuItem("Edit", Icons.edit));
+                if (isActive) {
+                  items.add(_buildMenuItem("Disable", Icons.toggle_off));
+                } else {
+                  items.add(_buildMenuItem("Enable", Icons.toggle_on));
+                }
+                items.add(_buildMenuItem("Delete", Icons.delete));
+                return items;
+              },
             ),
           ],
         ),
@@ -138,25 +166,6 @@ class StaffCard extends StatelessWidget {
     );
   }
 
-  void _showEditStaffBottomSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return EditStaffBottomSheet(
-          staff: {
-            'name': name,
-            'email': description, // Modify to match your actual data structure
-            'phone': '', // Example placeholder
-            'status': isActive ? 'active' : 'disabled',
-          },
-          onUpdate: (updatedStaff) {
-            // Handle updated staff here
-          },
-        );
-      },
-    );
-  }
-
   void _showDeleteConfirmationDialog(BuildContext context, VoidCallback onDelete) {
     showDialog(
       context: context,
@@ -166,13 +175,13 @@ class StaffCard extends StatelessWidget {
           content: const Text("Are you sure you want to delete this staff member?"),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context), // cancel
+              onPressed: () => Navigator.pop(context),
               child: const Text("Cancel"),
             ),
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // close the dialog
-                onDelete(); // trigger the actual delete callback
+                Navigator.pop(context);
+                onDelete();
               },
               child: const Text("Delete"),
             ),

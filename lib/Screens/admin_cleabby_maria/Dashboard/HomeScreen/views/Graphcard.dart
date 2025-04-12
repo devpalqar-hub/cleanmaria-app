@@ -4,6 +4,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class LineChartWidget extends StatefulWidget {
@@ -31,40 +32,53 @@ class _LineChartWidgetState extends State<LineChartWidget> {
     super.initState();
     fetchChartData();
   }
+  
+
+Future<Map<String, String>> getAuthHeader() async {
+  final prefs = await SharedPreferences.getInstance();
+  final token = prefs.getString('token');
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer $token',
+  };
+}
+
 
   Future<void> fetchChartData() async {
   final url = Uri.parse(
-      '$baseUrl/analytics/bookings-over-time?startDate=${widget.startDate}&endDate=${widget.endDate}');
+    '$baseUrl/analytics/bookings-over-time?startDate=${widget.startDate}&endDate=${widget.endDate}',
+  );
 
   try {
-    final response = await http.get(url);
-    print("Response Body: ${response.body}");
+    final headers = await getAuthHeader();
+    final response = await http.get(url, headers: headers);
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
       final List data = jsonData['data'];
 
-      if (data.isNotEmpty) {
-        setState(() {
-          chartSpots = data.asMap().entries.map((entry) {
-            int index = months.indexOf(entry.value['month']);
-            double value = double.tryParse(entry.value['value'].toString()) ?? 0.0;
-            return FlSpot(index.toDouble(), value);
-          }).toList();
-          isLoading = false;
-        });
-        print("Chart Data: $chartSpots");
-      } else {
-        print("No data available for the selected range.");
-      }
+      setState(() {
+        chartSpots = data.asMap().entries.map((entry) {
+          int index = months.indexOf(entry.value['month']);
+          double value = double.tryParse(entry.value['value'].toString()) ?? 0.0;
+          return FlSpot(index.toDouble(), value);
+        }).toList();
+        isLoading = false;
+      });
+
     } else {
-      print("API error: ${response.statusCode}");
+      print("API error: ${response.statusCode} ${response.body}");
+      setState(() {
+        isLoading = false;
+      });
     }
   } catch (e) {
     print("Exception: $e");
+    setState(() {
+      isLoading = false;
+    });
   }
 }
-
 
   @override
   Widget build(BuildContext context) {

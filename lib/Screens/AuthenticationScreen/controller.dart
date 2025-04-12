@@ -1,19 +1,17 @@
 import 'dart:convert';
-import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HomeScreen/HomeScreen.dart';
-import 'package:cleanby_maria/Screens/staff_cleanbymaria/DashBoardScreen/Controller/DashBoardScreen.dart';
-import 'package:cleanby_maria/main.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/get_navigation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HomeScreen/HomeScreen.dart';
+import 'package:cleanby_maria/Screens/staff_cleanbymaria/DashBoardScreen/Controller/DashBoardScreen.dart';
+import 'package:cleanby_maria/main.dart'; // Ensure this contains baseUrl
+
 class AuthenticationController extends GetxController {
-  var isLoading = false.obs; 
+  var isLoading = false.obs;
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  //final HomeController homeController = Get.find<HomeController>();
 
   Future<void> handleLogin() async {
     if (emailController.text.isEmpty || passwordController.text.isEmpty) {
@@ -21,7 +19,7 @@ class AuthenticationController extends GetxController {
       return;
     }
 
-    isLoading.value = true; 
+    isLoading.value = true;
 
     try {
       final response = await login(emailController.text, passwordController.text);
@@ -31,8 +29,8 @@ class AuthenticationController extends GetxController {
 
         SharedPreferences prefs = await SharedPreferences.getInstance();
         String? role = prefs.getString("role");
-        String? userName = prefs.getString("user_name"); 
-       
+        String? userName = prefs.getString("user_name");
+
         print("User role: $role");
 
         if (role == 'admin') {
@@ -52,12 +50,14 @@ class AuthenticationController extends GetxController {
 
   Future<Map<String, dynamic>> login(String email, String password) async {
     String loginUrl = "$baseUrl/auth/login";
-    
+
     try {
       final response = await http.post(
         Uri.parse(loginUrl),
         body: jsonEncode({"email": email, "password": password}),
-        headers: authHeader,
+        headers: {
+          "Content-Type": "application/json",
+        },
       );
 
       final Map<String, dynamic> data = json.decode(response.body);
@@ -66,11 +66,18 @@ class AuthenticationController extends GetxController {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString("access_token", data['access_token']);
         await prefs.setString("role", data['user']['role'] ?? "user");
-        await prefs.setString("user_name", data['user']['name'] ?? "User"); // Store user's name
+        await prefs.setString("user_name", data['user']['name'] ?? "User");
 
-        return {"success": true, "accessToken": data['access_token'], "user": data['user']};
+        return {
+          "success": true,
+          "accessToken": data['access_token'],
+          "user": data['user']
+        };
       } else {
-        return {"success": false, "error": data['message'] ?? "Invalid credentials"};
+        return {
+          "success": false,
+          "error": data['message'] ?? "Invalid credentials"
+        };
       }
     } catch (e) {
       return {"success": false, "error": "An error occurred: $e"};

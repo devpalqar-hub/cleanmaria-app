@@ -1,3 +1,6 @@
+import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/ClientScreen/ClientScreen.dart';
+import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HistoryScreen/BookingsScreen.dart';
+import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/StaffScreen/StaffScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -8,20 +11,39 @@ import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HomeScreen/v
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HomeScreen/views/cancellationcard.dart';
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HomeScreen/views/detailcard.dart';
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HomeScreen/views/overview.dart';
-import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/ClientScreen/ClientScreen.dart';
-import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HistoryScreen/BookingsScreen.dart';
-import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/StaffScreen/StaffScreen.dart';
+
 import 'package:cleanby_maria/Src/appText.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class Homescreen extends StatefulWidget {
-  const Homescreen({super.key});
+  
+  const Homescreen();
 
   @override
   State<Homescreen> createState() => _HomescreenState();
 }
 
 class _HomescreenState extends State<Homescreen> {
+   late HomeController homeController;
   int indexnum = 0;
+   @override
+  void initState() {
+    super.initState();
+    _fetchUserData();
+    homeController = HomeController();
+  }
+ Future<void> _fetchUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    userName.value = prefs.getString("user_name") ?? "name";
+    userEmail.value = prefs.getString("user_email") ?? "email";
+  }
+
+  @override
+  void dispose() {
+    homeController.dispose();
+    super.dispose();
+  }
 
   final List<Widget> _pages = [
     const HomeContent(),
@@ -29,6 +51,12 @@ class _HomescreenState extends State<Homescreen> {
     const BookingsaScreen(),
     const StaffScreen(),
   ];
+  ValueNotifier<String> userName = ValueNotifier("user_name");
+  ValueNotifier<String> userEmail = ValueNotifier("user_email");
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -76,10 +104,20 @@ class HomeContent extends StatefulWidget {
 }
 
 class _HomeContentState extends State<HomeContent> {
+  
   final HomeController _controller = HomeController();
   String? selectedRange;
-   TextEditingController fromDateController = TextEditingController();
-  TextEditingController toDateController = TextEditingController();
+   final TextEditingController fromDateController = TextEditingController();
+  final TextEditingController toDateController = TextEditingController();
+
+
+  
+  @override
+  void initState() {
+    super.initState();
+    fromDateController.text = DateTime.now().toString().split(' ')[0];
+    toDateController.text = DateTime.now().toString().split(' ')[0];
+  }
 
   @override
   void dispose() {
@@ -95,7 +133,7 @@ class _HomeContentState extends State<HomeContent> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildTopBar(),
+            _buildTopBar(HomeController()),
             SizedBox(height: 15.h),
             _buildGreetingAndDropdown(),
             SizedBox(height: 15.h),
@@ -111,10 +149,12 @@ class _HomeContentState extends State<HomeContent> {
             SizedBox(height: 15.h),
             detailcardScreen(),
             SizedBox(height: 20.h),
-            LineChartWidget(
-              startDate: fromDateController.text,
-              endDate: toDateController.text,
-            ),
+            fromDateController.text.isNotEmpty && toDateController.text.isNotEmpty
+                ? LineChartWidget(
+                    startDate: fromDateController.text,
+                    endDate: toDateController.text,
+                  )
+                : const SizedBox.shrink(),
             SizedBox(height: 15.h),
             appText.primaryText(
               text: "Cancellation",
@@ -128,18 +168,24 @@ class _HomeContentState extends State<HomeContent> {
     );
   }
 
-  Widget _buildTopBar() {
-    return Row(
-      children: [
-        Image.asset("assets/bname.png", height: 50.h, width: 115.w),
-        const Spacer(),
-        GestureDetector(
-          onTap: () => _showSettingsDialog(context),
-          child: Image.asset("assets/settings.png", height: 24.w, width: 24.w),
-        ),
-      ],
-    );
-  }
+  
+  Widget _buildTopBar(HomeController controller) {
+  return Row(
+    children: [
+      Image.asset("assets/bname.png", height: 50.h, width: 115.w),
+      const Spacer(),
+      GestureDetector(
+        onTap: () => _showSettingsDialog(context, controller),
+        child: Image.asset("assets/settings.png", height: 24.w, width: 24.w),
+      ),
+    ],
+  );
+}
+
+
+
+
+       
 
   Widget _buildGreetingAndDropdown() {
     return ValueListenableBuilder<String>(
@@ -193,6 +239,7 @@ SizedBox(width: 20.w),
           child: GestureDetector(
             onTap: () {
               _controller.setTodayDate();
+              _controller.setTodayDate();
               _controller.fetchPerformanceData(); 
             },
             child: Container(
@@ -232,7 +279,7 @@ SizedBox(width: 20.w),
             style: TextStyle(fontSize: 10.sp),
             decoration: InputDecoration(
               border: InputBorder.none,
-              contentPadding:  EdgeInsets.fromLTRB(1.w,5.h,8.w,1.h),
+              contentPadding:  EdgeInsets.fromLTRB(5.w,5.h,15.w,1.h),
               prefixIcon: IconButton(
                 onPressed: () => _controller.selectDate(context, controller),
                 icon: Icon(Icons.calendar_month_outlined, size: 18.sp),
@@ -244,60 +291,105 @@ SizedBox(width: 20.w),
     );
   }
 
-  void _showSettingsDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.r)),
-        content: SizedBox(
-          width: 323.w,
-          height: 375.h,
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Text(
-                    "Settings",
-                    style: TextStyle(
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: "NunitoSans",
-                      color: Colors.black,
-                    ),
+  
+void _showSettingsDialog(BuildContext context, HomeController controller) {
+  showDialog(
+    context: context,
+    builder: (_) => AlertDialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(30.r),
+      ),
+      content: SizedBox(
+        width: 323.w,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                Text(
+                  "Settings",
+                  style: TextStyle(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: "NunitoSans",
+                    color: Colors.black,
                   ),
-                  const Spacer(),
-                  IconButton(
-                    onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.close, color: Colors.black),
-                  ),
-                ],
+                ),
+                const Spacer(),
+                IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.close, color: Colors.black),
+                ),
+              ],
+            ),
+            SizedBox(height: 30.h),
+            CircleAvatar(
+              radius: 62.w,
+              backgroundColor: Colors.grey[300],
+              child: Icon(
+                Icons.person,
+                size: 62.w,
+                color: Colors.white,
               ),
-              SizedBox(height: 30.h),
-              CircleAvatar(
-                radius: 62.w,
-                backgroundColor: Colors.grey[300],
-                child: Icon(Icons.person, size: 62.w, color: Colors.white),
+            ),
+            SizedBox(height: 15.h),
+
+            /// 🔁 Dynamically display name from ValueNotifier
+            ValueListenableBuilder<String>(
+              valueListenable: controller.userName,
+              builder: (context, name, _) => Text(
+                name,
+                style: TextStyle(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-              SizedBox(height: 15.h),
-              Text("Reema Salam", style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w600)),
-              SizedBox(height: 2.h),
-              Text("reemasalam@gmail.com", style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500)),
-              SizedBox(height: 25.h),
-              ElevatedButton(
-                onPressed: () => Navigator.pop(context),
+            ),
+
+            SizedBox(height: 2.h),
+
+            /// 🔁 Dynamically display email from ValueNotifier
+            ValueListenableBuilder<String>(
+              valueListenable: controller.userEmail,
+              builder: (context, email, _) => Text(
+                email,
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+
+            SizedBox(height: 25.h),
+
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  // Add your logout logic here
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF19A4C6),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  padding: EdgeInsets.symmetric(vertical: 14.h),
                 ),
                 child: Text(
                   "Logout",
-                  style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600, color: Colors.white),
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }

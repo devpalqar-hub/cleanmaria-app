@@ -12,6 +12,7 @@ class HomeController {
 
   // User data
   ValueNotifier<String> userName = ValueNotifier("User");
+  ValueNotifier<String> userEmail = ValueNotifier("user@example.com");
 
   // Business overview data
   ValueNotifier<int> totalBookings = ValueNotifier(0);
@@ -23,16 +24,21 @@ class HomeController {
   ValueNotifier<int> summaryEarnings = ValueNotifier(0);
   ValueNotifier<int> summaryStaff = ValueNotifier(0);
 
+  // Performance data
+  ValueNotifier<Map<String, dynamic>> performanceData = ValueNotifier({});
+
+
   HomeController() {
-    _fetchUserName();
+    _fetchUserData();
     _initializeDateFields();
     fetchBusinessSummary();
+    fetchPerformanceData();
   }
 
-  // Fetch user name from SharedPreferences
-  Future<void> _fetchUserName() async {
+  Future<void> _fetchUserData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    userName.value = prefs.getString("user_name") ?? "User";
+    userName.value = prefs.getString("user_name") ?? "name";
+    userEmail.value = prefs.getString("email") ?? "email";
   }
 
   // Initialize date fields with today's date
@@ -79,7 +85,40 @@ class HomeController {
     }
   }
 
-  
+  // Fetch performance data based on selected date range
+  Future<void> fetchPerformanceData() async {
+    try {
+      final DateFormat apiFormat = DateFormat('yyyy-MM-dd');
+      final DateFormat inputFormat = DateFormat('dd/MM/yyyy');
+
+      final startDate = apiFormat.format(inputFormat.parse(fromDateController.text));
+      final endDate = apiFormat.format(inputFormat.parse(toDateController.text));
+
+      final String apiUrl = "$baseUrl/analytics/performance?startDate=$startDate&endDate=$endDate";
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString('auth_token');
+
+      final response = await http.get(
+        Uri.parse(apiUrl),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        performanceData.value = data['data'] ?? {};
+      } else {
+        print("Error fetching performance data: ${response.body}");
+      }
+    } catch (e) {
+      print("Exception in fetchPerformanceData: $e");
+    }
+  }
+
+  // Set date range based on selected option
   void setDateRangeFromDropdown(String selectedOption) {
     DateTime today = DateTime.now();
     DateTime fromDate;
@@ -89,21 +128,22 @@ class HomeController {
       fromDate = today.subtract(Duration(days: 6));
     } else if (selectedOption == "This Week") {
       fromDate = DateTime(today.year, today.month, today.day - today.weekday + 1); // Start of the week
-      toDate = today; 
+      toDate = today;
     } else if (selectedOption == "This Month") {
-      fromDate = DateTime(today.year, today.month, 1); 
-      toDate = DateTime(today.year, today.month + 1, 0); 
+      fromDate = DateTime(today.year, today.month, 1);
+      toDate = DateTime(today.year, today.month + 1, 0); // End of the month
     } else {
-      fromDate = today; 
+      fromDate = today;
     }
 
     fromDateController.text = DateFormat('dd/MM/yyyy').format(fromDate);
     toDateController.text = DateFormat('dd/MM/yyyy').format(toDate);
 
-    fetchBusinessSummary(); 
+    fetchBusinessSummary();
+    fetchPerformanceData();
   }
 
-
+  // Open a date picker and set the selected date to the controller
   Future<void> selectDate(BuildContext context, TextEditingController controller) async {
     DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -117,59 +157,25 @@ class HomeController {
     }
   }
 
-  
+  // Set today's date to the date fields
   void setTodayDate() {
     String today = DateFormat('dd/MM/yyyy').format(DateTime.now());
     fromDateController.text = today;
     toDateController.text = today;
   }
-// Performance data
-ValueNotifier<Map<String, dynamic>> performanceData = ValueNotifier({});
-
-
-// In HomeController
-Future<void> fetchPerformanceData() async {
-  try {
-    final DateFormat apiFormat = DateFormat('yyyy-MM-dd');
-    final DateFormat inputFormat = DateFormat('dd/MM/yyyy');
-
-    final startDate = apiFormat.format(inputFormat.parse(fromDateController.text));
-    final endDate = apiFormat.format(inputFormat.parse(toDateController.text));
-
-    final String apiUrl = "$baseUrl/analytics/performance?startDate=$startDate&endDate=$endDate";
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('auth_token');
-
-    final response = await http.get(
-      Uri.parse(apiUrl),
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      performanceData.value = data['data'] ?? {};
-    } else {
-      print("Error fetching performance data: ${response.body}");
-    }
-  } catch (e) {
-    print("Exception in fetchPerformanceData: $e");
-  }
-}
 
   // Dispose controllers and notifiers when no longer needed
   void dispose() {
     fromDateController.dispose();
     toDateController.dispose();
     userName.dispose();
+    userEmail.dispose();
     totalBookings.dispose();
     totalRevenue.dispose();
     totalStaff.dispose();
     totalClients.dispose();
     summaryEarnings.dispose();
     summaryStaff.dispose();
+    performanceData.dispose();
   }
 }
