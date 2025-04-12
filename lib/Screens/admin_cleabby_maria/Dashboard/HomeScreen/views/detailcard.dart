@@ -3,57 +3,39 @@ import 'package:cleanby_maria/Src/appText.dart';
 import 'package:cleanby_maria/Src/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
-class detailcardScreen extends StatefulWidget {
-  const detailcardScreen({super.key});
+class detailcardScreen extends StatelessWidget {
+  detailcardScreen({super.key});
 
-  @override
-  State<detailcardScreen> createState() => _detailcardScreenState();
-}
-
-class _detailcardScreenState extends State<detailcardScreen> {
-  final HomeController _controller = HomeController();
-
-  @override
-  void initState() {
-    super.initState();
-    _controller.fetchPerformanceData();
-  }
+  HomeController _controller = Get.put(HomeController());
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<Map<String, dynamic>>(
-      valueListenable: _controller.performanceData,
-      builder: (context, data, _) {
-        final booking = data['booking']?.toString() ?? "0";
-        final allocation = data['allocation']?.toString() ?? "0";
-        final cancellation = data['cancellation']?.toString() ?? "0";
-
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              _detailcard(
-                Title: "Booking",
-                count: booking,
-                subtitle: "Total Booking/Day",
-              ),
-              SizedBox(width: 5.w),
-              _detailcard(
-                Title: "Allocation",
-                count: allocation,
-                subtitle: "Avg staff/Booking",
-              ),
-              SizedBox(width: 5.w),
-              _detailcard(
-                Title: "Cancellation",
-                count: cancellation,
-                subtitle: "Cancelled/Booking",
-              ),
-            ],
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          _detailcard(
+            Title: "Booking",
+            count: _controller.totalBookings.toString(),
+            subtitle: "Total Booking/Day",
           ),
-        );
-      },
+          SizedBox(width: 5.w),
+          _detailcard(
+            Title: "Allocation",
+            count: _controller.avgStaff.toString(),
+            subtitle: "Avg staff/Booking",
+          ),
+          SizedBox(width: 5.w),
+          _detailcard(
+            Title: "Cancellation",
+            count: _controller.totalCancel.toString(),
+            subtitle: "Cancelled/Booking",
+          ),
+        ],
+      ),
     );
   }
 

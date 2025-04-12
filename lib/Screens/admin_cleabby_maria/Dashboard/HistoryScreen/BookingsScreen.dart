@@ -51,7 +51,8 @@ class _BookingsaScreenState extends State<BookingsaScreen> {
             children: [
               Text(
                 "Select Booking Dates",
-                style: GoogleFonts.poppins(fontSize: 16.sp, fontWeight: FontWeight.w600),
+                style: GoogleFonts.poppins(
+                    fontSize: 16.sp, fontWeight: FontWeight.w600),
               ),
               SizedBox(height: 10.h),
               SfDateRangePicker(
@@ -86,15 +87,12 @@ class _BookingsaScreenState extends State<BookingsaScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(70.h),
-        child: AppBar(
-          leading: const Icon(Icons.arrow_back_ios),
-          title: appText.primaryText(
-            text: "Bookings",
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w700,
-          ),
+      appBar: AppBar(
+        leading: const Icon(Icons.arrow_back_ios),
+        title: appText.primaryText(
+          text: "Bookings",
+          fontSize: 18.sp,
+          fontWeight: FontWeight.w700,
         ),
       ),
       body: Padding(
@@ -122,50 +120,54 @@ class _BookingsaScreenState extends State<BookingsaScreen> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       elevation: 0,
-                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
                     ),
                     onPressed: _showDatePicker, // Open the filter modal
-                    icon: Icon(Icons.filter_list, color: const Color(0xFF77838F), size: 18.sp),
-                    label: Text('Filter', style: GoogleFonts.poppins(fontSize: 12.sp, color: Colors.black)),
+                    icon: Icon(Icons.filter_list,
+                        color: const Color(0xFF77838F), size: 18.sp),
+                    label: Text('Filter',
+                        style: GoogleFonts.poppins(
+                            fontSize: 12.sp, color: Colors.black)),
                   ),
                 ],
               ),
             ),
             SizedBox(height: 15.h),
             //Text(
-              //startDate != null && endDate != null
-                //  ? "Selected Dates: ${startDate!.toLocal()} - ${endDate!.toLocal()}"
-                 // : "No Dates Selected",
-              //style: GoogleFonts.poppins(fontSize: 14.sp, fontWeight: FontWeight.w500),
+            //startDate != null && endDate != null
+            //  ? "Selected Dates: ${startDate!.toLocal()} - ${endDate!.toLocal()}"
+            // : "No Dates Selected",
+            //style: GoogleFonts.poppins(fontSize: 14.sp, fontWeight: FontWeight.w500),
             //),
-                        Obx(() {
+            Obx(() {
               if (bookingsController.isLoading.value) {
                 return Center(child: CircularProgressIndicator());
               }
               if (bookingsController.errorMessage.value.isNotEmpty) {
-                return Center(child: Text(bookingsController.errorMessage.value));
+                return Center(
+                    child: Text(bookingsController.errorMessage.value));
               }
               return Column(
-                children: bookingsController.bookings.map((booking) => 
-                  StatusCard(
-                    status: "Completed",
-                    color: const Color(0xFF03AE9D),
-                    customerName: booking.name,
-                    time: booking.time,
-                    location: booking.place,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => CleaningDetails(),
-                        ),
-                      );
-                    },
-                  )
-                ).toList(),
+                children: bookingsController.bookings
+                    .map((booking) => StatusCard(
+                          status: "Completed",
+                          color: const Color(0xFF03AE9D),
+                          customerName: booking.name,
+                          time: booking.time,
+                          location: booking.place,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CleaningDetails(),
+                              ),
+                            );
+                          },
+                        ))
+                    .toList(),
               );
             }),
-
           ],
         ),
       ),

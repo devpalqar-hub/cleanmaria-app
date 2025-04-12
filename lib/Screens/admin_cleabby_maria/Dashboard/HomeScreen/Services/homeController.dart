@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:cleanby_maria/Screens/AuthenticationScreen/AutheticationScreen.dart';
+import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HomeScreen/Model/PerformanceOverTimeModel.dart';
 import 'package:cleanby_maria/main.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -9,80 +10,42 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-class HomeController {
+class HomeController extends GetxController {
   // Date controllers
-  final TextEditingController fromDateController = TextEditingController();
-  final TextEditingController toDateController = TextEditingController();
+  TextEditingController fromDateController = TextEditingController(
+      text: DateFormat('yyyy-MM-dd').format(DateTime.now()));
+  TextEditingController toDateController = TextEditingController(
+      text: DateFormat('yyyy-MM-dd').format(DateTime.now()));
+  String filterRange = "Last Week";
+  Map<String, String> authHeader = {};
 
-  // User data
-  ValueNotifier<String> userName = ValueNotifier("User");
-  ValueNotifier<String> userEmail = ValueNotifier("user@example.com");
+  String userName = "";
+  String userEmail = "";
 
-  // Business overview data
-  ValueNotifier<int> totalBookings = ValueNotifier(0);
-  ValueNotifier<int> totalRevenue = ValueNotifier(0);
-  ValueNotifier<int> totalStaff = ValueNotifier(0);
+  int totalBookings = 0;
+  int avgStaff = 0;
+  int totalCancel = 0;
 
-  // Business summary data
-  ValueNotifier<int> totalClients = ValueNotifier(0);
-  ValueNotifier<int> summaryEarnings = ValueNotifier(0);
-  ValueNotifier<int> summaryStaff = ValueNotifier(0);
+  int totalClients = 0;
+  int summaryEarnings = 0;
+  int summaryStaff = 0;
 
-  // Performance data
-  ValueNotifier<Map<String, dynamic>> performanceData = ValueNotifier({});
+  List<PerformanceOverTimeModel> GraphData = [];
 
-  HomeController() {
-    _fetchUserData();
-    _initializeDateFields();
-    fetchBusinessSummary();
-    fetchPerformanceData();
-  }
-
-  Future<void> _fetchUserData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    userName.value = prefs.getString("user_name") ?? "name";
-    userEmail.value = prefs.getString("email") ?? "email";
-  }
-
-  // Initialize date fields with today's date
-  void _initializeDateFields() {
-    String today = DateFormat('dd/MM/yyyy').format(DateTime.now());
-    fromDateController.text = today;
-    toDateController.text = today;
-  }
-
-  // Fetch business summary report based on selected date range
-  Future<void> fetchBusinessSummary() async {
+  Future<void> fetchBusinessSummary(String startDate, String endDate) async {
     try {
-      final DateFormat apiFormat = DateFormat('yyyy-MM-dd');
-      final DateFormat inputFormat = DateFormat('dd/MM/yyyy');
-
-      final startDate =
-          apiFormat.format(inputFormat.parse(fromDateController.text));
-      final endDate =
-          apiFormat.format(inputFormat.parse(toDateController.text));
-
       final String apiUrl =
           "$baseUrl/analytics/summary?startDate=$startDate&endDate=$endDate";
 
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? token = prefs.getString('access_token');
-
-      final response = await http.get(
-        Uri.parse(apiUrl),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      );
-
+      final response = await http.get(Uri.parse(apiUrl), headers: authHeader);
+      print(response.body);
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         final summaryData = data['data'] ?? {};
 
-        totalClients.value = summaryData['totalClients'] ?? 0;
-        summaryEarnings.value = summaryData['totalEarnings'] ?? 0;
-        summaryStaff.value = summaryData['totalStaff'] ?? 0;
+        totalClients = summaryData['totalClients'] ?? 0;
+        summaryEarnings = summaryData['totalEarnings'] ?? 0;
+        summaryStaff = summaryData['totalStaff'] ?? 0;
       } else if (response.statusCode == 401) {
         Fluttertoast.showToast(msg: "Session Expired");
         Get.offAll(() => AuthenticationScreen(),
@@ -93,68 +56,53 @@ class HomeController {
     } catch (e) {
       print("Error fetching business summary: $e");
     }
+    update();
   }
 
   // Fetch performance data based on selected date range
   Future<void> fetchPerformanceData() async {
-    try {
-      final DateFormat apiFormat = DateFormat('yyyy-MM-dd');
-      final DateFormat inputFormat = DateFormat('dd/MM/yyyy');
+    final String apiUrl =
+        "$baseUrl/analytics/performance?startDate=${fromDateController.text}&endDate=${toDateController.text}";
 
-      final startDate =
-          apiFormat.format(inputFormat.parse(fromDateController.text));
-      final endDate =
-          apiFormat.format(inputFormat.parse(toDateController.text));
+    final response = await http.get(Uri.parse(apiUrl), headers: authHeader);
+    print(authHeader);
+    print(response.body);
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
 
-      final String apiUrl =
-          "$baseUrl/analytics/performance?startDate=$startDate&endDate=$endDate";
-
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? token = prefs.getString('access_token');
-
-      final response = await http.get(
-        Uri.parse(apiUrl),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        performanceData.value = data['data'] ?? {};
-      } else {
-        print("Error fetching performance data: ${response.body}");
+      if (data["data"] != null) {
+        totalBookings = data["data"]["avgBookingPerDay"];
+        avgStaff = data["data"]["avgStaffPerBooking"];
+        totalCancel = data["data"]["canceledBookings"];
       }
-    } catch (e) {
-      print("Exception in fetchPerformanceData: $e");
+    } else {
+      print("Error fetching performance data: ${response.body}");
     }
+
+    update();
   }
 
   // Set date range based on selected option
   void setDateRangeFromDropdown(String selectedOption) {
     DateTime today = DateTime.now();
-    DateTime fromDate;
+
     DateTime toDate = today;
 
-    if (selectedOption == "Last 7 Days") {
-      fromDate = today.subtract(Duration(days: 6));
-    } else if (selectedOption == "This Week") {
-      fromDate = DateTime(today.year, today.month,
-          today.day - today.weekday + 1); // Start of the week
-      toDate = today;
-    } else if (selectedOption == "This Month") {
-      fromDate = DateTime(today.year, today.month, 1);
-      toDate = DateTime(today.year, today.month + 1, 0); // End of the month
-    } else {
-      fromDate = today;
+    if (selectedOption == "Last Week") {
+      toDate = today.subtract(Duration(days: 7));
+    } else if (selectedOption == "Last Month") {
+      toDate = today.subtract(Duration(days: 30)); // Start of the week
+    } else if (selectedOption == "Last Year") {
+      toDate = today.subtract(Duration(days: 365)); // End of the month
     }
 
-    fromDateController.text = DateFormat('dd/MM/yyyy').format(fromDate);
-    toDateController.text = DateFormat('dd/MM/yyyy').format(toDate);
+    String startDate = DateFormat('yyyy-MM-dd').format(toDate);
+    String endDate = DateFormat('yyyy-MM-dd').format(toDate);
+    // fromDateController.text = startDate;
+    // toDateController.text = endDate;
 
-    fetchBusinessSummary();
-    fetchPerformanceData();
+    fetchBusinessSummary(endDate, startDate);
+    update();
   }
 
   // Open a date picker and set the selected date to the controller
@@ -168,29 +116,70 @@ class HomeController {
     );
 
     if (pickedDate != null) {
-      controller.text = DateFormat('dd/MM/yyyy').format(pickedDate);
+      controller.text = DateFormat('yyyy/MM/dd').format(pickedDate);
     }
+
+    fetchPerformanceData();
+    //fetchChartData();
+    update();
+  }
+
+  bool isChartLoader = false;
+  Future<void> fetchChartData() async {
+    isChartLoader = true;
+    update();
+    final url = Uri.parse(
+      '$baseUrl/analytics/bookings-over-time?startDate=${fromDateController.text}&endDate=${toDateController.text}',
+    );
+
+    final response = await http.get(url, headers: authHeader);
+    print(response.body);
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+
+      for (var data in jsonData["data"]) {
+        GraphData.add(PerformanceOverTimeModel.fromJson(data));
+      }
+
+      update();
+    }
+    isChartLoader = false;
+    update();
   }
 
   // Set today's date to the date fields
   void setTodayDate() {
-    String today = DateFormat('dd/MM/yyyy').format(DateTime.now());
+    String today = DateFormat('yyyy-MM/-dd').format(DateTime.now());
     fromDateController.text = today;
     toDateController.text = today;
+    update();
   }
 
   // Dispose controllers and notifiers when no longer needed
-  void dispose() {
-    fromDateController.dispose();
-    toDateController.dispose();
-    userName.dispose();
-    userEmail.dispose();
-    totalBookings.dispose();
-    totalRevenue.dispose();
-    totalStaff.dispose();
-    totalClients.dispose();
-    summaryEarnings.dispose();
-    summaryStaff.dispose();
-    performanceData.dispose();
+
+  loadUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+    userName = prefs.getString("user_name") ?? "name";
+    userEmail = prefs.getString("email") ?? "email";
+    authHeader = {
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
+    };
+    update();
+
+    setDateRangeFromDropdown(filterRange);
+  }
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+
+    print("init");
+    loadUser();
+    fetchPerformanceData();
+    fetchChartData();
   }
 }

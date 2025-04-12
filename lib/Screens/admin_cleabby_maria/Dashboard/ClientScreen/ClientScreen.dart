@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+
 class ClientScreen extends StatefulWidget {
   const ClientScreen({super.key});
 
@@ -13,10 +14,9 @@ class ClientScreen extends StatefulWidget {
   State<ClientScreen> createState() => _ClientScreenState();
 }
 
-
-class _ClientScreenState extends State <ClientScreen> {
+class _ClientScreenState extends State<ClientScreen> {
   final BookingsController bookingsController = Get.put(BookingsController());
-  bool _isSubscriptionSelected = true; 
+  bool _isSubscriptionSelected = true;
 
   @override
   void initState() {
@@ -33,20 +33,18 @@ class _ClientScreenState extends State <ClientScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(70.h),
-        child: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_new_outlined, color: Colors.black),
-            onPressed: () {},
-          ),
-          title: appText.primaryText(
-            text: "Clients",
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w700,
-          ),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_outlined,
+              color: Colors.black),
+          onPressed: () {},
+        ),
+        title: appText.primaryText(
+          text: "Clients",
+          fontSize: 18.sp,
+          fontWeight: FontWeight.w700,
         ),
       ),
       body: Column(
@@ -77,7 +75,9 @@ class _ClientScreenState extends State <ClientScreen> {
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10.r),
-                      color: _isSubscriptionSelected ? Colors.white : Colors.transparent,
+                      color: _isSubscriptionSelected
+                          ? Colors.white
+                          : Colors.transparent,
                       border: Border.all(
                         color: Colors.grey.shade400,
                         width: 2.w,
@@ -85,7 +85,8 @@ class _ClientScreenState extends State <ClientScreen> {
                     ),
                     child: appText.primaryText(
                       text: "Subscriptions",
-                      color: _isSubscriptionSelected ? Colors.black : Colors.white,
+                      color:
+                          _isSubscriptionSelected ? Colors.black : Colors.white,
                     ),
                   ),
                 ),
@@ -102,7 +103,9 @@ class _ClientScreenState extends State <ClientScreen> {
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10.r),
-                      color: !_isSubscriptionSelected ? Colors.white : Colors.transparent,
+                      color: !_isSubscriptionSelected
+                          ? Colors.white
+                          : Colors.transparent,
                       border: Border.all(
                         color: Colors.grey.shade400,
                         width: 2.w,
@@ -110,7 +113,9 @@ class _ClientScreenState extends State <ClientScreen> {
                     ),
                     child: appText.primaryText(
                       text: "One-Time",
-                      color: !_isSubscriptionSelected ? Colors.black : Colors.white,
+                      color: !_isSubscriptionSelected
+                          ? Colors.black
+                          : Colors.white,
                     ),
                   ),
                 ),
@@ -142,28 +147,30 @@ class _ClientScreenState extends State <ClientScreen> {
           ),
           SizedBox(height: 25.h),
 
-        
           Expanded(
             child: Obx(() {
               if (bookingsController.isLoading.value) {
                 return Center(child: CircularProgressIndicator());
               }
               if (bookingsController.errorMessage.value.isNotEmpty) {
-                return Center(child: Text(bookingsController.errorMessage.value));
+                return Center(
+                    child: Text(bookingsController.errorMessage.value));
               }
               return SingleChildScrollView(
                 child: Column(
-                  children: bookingsController.bookings.map((booking) => 
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => BookingDetailsScreen()),
-                        );
-                      },
-                      child: BStatusCard(booking: booking), 
-                    )
-                  ).toList(),
+                  children: bookingsController.bookings
+                      .map((booking) => GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        BookingDetailsScreen()),
+                              );
+                            },
+                            child: BStatusCard(booking: booking),
+                          ))
+                      .toList(),
                 ),
               );
             }),
