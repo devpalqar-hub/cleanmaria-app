@@ -14,7 +14,8 @@ class StaffController {
   bool isLoading = false;
 
   // Create staff
-  Future<void> createStaff(BuildContext context, VoidCallback onComplete) async {
+  Future<void> createStaff(
+      BuildContext context, VoidCallback onComplete) async {
     final name = nameController.text.trim();
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
@@ -27,75 +28,78 @@ class StaffController {
     }
     isLoading = true;
     onComplete();
-    //try 
-    {
+    try {
       final response = await http.post(
         Uri.parse("$baseUrl/auth/register"),
         headers: authHeader,
-        body: jsonEncode({
+        body: {
           "name": name,
           "email": email,
           "password": password,
           "role": "staff",
-        }),
+        },
       );
+      print(" ${response.body}");
       final data = jsonDecode(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
-         print("Response Body: ${response.body}");
+        print("Response Body: ${response.body}");
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Staff created successfully")),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(data['message'] ?? "Failed to create staff")),
+          SnackBar(content: Text(data['message'].toString())),
         );
       }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Something went wrong: $e")),
+      );
+    } finally {
+      isLoading = false;
+      fetchStaffList();
+      onComplete();
     }
-    // catch (e) {
-      //ScaffoldMessenger.of(context).showSnackBar(
-        //SnackBar(content: Text("Something went wrong: $e")),
-     // );
-    ///} finally {
-      //isLoading = false;
-      //onComplete();
-
-   // }
   }
 
   // Fetch staff list
   Future<List<Staff>> fetchStaffList() async {
     final url = Uri.parse('$baseUrl/users/staff');
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('access_token');
+    // try {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
 
-      if (token == null) {
-        debugPrint('Token is null. Please login first.');
-        return [];
-      }
-
-      final response = await http.get(
-        url,
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final decodedJson = json.decode(response.body);
-        final List<dynamic> staffListJson = decodedJson['data'] ?? [];
-        print("Fetched Staff Data: $staffListJson");
-        return staffListJson.map((json) => Staff.fromJson(json)).toList();
-      } else {
-        debugPrint("Failed to fetch staff: ${response.body}");
-        return [];
-      }
-    } catch (e) {
-      debugPrint('Error fetching staff list: $e');
+    if (token == null) {
+      debugPrint('Token is null. Please login first.');
       return [];
     }
+
+    final response = await http.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    print(response.body);
+    print(response.statusCode);
+
+    if (response.statusCode == 200) {
+      final decodedJson = json.decode(response.body);
+      final List<dynamic> staffListJson = decodedJson["data"] ?? [];
+      print("Fetched Staff Data: $staffListJson");
+
+      return staffListJson.map((json) => Staff.fromJson(json)).toList();
+    } else {
+      debugPrint("Failed to fetch staff: ${response.body}");
+      return [];
+    }
+    // } catch (e) {
+    //   debugPrint('Error fetching staff list: $e');
+    //   return [];
+    // }
   }
 
   // Update staff
@@ -204,6 +208,7 @@ class StaffController {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Staff enabled successfully")),
         );
+        fetchStaffList();
       } else {
         final data = jsonDecode(response.body);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -241,6 +246,7 @@ class StaffController {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Staff disabled successfully")),
         );
+        fetchStaffList();
       } else {
         final data = jsonDecode(response.body);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -278,6 +284,7 @@ class StaffController {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Staff deleted successfully")),
         );
+        fetchStaffList();
       } else {
         final data = jsonDecode(response.body);
         ScaffoldMessenger.of(context).showSnackBar(

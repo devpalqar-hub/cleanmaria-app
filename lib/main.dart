@@ -44,7 +44,9 @@ class CleanbyMaria extends StatelessWidget {
       designSize: const Size(390, 850),
       builder: (context, child) => GetMaterialApp(
         debugShowCheckedModeBanner: false,
-        home: _getInitialScreen(),
+        home: (login == "IN")
+            ? (userType == "admin" ? DashBoardScreen() : Homescreen())
+            : AuthenticationScreen(),
       ),
     );
   }
@@ -53,13 +55,13 @@ class CleanbyMaria extends StatelessWidget {
     // Check if login is successful and if the token is available
     if (login == "IN") {
       if (userType == "admin") {
-        return DashBoardScreen();  // Admin Dashboard
+        return DashBoardScreen(); // Admin Dashboard
       } else {
-        return Homescreen();  // Staff Dashboard or other user type
+        return Homescreen(); // Staff Dashboard or other user type
       }
     } else {
       // Default to AuthenticationScreen if not logged in
-      return AuthenticationScreen();  
+      return AuthenticationScreen();
     }
   }
 }

@@ -22,8 +22,9 @@ class AuthenticationController extends GetxController {
     isLoading.value = true;
 
     try {
-      final response = await login(emailController.text, passwordController.text);
-
+      final response =
+          await login(emailController.text, passwordController.text);
+      print(response);
       if (response['success']) {
         showSnackBar('Login successful');
 
@@ -36,7 +37,8 @@ class AuthenticationController extends GetxController {
         if (role == 'admin') {
           Get.offAll(() => Homescreen(), transition: Transition.rightToLeft);
         } else {
-          Get.offAll(() => DashBoardScreen(), transition: Transition.rightToLeft);
+          Get.offAll(() => DashBoardScreen(),
+              transition: Transition.rightToLeft);
         }
       } else {
         showSnackBar(response['error'] ?? 'Login failed. Invalid credentials.');
@@ -61,13 +63,15 @@ class AuthenticationController extends GetxController {
       );
 
       final Map<String, dynamic> data = json.decode(response.body);
+      print(response.body);
+      print(response.statusCode);
 
       if (response.statusCode == 201 && data.containsKey('access_token')) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString("access_token", data['access_token']);
         await prefs.setString("role", data['user']['role'] ?? "user");
         await prefs.setString("user_name", data['user']['name'] ?? "User");
-
+        await prefs.setString("LOGIN", "IN");
         return {
           "success": true,
           "accessToken": data['access_token'],

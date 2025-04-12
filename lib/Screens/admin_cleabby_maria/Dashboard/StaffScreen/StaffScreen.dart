@@ -20,10 +20,19 @@ class _StaffScreenState extends State<StaffScreen> {
   final StaffController staffController = StaffController();
   final TextEditingController searchController = TextEditingController();
 
+  ValueNotifier notify = ValueNotifier<int>(0);
+
   @override
   void initState() {
     super.initState();
     fetchStaffData();
+    startLister();
+  }
+
+  startLister() {
+    notify.addListener(() {
+      fetchStaffData();
+    });
   }
 
   Future<void> fetchStaffData() async {
@@ -87,7 +96,9 @@ class _StaffScreenState extends State<StaffScreen> {
                       borderRadius:
                           BorderRadius.vertical(top: Radius.circular(20.r)),
                     ),
-                    builder: (context) => CreateStaffBottomSheet(),
+                    builder: (context) => CreateStaffBottomSheet(
+                      notify: notify,
+                    ),
                   );
                 },
               ),
@@ -117,47 +128,47 @@ class _StaffScreenState extends State<StaffScreen> {
                           itemBuilder: (context, index) {
                             final staff = staffList[index];
 
-                            return  StaffCard(
-  staff: staff,  
-  onEdit: (Staff staff) async {
-  
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-      ),
-      builder: (context) => EditStaffBottomSheet(
-        staff: staff,
-        onUpdate: (updatedStaff) {
-          setState(() {
-            final i = staffList.indexWhere((s) => s.id == updatedStaff.id);
-            if (i != -1) {
-              staffList[i] = updatedStaff;
-            }
-          });
-        },
-      ),
-    );
-  },
+                            return StaffCard(
+                              staff: staff,
+                              onEdit: (Staff staff) async {
+                                showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(20.r)),
+                                  ),
+                                  builder: (context) => EditStaffBottomSheet(
+                                    staff: staff,
+                                    onUpdate: (updatedStaff) {
+                                      setState(() {
+                                        final i = staffList.indexWhere(
+                                            (s) => s.id == updatedStaff.id);
+                                        if (i != -1) {
+                                          staffList[i] = updatedStaff;
+                                        }
+                                      });
+                                    },
+                                  ),
+                                );
+                              },
                               onEnable: () {
                                 setState(() {
-                                 // staffList[index].status = 'active';  // Enable staff status
+                                  // staffList[index].status = 'active';  // Enable staff status
                                 });
                               },
                               onDisable: () {
                                 setState(() {
-                                //  staffList[index].status = 'inactive';  // Disable staff status
+                                  //  staffList[index].status = 'inactive';  // Disable staff status
                                 });
                               },
                               onDelete: () {
-                                onDeleteStaff(context, staff, index);  // Handle staff deletion
+                                onDeleteStaff(context, staff,
+                                    index); // Handle staff deletion
                               },
                             );
                           },
                         ),
-
-                        
             ),
           ],
         ),
@@ -224,13 +235,13 @@ class _StaffScreenState extends State<StaffScreen> {
 
     if (isConfirmed ?? false) {
       // Create a Staff object from the staff data
-     // final staffToDelete = Staff(
-       // id: staff['id'],
+      // final staffToDelete = Staff(
+      // id: staff['id'],
       //  name: staff['name'] ?? '',
-       // email: staff['email'] ?? '',
-        //phone: staff['phone'] ?? '',
-        //status: staff['status'] ?? 'inactive',
-     // );
+      // email: staff['email'] ?? '',
+      //phone: staff['phone'] ?? '',
+      //status: staff['status'] ?? 'inactive',
+      // );
 
       // Call the delete API with the staff object
       await staffController.deleteStaff(context, staff);

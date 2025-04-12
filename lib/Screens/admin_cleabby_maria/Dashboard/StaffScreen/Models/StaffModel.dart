@@ -9,7 +9,7 @@ class Staff {
     required this.id,
     required this.name,
     required this.email,
-    required this.phone ,
+    required this.phone,
     required this.status,
   });
 
@@ -19,7 +19,7 @@ class Staff {
       id: json['id'] as String,
       name: json['name'] as String,
       email: json['email'] as String,
-      phone: json['phone'] as String,
+      phone: json['phone'].toString(),
       status: json['status'] as String,
     );
   }
