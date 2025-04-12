@@ -58,7 +58,6 @@ class StaffController {
       );
     } finally {
       isLoading = false;
-      fetchStaffList();
       onComplete();
     }
   }
