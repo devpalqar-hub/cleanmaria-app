@@ -1,5 +1,6 @@
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/StaffScreen/Service/Controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/state_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/StaffScreen/Models/StaffModel.dart';
@@ -7,12 +8,10 @@ import 'package:cleanby_maria/Src/appButton.dart';
 
 class EditStaffBottomSheet extends StatefulWidget {
   final Staff staff;
-  final ValueNotifier notify;
 
   EditStaffBottomSheet({
     super.key,
     required this.staff,
-    required this.notify,
   });
 
   @override
@@ -44,31 +43,6 @@ class _EditStaffBottomSheetState extends State<EditStaffBottomSheet> {
     passwordController.dispose();
     controller.dispose();
     super.dispose();
-  }
-
-  void updateStaff() async {
-    setState(() => isLoading = true);
-
-    final updatedStaff = await controller.updateStaff(
-      context,
-      staffId: widget.staff.id!,
-      name: nameController.text.trim(),
-      email: emailController.text.trim(),
-      phone: phoneController.text.trim(),
-      password: passwordController.text.isEmpty
-          ? null
-          : passwordController.text.trim(),
-    );
-
-    setState(() => isLoading = false);
-
-    if (updatedStaff != null) {
-      widget.notify.value++;
-      Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Staff updated successfully")),
-      );
-    }
   }
 
   Widget _buildInputField(String label, TextEditingController controller,
@@ -112,46 +86,58 @@ class _EditStaffBottomSheetState extends State<EditStaffBottomSheet> {
           color: Colors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
         ),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Center(
-                  child: Container(
-                      width: 89.w,
-                      child: Divider(thickness: 2, color: Colors.grey[300]))),
-              SizedBox(height: 5.h),
-              Center(
-                child: Text(
-                  "Edit Staff",
-                  style: GoogleFonts.poppins(
-                      fontSize: 18.sp, fontWeight: FontWeight.w700),
-                ),
-              ),
-              SizedBox(height: 20.h),
-              _buildInputField("Staff Name", nameController),
-              _buildInputField("Email", emailController),
-              _buildInputField("Phone", phoneController),
-              // Uncomment below if password change is allowed
-              // _buildInputField("New Password", passwordController, obscure: true, hint: "Leave blank to keep current"),
-              SizedBox(height: 20.h),
-              isLoading
-                  ? const CircularProgressIndicator()
-                  : AppButton(
-                      text: "Update Staff",
-                      onPressed: updateStaff,
-                    ),
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Center(
+        child: GetBuilder<StaffController>(builder: (_) {
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                Center(
+                    child: Container(
+                        width: 89.w,
+                        child: Divider(thickness: 2, color: Colors.grey[300]))),
+                SizedBox(height: 5.h),
+                Center(
                   child: Text(
-                    "Cancel",
-                    style: TextStyle(fontSize: 14.sp, color: Colors.black),
+                    "Edit Staff",
+                    style: GoogleFonts.poppins(
+                        fontSize: 18.sp, fontWeight: FontWeight.w700),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ),
+                SizedBox(height: 20.h),
+                _buildInputField("Staff Name", nameController),
+                _buildInputField("Email", emailController),
+                _buildInputField("Phone", phoneController),
+                // Uncomment below if password change is allowed
+                // _buildInputField("New Password", passwordController,
+                //     obscure: true, hint: "Leave blank to keep current"),
+                SizedBox(height: 20.h),
+                isLoading
+                    ? const CircularProgressIndicator()
+                    : AppButton(
+                        text: "Update Staff",
+                        onPressed: () {
+                          _.updateStaff({
+                            "name": nameController.text.trim(),
+                            "email": emailController.text.trim(),
+                            "phone": phoneController.text.trim(),
+                            "password": passwordController.text.isEmpty
+                                ? null
+                                : passwordController.text.trim(),
+                          }, widget.staff.id, context);
+                        },
+                      ),
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Center(
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(fontSize: 14.sp, color: Colors.black),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }),
       ),
     );
   }

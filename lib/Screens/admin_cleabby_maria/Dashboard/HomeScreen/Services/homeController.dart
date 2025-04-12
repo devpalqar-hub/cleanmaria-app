@@ -1,6 +1,10 @@
 import 'dart:convert';
+import 'package:cleanby_maria/Screens/AuthenticationScreen/AutheticationScreen.dart';
 import 'package:cleanby_maria/main.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -26,7 +30,6 @@ class HomeController {
 
   // Performance data
   ValueNotifier<Map<String, dynamic>> performanceData = ValueNotifier({});
-
 
   HomeController() {
     _fetchUserData();
@@ -54,13 +57,16 @@ class HomeController {
       final DateFormat apiFormat = DateFormat('yyyy-MM-dd');
       final DateFormat inputFormat = DateFormat('dd/MM/yyyy');
 
-      final startDate = apiFormat.format(inputFormat.parse(fromDateController.text));
-      final endDate = apiFormat.format(inputFormat.parse(toDateController.text));
+      final startDate =
+          apiFormat.format(inputFormat.parse(fromDateController.text));
+      final endDate =
+          apiFormat.format(inputFormat.parse(toDateController.text));
 
-      final String apiUrl = "$baseUrl/analytics/summary?startDate=$startDate&endDate=$endDate";
+      final String apiUrl =
+          "$baseUrl/analytics/summary?startDate=$startDate&endDate=$endDate";
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? token = prefs.getString('auth_token');
+      String? token = prefs.getString('access_token');
 
       final response = await http.get(
         Uri.parse(apiUrl),
@@ -77,6 +83,10 @@ class HomeController {
         totalClients.value = summaryData['totalClients'] ?? 0;
         summaryEarnings.value = summaryData['totalEarnings'] ?? 0;
         summaryStaff.value = summaryData['totalStaff'] ?? 0;
+      } else if (response.statusCode == 401) {
+        Fluttertoast.showToast(msg: "Session Expired");
+        Get.offAll(() => AuthenticationScreen(),
+            transition: Transition.rightToLeft);
       } else {
         print("Error: ${response.body}");
       }
@@ -91,13 +101,16 @@ class HomeController {
       final DateFormat apiFormat = DateFormat('yyyy-MM-dd');
       final DateFormat inputFormat = DateFormat('dd/MM/yyyy');
 
-      final startDate = apiFormat.format(inputFormat.parse(fromDateController.text));
-      final endDate = apiFormat.format(inputFormat.parse(toDateController.text));
+      final startDate =
+          apiFormat.format(inputFormat.parse(fromDateController.text));
+      final endDate =
+          apiFormat.format(inputFormat.parse(toDateController.text));
 
-      final String apiUrl = "$baseUrl/analytics/performance?startDate=$startDate&endDate=$endDate";
+      final String apiUrl =
+          "$baseUrl/analytics/performance?startDate=$startDate&endDate=$endDate";
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? token = prefs.getString('auth_token');
+      String? token = prefs.getString('access_token');
 
       final response = await http.get(
         Uri.parse(apiUrl),
@@ -127,7 +140,8 @@ class HomeController {
     if (selectedOption == "Last 7 Days") {
       fromDate = today.subtract(Duration(days: 6));
     } else if (selectedOption == "This Week") {
-      fromDate = DateTime(today.year, today.month, today.day - today.weekday + 1); // Start of the week
+      fromDate = DateTime(today.year, today.month,
+          today.day - today.weekday + 1); // Start of the week
       toDate = today;
     } else if (selectedOption == "This Month") {
       fromDate = DateTime(today.year, today.month, 1);
@@ -144,7 +158,8 @@ class HomeController {
   }
 
   // Open a date picker and set the selected date to the controller
-  Future<void> selectDate(BuildContext context, TextEditingController controller) async {
+  Future<void> selectDate(
+      BuildContext context, TextEditingController controller) async {
     DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),

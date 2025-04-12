@@ -2,6 +2,8 @@ import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/StaffScreen/
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/StaffScreen/Service/Controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_instance/get_instance.dart';
+import 'package:get/state_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'StaffCard.dart';
 import 'Views/CreateBottomsheet.dart';
@@ -15,39 +17,9 @@ class StaffScreen extends StatefulWidget {
 }
 
 class _StaffScreenState extends State<StaffScreen> {
-  List<Staff> staffList = [];
-  bool isLoading = true;
-  final StaffController staffController = StaffController();
+  //bool isLoading = true;
+  StaffController stCtrl = Get.put(StaffController());
   final TextEditingController searchController = TextEditingController();
-
-  ValueNotifier notify = ValueNotifier<int>(0);
-
-  @override
-  void initState() {
-    super.initState();
-    fetchStaffData();
-    startLister();
-  }
-
-  startLister() {
-    notify.addListener(() {
-      fetchStaffData();
-    });
-  }
-
-  Future<void> fetchStaffData() async {
-    setState(() {
-      isLoading = true;
-    });
-
-    final staffData = await staffController.fetchStaffList();
-    setState(() {
-      staffList = staffData;
-      isLoading = false;
-    });
-
-    print("Fetched Staff List: $staffList");
-  }
 
   @override
   void dispose() {
@@ -59,36 +31,21 @@ class _StaffScreenState extends State<StaffScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(70.h),
-        child: AppBar(
-          leading: const Icon(Icons.arrow_back_ios),
-          title: Text(
-            "Staffs",
-            style: GoogleFonts.poppins(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w700,
-              color: Colors.black,
-            ),
+      appBar: AppBar(
+        //  leading: const Icon(Icons.arrow_back_ios),
+        title: Text(
+          "Staffs",
+          style: GoogleFonts.poppins(
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w700,
+            color: Colors.black,
           ),
-          actions: [
-            Padding(
+        ),
+        actions: [
+          Padding(
               padding: EdgeInsets.only(right: 20.w),
-              child: ElevatedButton.icon(
-                icon: Icon(Icons.add, color: Colors.white, size: 16.sp),
-                label: Text(
-                  "Create Staff",
-                  style: TextStyle(
-                    fontSize: 10.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  minimumSize: Size(105.w, 27.h),
-                ),
-                onPressed: () {
+              child: InkWell(
+                onTap: () {
                   showModalBottomSheet(
                     context: context,
                     isScrollControlled: true,
@@ -96,73 +53,73 @@ class _StaffScreenState extends State<StaffScreen> {
                       borderRadius:
                           BorderRadius.vertical(top: Radius.circular(20.r)),
                     ),
-                    builder: (context) => CreateStaffBottomSheet(
-                      notify: notify,
-                    ),
+                    builder: (context) => CreateStaffBottomSheet(),
                   );
                 },
-              ),
-            ),
-          ],
-        ),
-      ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 15.w),
-        child: Column(
-          children: [
-            SizedBox(height: 15.h),
-            _buildSearchBox(),
-            SizedBox(height: 15.h),
-            Expanded(
-              child: isLoading
-                  ? Center(child: CircularProgressIndicator())
-                  : staffList.isEmpty
-                      ? Center(
-                          child: Text(
-                            "No staff available",
-                            style: TextStyle(fontSize: 16.sp),
-                          ),
-                        )
-                      : ListView.builder(
-                          itemCount: staffList.length,
-                          itemBuilder: (context, index) {
-                            final staff = staffList[index];
+                //  padding: EdgeInsets.all(10),
+                child: Icon(
+                  Icons.add_box_rounded,
+                  color: Colors.blue,
+                  size: 30,
+                ),
+              )
+              //  ElevatedButton.icon(
+              //   icon: Icon(Icons.add, color: Colors.white, size: 16.sp),
+              //   label: Text(
+              //     "Create Staff",
+              //     style: TextStyle(
+              //       fontSize: 10.sp,
+              //       fontWeight: FontWeight.w600,
+              //       color: Colors.white,
+              //     ),
+              //   ),
+              //   style: ElevatedButton.styleFrom(
+              //     backgroundColor: Colors.blue,
+              //     minimumSize: Size(105.w, 27.h),
+              //   ),
+              //   onPressed: () {
 
-                            return StaffCard(
-                              staff: staff,
-                              onEdit: (Staff staff) async {
-                                showModalBottomSheet(
-                                  context: context,
-                                  isScrollControlled: true,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(20.r)),
-                                  ),
-                                  builder: (context) => EditStaffBottomSheet(
-                                    staff: staff,
-                                    notify: notify,
-                                  ),
-                                );
+              // ),
+              ),
+        ],
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 15.w),
+          child: GetBuilder<StaffController>(builder: (_) {
+            return Column(
+              children: [
+                SizedBox(height: 15.h),
+                _buildSearchBox(),
+                SizedBox(height: 15.h),
+                Expanded(
+                  child: _.isLoading
+                      ? Center(child: CircularProgressIndicator())
+                      : _.staffList.isEmpty
+                          ? Center(
+                              child: Text(
+                                "No staff available",
+                                style: TextStyle(fontSize: 16.sp),
+                              ),
+                            )
+                          : ListView.builder(
+                              itemCount: stCtrl.staffList.length,
+                              itemBuilder: (context, index) {
+                                final staff = stCtrl.staffList[index];
+                                return (searchController.text.isEmpty ||
+                                        staff.name!
+                                            .toLowerCase()
+                                            .contains(searchController.text))
+                                    ? StaffCard(
+                                        staff: staff,
+                                      )
+                                    : null;
                               },
-                              onEnable: () {
-                                setState(() {
-                                  // staffList[index].status = 'active';  // Enable staff status
-                                });
-                              },
-                              onDisable: () {
-                                setState(() {
-                                  //  staffList[index].status = 'inactive';  // Disable staff status
-                                });
-                              },
-                              onDelete: () {
-                                onDeleteStaff(context, staff,
-                                    index); // Handle staff deletion
-                              },
-                            );
-                          },
-                        ),
-            ),
-          ],
+                            ),
+                ),
+              ],
+            );
+          }),
         ),
       ),
     );
@@ -193,55 +150,16 @@ class _StaffScreenState extends State<StaffScreen> {
               ),
             ),
           ),
-          GestureDetector(
-            onTap: () {},
-            child: Image.asset(
-              'assets/Filters.png',
-              width: 70.sp,
-              height: 24.sp,
-            ),
-          ),
+          // GestureDetector(
+          //   onTap: () {},
+          //   child: Image.asset(
+          //     'assets/Filters.png',
+          //     width: 70.sp,
+          //     height: 24.sp,
+          //   ),
+          // ),
         ],
       ),
     );
-  }
-
-  void onDeleteStaff(BuildContext context, Staff staff, int index) async {
-    final isConfirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Confirm Deletion'),
-        content: Text('Are you sure you want to delete this staff member?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text('OK'),
-          ),
-        ],
-      ),
-    );
-
-    if (isConfirmed ?? false) {
-      // Create a Staff object from the staff data
-      // final staffToDelete = Staff(
-      // id: staff['id'],
-      //  name: staff['name'] ?? '',
-      // email: staff['email'] ?? '',
-      //phone: staff['phone'] ?? '',
-      //status: staff['status'] ?? 'inactive',
-      // );
-
-      // Call the delete API with the staff object
-      await staffController.deleteStaff(context, staff);
-
-      // After deletion, remove the staff from the list and refetch the staff data
-      setState(() {
-        staffList.removeAt(index);
-      });
-    }
   }
 }
