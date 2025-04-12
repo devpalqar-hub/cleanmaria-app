@@ -32,11 +32,6 @@ class BookingsController extends GetxController {
       },
     );
 
-    print('🔁 Request URL: $baseUrl/bookings?status=booked&type=instant');
-    print('🧾 Request headers: ${response.request?.headers}');
-    print('📥 Response status: ${response.statusCode}');
-    print('📥 Response body: ${response.body}');
-
     if (response.statusCode == 200) {
       List<dynamic> data = json.decode(response.body)["data"];
       bookings.value =
@@ -48,11 +43,31 @@ class BookingsController extends GetxController {
     isLoading(false);
   }
 
+  String weektoDay(int i) {
+    switch (i) {
+      case 0:
+        return "Sun";
+      case 1:
+        return "Mon";
+      case 2:
+        return "Tue";
+      case 3:
+        return "Wed";
+      case 4:
+        return "Thru";
+      case 5:
+        return "Fir";
+      case 6:
+        return "Sat";
+    }
+    return "";
+  }
+
   @override
   void onInit() {
     // TODO: implement onInit
     super.onInit();
 
-    fetchBookings("Booked", "subscription");
+    fetchBookings("booked", "subscription");
   }
 }

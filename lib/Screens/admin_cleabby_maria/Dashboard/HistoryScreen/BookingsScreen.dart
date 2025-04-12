@@ -21,12 +21,6 @@ class _BookingsaScreenState extends State<BookingsaScreen> {
   DateTime? startDate;
   DateTime? endDate;
 
-  @override
-  void initState() {
-    super.initState();
-    bookingsController.fetchBookings('completed', 'all');
-  }
-
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
     setState(() {
       if (args.value is PickerDateRange) {

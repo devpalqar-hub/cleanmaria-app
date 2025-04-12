@@ -1,15 +1,19 @@
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/ClientScreen/Models/bookingModel.dart';
+import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/ClientScreen/Service/BookingController.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cleanby_maria/Src/appText.dart';
+import 'package:get/get_instance/get_instance.dart';
+import 'package:get/state_manager.dart';
 
 class BStatusCard extends StatelessWidget {
   final BookingModel booking;
 
-  const BStatusCard({
+  BStatusCard({
     required this.booking,
   });
 
+  BookingsController bCtrl = Get.put(BookingsController());
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -54,7 +58,9 @@ class BStatusCard extends StatelessWidget {
                     ),
                     SizedBox(width: 5.w),
                     appText.primaryText(
-                        text: booking.subscriptionType!.name!,
+                        text: (booking.subscriptionType != null)
+                            ? booking.subscriptionType!.name!
+                            : "",
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w500,
                         color:
@@ -67,7 +73,7 @@ class BStatusCard extends StatelessWidget {
                     appText.primaryText(
                       text: booking.monthSchedules!
                           .map((value) =>
-                              "${value.weekOfMonth}-${value.dayOfWeek} ")
+                              "${value.weekOfMonth}-${bCtrl.weektoDay(value.dayOfWeek!)} ")
                           .join(","),
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w500,
@@ -77,7 +83,7 @@ class BStatusCard extends StatelessWidget {
                 ),
                 SizedBox(height: 3.h),
                 appText.primaryText(
-                  text: "",
+                  text: "los Angles , USA, 955032 - Washin DC. ",
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w500,
                   color: Colors.black,

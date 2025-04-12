@@ -11,7 +11,7 @@ class BookingDetailsScreen extends StatelessWidget {
 
   Widget _infoText({required String title, required String value}) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+     crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         appText.primaryText(
           text: title,
@@ -29,7 +29,6 @@ class BookingDetailsScreen extends StatelessWidget {
       ],
     );
   }
-
   void _showCancelDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -59,16 +58,12 @@ class BookingDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_outlined,
-              color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: appText.primaryText(
-            text: "Booking Details",
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w700),
+      appBar:AppBar(
+         leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_new_outlined, color: Colors.black),
+            onPressed: () => Navigator.pop(context),
+          ),
+        title: appText.primaryText(text: "Booking Details",fontSize: 18.sp,fontWeight: FontWeight.w700 ),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 15.h),
@@ -91,20 +86,16 @@ class BookingDetailsScreen extends StatelessWidget {
             _infoText(title: "Email", value: "johndeb@gmail.com"),
             _infoText(
               title: "Address",
-              value:
-                  "House name, House number, Street name\nCity name, and all the address details",
+              value: "House name, House number, Street name\nCity name, and all the address details",
             ),
             _infoText(
               title: "Booking Date",
-              value:
-                  "WEEK 1 | MONDAY | 10:00 - 13:00\nWEEK 3 | FRIDAY | 10:00 - 13:00",
+              value: "WEEK 1 | MONDAY | 10:00 - 13:00\nWEEK 3 | FRIDAY | 10:00 - 13:00",
             ),
-            Row(
-              children: [
-                Expanded(
-                  child: _infoText(
-                      title: "Service Cost", value: "Estimated Cost :250"),
-                ),
+             Row(
+               children:[ Expanded(
+                    child: _infoText(title: "Service Cost", value: "Estimated Cost :250"),
+                  ),
                 Container(
                   width: 65.w,
                   height: 19.h,
@@ -113,20 +104,17 @@ class BookingDetailsScreen extends StatelessWidget {
                     color: Color(0xFF19A4C6),
                   ),
                   child: Center(
-                    child: appText.primaryText(
-                        text: "NOT PAID",
-                        fontSize: 8.sp,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white),
+                    child: appText.primaryText(text: "NOT PAID",
+                    fontSize:8.sp,fontWeight:FontWeight.w500,color:Colors.white ),
                   ),
                 ),
-              ],
-            ),
-            _infoText(
+               ],
+             ),
+              _infoText(
               title: "Total Sq",
               value: "Estimated sqft : 2500",
-            ),
-            _infoText(
+            ), 
+             _infoText(
               title: "Type of cleaning",
               value: "Regular",
             ),
@@ -134,21 +122,12 @@ class BookingDetailsScreen extends StatelessWidget {
               title: "Type of property",
               value: "House",
             ),
-            Row(
-              children: [
-                appText.primaryText(text: "Rooms: 5"),
-                SizedBox(width: 69.w),
-                appText.primaryText(text: "Bathrooms: 5")
-              ],
-            ),
-            SizedBox(
-              height: 10.h,
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: _infoText(title: "Service plan", value: "Plan name"),
-                ),
+            Row(children: [appText.primaryText(text: "Rooms: 5"),SizedBox(width:69.w),appText.primaryText(text:"Bathrooms: 5")],),
+            SizedBox(height:10.h ,),
+             Row(
+               children:[ Expanded(
+                    child: _infoText(title: "Service plan", value: "Plan name"),
+                  ),
                 Container(
                   width: 65.w,
                   height: 19.h,
@@ -157,44 +136,26 @@ class BookingDetailsScreen extends StatelessWidget {
                     color: Color(0xFF1C9F0B),
                   ),
                   child: Center(
-                    child: appText.primaryText(
-                        text: "ECO SERVICE",
-                        fontSize: 8.sp,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white),
+                    child: appText.primaryText(text: "ECO SERVICE",
+                    fontSize:8.sp,fontWeight:FontWeight.w500,color:Colors.white ),
                   ),
                 ),
-              ],
-            ),
-            appText.primaryText(
-              text: "Cleaning items given",
-              color: Color(0xFF1C9F0B),
-              fontSize: 1.sp,
-            ),
-            SizedBox(height: 40.h),
-            GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CleaningHistory()),
-                  );
-                },
-                child: Center(
-                    child: appText.primaryText(
-                        text: "View Cleaning History",
-                        color: Colors.black,
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w600))),
-            SizedBox(height: 10.h),
-            GestureDetector(
+               ],
+             ),
+             appText.primaryText(text: "Cleaning items given",color: Color(0xFF1C9F0B),fontSize:1.sp, ),
+             SizedBox(height:40.h),
+               GestureDetector(onTap: () {
+               Navigator.push(context,MaterialPageRoute(builder: (context) => CleaningHistory()),);
+ 
+              },
+                child: Center(child: appText.primaryText(text: "View Cleaning History",color: Colors.black,fontSize:12.sp,fontWeight: FontWeight.w600 ))),
+                SizedBox(height:10.h),
+               GestureDetector(
                 onTap: () => _showCancelDialog(context),
-                child: Center(
-                    child: appText.primaryText(
-                        text: "Cancelation of Subscription",
-                        color: Colors.red,
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w600))),
+                child: Center(child: appText.primaryText(text: "Cancelation of Subscription",color: Colors.red,fontSize:12.sp,fontWeight: FontWeight.w600 ))),
           ],
+          
+             
         ),
       ),
     );

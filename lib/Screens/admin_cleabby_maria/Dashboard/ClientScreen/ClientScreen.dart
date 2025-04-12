@@ -19,17 +19,6 @@ class _ClientScreenState extends State<ClientScreen> {
   bool _isSubscriptionSelected = true;
 
   @override
-  void initState() {
-    super.initState();
-    _fetchBookings();
-  }
-
-  void _fetchBookings() {
-    final type = _isSubscriptionSelected ? 'subscription' : 'instant';
-    bookingsController.fetchBookings('booked', type);
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -42,7 +31,7 @@ class _ClientScreenState extends State<ClientScreen> {
           onPressed: () {},
         ),
         title: appText.primaryText(
-          text: "Clients",
+          text: "Bookings",
           fontSize: 18.sp,
           fontWeight: FontWeight.w700,
         ),
