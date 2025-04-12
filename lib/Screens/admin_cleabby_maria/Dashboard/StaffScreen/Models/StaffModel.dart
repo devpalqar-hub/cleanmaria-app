@@ -2,14 +2,14 @@ class Staff {
   final String id;
   final String name;
   final String email;
-  final String? phone;
+  final String phone;
   final String status;
 
   Staff({
     required this.id,
     required this.name,
     required this.email,
-    this.phone,
+    required this.phone ,
     required this.status,
   });
 
@@ -19,7 +19,7 @@ class Staff {
       id: json['id'] as String,
       name: json['name'] as String,
       email: json['email'] as String,
-      phone: json['phone'] as String?,
+      phone: json['phone'] as String,
       status: json['status'] as String,
     );
   }

@@ -223,6 +223,15 @@ class _StaffScreenState extends State<StaffScreen> {
     );
 
     if (isConfirmed ?? false) {
+      // Create a Staff object from the staff data
+     // final staffToDelete = Staff(
+       // id: staff['id'],
+      //  name: staff['name'] ?? '',
+       // email: staff['email'] ?? '',
+        //phone: staff['phone'] ?? '',
+        //status: staff['status'] ?? 'inactive',
+     // );
+
       // Call the delete API with the staff object
       await staffController.deleteStaff(context, staff);
 
