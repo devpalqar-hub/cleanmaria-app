@@ -30,69 +30,81 @@ class _CleaningHistoryState extends State<CleaningHistory> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 343.w,
-            height: 50.h,
-            margin: EdgeInsets.only(left: 15.w),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.w),
-                color: Colors.grey.shade200),
-            child: Row(
-              children: [
-                Icon(Icons.search),
-                appText.primaryText(text: "Search for booking"),
-              ],
+             SizedBox(height: 20.h,),
+             Container(
+              width: 345.w,
+              height: 50.h,
+              margin: EdgeInsets.symmetric(horizontal: 20.w),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.w),
+                  color: Colors.grey.shade200),
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Row(
+                  children: [
+                    Icon(Icons.search),SizedBox(width: 15.w,),
+                    appText.primaryText(text: "Search for booking"),
+                  ],
+                ),
+              ),
             ),
-          ),
+          
           SizedBox(
-            height: 10.h,
+            height: 20.h,
           ),
-          StatusCard(
-            status: "Completed",
-            color: const Color(0xFF03AE9D),
-            customerName: "Customer name",
-            time: "10:00 AM - 11:00 AM",
-            location: "Los Angeles, USA, 955032 - Washington DC.",
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CleaningDetails(),
+          Center(
+            child: Column(
+              children: [
+                StatusCard(
+                  status: "Completed",
+                  color: const Color(0xFF03AE9D),
+                  customerName: "Customer name",
+                  time: "10:00 AM - 11:00 AM",
+                  location: "Los Angeles, USA, 955032 - Washington DC.",
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CleaningDetails(),
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
-          ),
-          SizedBox(height: 10.h),
-          StatusCard(
-            status: "Cancelled",
-            color: const Color(0xFFAE1D03),
-            customerName: "Customer name",
-            time: "10:00 AM - 11:00 AM",
-            location: "Los Angeles, USA, 955032 - Washington DC.",
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CleaningDetails(),
-                ),
-              );
-            },
-          ),
-          SizedBox(height: 10.h),
-          StatusCard(
-            status: "Pending",
-            color: const Color(0xFFE89F18),
-            customerName: "Customer name",
-            time: "10:00 AM - 11:00 AM",
-            location: "Los Angeles, USA, 955032 - Washington DC.",
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CleaningDetails(),
-                ),
-              );
-            },
+              
+            SizedBox(height: 10.h),
+            StatusCard(
+              status: "Cancelled",
+              color: const Color(0xFFAE1D03),
+              customerName: "Customer name",
+              time: "10:00 AM - 11:00 AM",
+              location: "Los Angeles, USA, 955032 - Washington DC.",
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CleaningDetails(),
+                  ),
+                );
+              },
+            ),
+            SizedBox(height: 10.h),
+            StatusCard(
+              status: "Pending",
+              color: const Color(0xFFE89F18),
+              customerName: "Customer name",
+              time: "10:00 AM - 11:00 AM",
+              location: "Los Angeles, USA, 955032 - Washington DC.",
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CleaningDetails(),
+                  ),
+                );
+              },
+            ),
+            ],
+            ),
           ),
         ],
       ),

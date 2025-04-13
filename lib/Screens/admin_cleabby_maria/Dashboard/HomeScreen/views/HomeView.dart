@@ -96,7 +96,7 @@ class _HomeContentState extends State<HomeContent> {
 
   Widget _buildGreetingAndDropdown() {
     return Padding(
-      padding:  EdgeInsets.symmetric(horizontal:16.w),
+      padding:  EdgeInsets.symmetric(horizontal:10.w),
       child: Row(
         
         children: [
@@ -105,12 +105,12 @@ class _HomeContentState extends State<HomeContent> {
             fontSize: 18.sp,
             fontWeight: FontWeight.w700,
           ),
-          SizedBox(width:55.w),
+          SizedBox(width:40.w),
           DropdownButtonHideUnderline(
   child: DropdownButton<String>(
     value: hCtrl.filterRange,
     icon: const Icon(Icons.arrow_drop_down_sharp),
-    hint: const SizedBox.shrink(), // No visible hint
+  //  hint: const SizedBox.shrink(), // No visible hint
     items: ["Last Week", "Last Month", "Last Year"].map((String value) {
       return DropdownMenuItem<String>(
         value: value,
@@ -125,7 +125,7 @@ class _HomeContentState extends State<HomeContent> {
     },
     style: TextStyle(fontSize: 10.sp, color: Colors.black),
     dropdownColor: Colors.white,
-    underline: SizedBox(), // Removes underline if any
+    underline: SizedBox(),
   ),
 ),
 

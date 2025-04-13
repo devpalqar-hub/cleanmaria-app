@@ -65,8 +65,8 @@ class _BookingsaScreenState extends State<BookingsaScreen> {
               SizedBox(height: 10.h),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pop(context); // Close the modal
-                  setState(() {}); // Update UI with selected dates
+                  Navigator.pop(context); 
+                  setState(() {}); 
                 },
                 child: Text("Apply"),
               ),
@@ -128,41 +128,10 @@ class _BookingsaScreenState extends State<BookingsaScreen> {
               ),
             ),
             SizedBox(height: 15.h),
-            //StatusCard(status: , color: color, customerName: customerName, time: time, location: location)
-            //Text(
-            //startDate != null && endDate != null
-            //  ? "Selected Dates: ${startDate!.toLocal()} - ${endDate!.toLocal()}"
-            // : "No Dates Selected",
-            //style: GoogleFonts.poppins(fontSize: 14.sp, fontWeight: FontWeight.w500),
-            //),
-            // Obx(() {
-            //   if (bookingsController.isLoading.value) {
-            //     return Center(child: CircularProgressIndicator());
-            //   }
-            //   if (bookingsController.errorMessage.value.isNotEmpty) {
-            //     return Center(
-            //         child: Text(bookingsController.errorMessage.value));
-            //   }
-            //   return Column(
-            //     children: bookingsController.bookings
-            //         .map((booking) => StatusCard(
-            //               status: "Completed",
-            //               color: const Color(0xFF03AE9D),
-            //               customerName: booking.name,
-            //               time: booking.time,
-            //               location: booking.place,
-            //               onTap: () {
-            //                 Navigator.push(
-            //                   context,
-            //                   MaterialPageRoute(
-            //                     builder: (context) => CleaningDetails(),
-            //                   ),
-            //                 );
-            //               },
-            //             ))
-            //         .toList(),
-            //   );
-            // }),
+            StatusCard(status:"Completed", color: Color(0xFF03AE9D) , customerName: "Customer name", time: "10:00 AM - 11:00 AM", location: "Los Angeles, USA, 955032 - Washington DC."),
+         
+           
+             
           ],
         ),
       ),

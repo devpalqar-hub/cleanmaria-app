@@ -1,11 +1,11 @@
-import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/ClientScreen/BookingDetailsScreen.dart';
-import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/ClientScreen/Service/BookingController.dart';
 import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/ClientScreen/Views/BStatusCard.dart';
 import 'package:cleanby_maria/Src/appText.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
+import 'BookingDetailsScreen.dart';
+import 'Service/BookingController.dart';
+
 
 class ClientScreen extends StatefulWidget {
   const ClientScreen({super.key});
@@ -16,6 +16,7 @@ class ClientScreen extends StatefulWidget {
 
 class _ClientScreenState extends State<ClientScreen> {
   final BookingsController bookingsController = Get.put(BookingsController());
+  final TextEditingController searchController = TextEditingController();
   bool _isSubscriptionSelected = true;
 
   @override
@@ -28,7 +29,9 @@ class _ClientScreenState extends State<ClientScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_outlined,
               color: Colors.black),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
         title: appText.primaryText(
           text: "Bookings",
@@ -136,31 +139,39 @@ class _ClientScreenState extends State<ClientScreen> {
           ),
           SizedBox(height: 25.h),
 
+          // Booking List
           Expanded(
             child: Obx(() {
               if (bookingsController.isLoading.value) {
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               }
               if (bookingsController.errorMessage.value.isNotEmpty) {
-                return Center(
-                    child: Text(bookingsController.errorMessage.value));
+                return Center(child: Text(bookingsController.errorMessage.value));
               }
-              return SingleChildScrollView(
-                child: Column(
-                  children: bookingsController.bookings
-                      .map((booking) => GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        BookingDetailsScreen()),
-                              );
-                            },
-                            child: BStatusCard(booking: booking),
-                          ))
-                      .toList(),
-                ),
+
+              final filteredBookings = bookingsController.bookings.where((booking) {
+                return _isSubscriptionSelected
+                    ? booking.type == 'subscription'
+                    : booking.type == 'one-time';
+              }).toList();
+
+              return ListView.builder(
+                itemCount: filteredBookings.length,
+                itemBuilder: (context, index) {
+                  final booking = filteredBookings[index];
+                  return GestureDetector(
+                    onTap: () {
+                     // if (searchController.text.isEmpty ||
+                       //                 booking.id!
+                         //                   .toLowerCase()
+                           //                 .contains(searchController.text)) 
+                           {
+                        Get.to(() => BookingDetailsScreen(bookingId: booking.id!));
+                      }
+                    },
+                    child: BStatusCard(booking: booking),
+                  );
+                },
               );
             }),
           ),
