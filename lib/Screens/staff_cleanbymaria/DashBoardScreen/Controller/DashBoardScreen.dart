@@ -1,4 +1,4 @@
-
+import 'package:cleanby_maria/Screens/AuthenticationScreen/AutheticationScreen.dart';
 import 'package:cleanby_maria/Screens/staff_cleanbymaria/BookingScreen/BookingScreen.dart';
 import 'package:cleanby_maria/Screens/staff_cleanbymaria/DashBoardScreen/Controller/Views/DutyCard.dart';
 import 'package:cleanby_maria/Screens/staff_cleanbymaria/DashBoardScreen/Controller/Views/OverViewCard.dart';
@@ -6,6 +6,8 @@ import 'package:cleanby_maria/Screens/staff_cleanbymaria/DashBoardScreen/Control
 import 'package:cleanby_maria/Src/appText.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:get/utils.dart';
 
 class DashBoardScreen extends StatefulWidget {
   const DashBoardScreen({super.key});
@@ -16,7 +18,12 @@ class DashBoardScreen extends StatefulWidget {
 
 class _DashBoardScreenState extends State<DashBoardScreen> {
   String _selectedDutyStatus = "All Duty";
-  final List<String> _dutyOptions = ["All Duty", "Completed", "Pending", "Cancelled"];
+  final List<String> _dutyOptions = [
+    "All Duty",
+    "Completed",
+    "Pending",
+    "Cancelled"
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -105,10 +112,15 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                         _selectedDutyStatus = newValue!;
                       });
                     },
-                    items: _dutyOptions.map<DropdownMenuItem<String>>((String value) {
+                    items: _dutyOptions
+                        .map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
-                        child: Text(value, style: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.w400, color: Colors.black)),
+                        child: Text(value,
+                            style: TextStyle(
+                                fontSize: 11.sp,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black)),
                       );
                     }).toList(),
                   ),
@@ -173,17 +185,26 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 SizedBox(height: 15.h),
                 Text(
                   "Reema Salam",
-                  style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w600, fontFamily: "NunitoSans", color: Colors.black),
+                  style: TextStyle(
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: "NunitoSans",
+                      color: Colors.black),
                 ),
                 SizedBox(height: 2.h),
                 Text(
                   "reemasalam@gmail.com",
-                  style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w500, fontFamily: "NunitoSans", color: Colors.black),
+                  style: TextStyle(
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: "NunitoSans",
+                      color: Colors.black),
                 ),
                 SizedBox(height: 25.h),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    //Navigator.pop(context);
+                 
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF19A4C6),
@@ -193,7 +214,11 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   ),
                   child: Text(
                     "Logout",
-                    style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w600, fontFamily: "NunitoSans", color: Colors.white),
+                    style: TextStyle(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: "NunitoSans",
+                        color: Colors.white),
                   ),
                 ),
               ],
