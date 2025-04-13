@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart' show Get;
+import 'package:intl/intl.dart';
 
 class BookingDetailsScreen extends StatefulWidget {
   final String bookingId;
 
-  const BookingDetailsScreen({required this.bookingId, Key? key}) : super(key: key);
+  const BookingDetailsScreen({required this.bookingId, Key? key})
+      : super(key: key);
 
   @override
   State<BookingDetailsScreen> createState() => _BookingDetailsScreenState();
@@ -52,7 +54,8 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text("Cancel Subscription"),
-        content: const Text("Are you sure you want to cancel this subscription?"),
+        content:
+            const Text("Are you sure you want to cancel this subscription?"),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -78,7 +81,8 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_outlined, color: Colors.black),
+          icon: const Icon(Icons.arrow_back_ios_new_outlined,
+              color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
         title: appText.primaryText(
@@ -137,7 +141,9 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
               ),
               _infoText(
                 title: "Booking Date",
-                value: booking?.createdAt ?? 'N/A',
+                value: DateFormat("dd MMM yyyy | hh:mm a")
+                        .format(DateTime.parse(booking!.createdAt!)) ??
+                    'N/A',
               ),
               Row(
                 children: [
@@ -192,31 +198,35 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
               Row(
                 children: [
                   Expanded(
-                    child: _infoText(title: "Service plan", value: "Plan name"),
+                    child: _infoText(
+                        title: "Service plan", value: service!.name ?? ""),
                   ),
-                  Container(
-                    width: 65.w,
-                    height: 19.h,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.r),
-                      color: const Color(0xFF1C9F0B),
-                    ),
-                    child: Center(
-                      child: appText.primaryText(
-                        text: "ECO SERVICE",
-                        fontSize: 8.sp,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
+                  if (detail.data!.isEco != null && detail.data!.isEco!)
+                    Container(
+                      width: 65.w,
+                      height: 19.h,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.r),
+                        color: const Color(0xFF1C9F0B),
+                      ),
+                      child: Center(
+                        child: appText.primaryText(
+                          text: "ECO SERVICE",
+                          fontSize: 8.sp,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
-                  ),
                 ],
               ),
-              appText.primaryText(
-                text: "Cleaning items given",
-                color: const Color(0xFF1C9F0B),
-                fontSize: 12.sp,
-              ),
+              if (detail.data!.materialProvided != null &&
+                  detail.data!.materialProvided!)
+                appText.primaryText(
+                  text: "Cleaning items given",
+                  color: const Color(0xFF1C9F0B),
+                  fontSize: 12.sp,
+                ),
               SizedBox(height: 40.h),
               GestureDetector(
                 onTap: () {

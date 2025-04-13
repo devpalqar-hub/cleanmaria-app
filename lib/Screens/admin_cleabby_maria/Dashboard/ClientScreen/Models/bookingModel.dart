@@ -15,6 +15,7 @@ class BookingModel {
   List<MonthSchedules>? monthSchedules;
   BookingAddress? bookingAddress;
   SubscriptionType? subscriptionType;
+  String? createdAt;
 
   BookingModel(
       {this.id,
@@ -26,6 +27,7 @@ class BookingModel {
       this.propertyType,
       this.materialProvided,
       this.isEco,
+      this.createdAt,
       this.status,
       this.price,
       this.customer,
@@ -43,6 +45,7 @@ class BookingModel {
     areaSize = json['areaSize'];
     propertyType = json['propertyType'];
     materialProvided = json['materialProvided'];
+    createdAt = json["createdAt"];
     isEco = json['isEco'];
     status = json['status'];
     price = json['price'];

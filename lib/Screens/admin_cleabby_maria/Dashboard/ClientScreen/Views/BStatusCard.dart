@@ -59,9 +59,9 @@ class BStatusCard extends StatelessWidget {
                     SizedBox(width: 5.w),
                     appText.primaryText(
                         text: (booking.subscriptionType != null)
-                            ? booking.subscriptionType!.name!
-                            : "",
-                        fontSize: 12.sp,
+                            ? booking.subscriptionType!.name! + " |"
+                            : "One Time | ",
+                        fontSize: 11.sp,
                         fontWeight: FontWeight.w500,
                         color:
                             // (booking.plan == "By weekly plan" ||
@@ -71,11 +71,18 @@ class BStatusCard extends StatelessWidget {
                         ),
                     SizedBox(width: 5.w),
                     appText.primaryText(
-                      text: booking.monthSchedules!
-                          .map((value) =>
-                              "${value.weekOfMonth}-${bCtrl.weektoDay(value.dayOfWeek!)} ")
-                          .join(","),
-                      fontSize: 12.sp,
+                      text: (booking.subscriptionType != null)
+                          ? booking.monthSchedules!
+                              .map((value) =>
+                                  "${value.weekOfMonth}-${bCtrl.weektoDay(value.dayOfWeek!)} ")
+                              .join(",")
+                          : bCtrl.WeekDatetoDate(
+                              createdDate: DateTime.parse(booking.createdAt!),
+                              weekOfMonth:
+                                  booking.monthSchedules!.first.weekOfMonth!,
+                              dayOfWeek:
+                                  booking.monthSchedules!.first.dayOfWeek!),
+                      fontSize: 10.sp,
                       fontWeight: FontWeight.w500,
                       color: Colors.black,
                     ),
@@ -84,7 +91,7 @@ class BStatusCard extends StatelessWidget {
                 SizedBox(height: 3.h),
                 appText.primaryText(
                   text: "los Angles , USA, 955032 - Washin DC. ",
-                  fontSize: 12.sp,
+                  fontSize: 11.sp,
                   fontWeight: FontWeight.w500,
                   color: Colors.black,
                 ),
@@ -96,14 +103,14 @@ class BStatusCard extends StatelessWidget {
             children: [
               Image.asset(
                 "assets/call2.png",
-                height: 20.h,
-                width: 20.w,
+                height: 27.w,
+                width: 27.w,
               ),
-              SizedBox(height: 5.h),
+              SizedBox(height: 10.h),
               appText.primaryText(
-                text: booking.price,
-                fontSize: 10.5.sp,
-                fontWeight: FontWeight.w400,
+                text: "\$" + booking.price!,
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w600,
                 color: Colors.black,
               ),
             ],
