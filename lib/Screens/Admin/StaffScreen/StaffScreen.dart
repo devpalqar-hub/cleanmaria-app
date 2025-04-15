@@ -17,7 +17,7 @@ class StaffScreen extends StatefulWidget {
 }
 
 class _StaffScreenState extends State<StaffScreen> {
-  //bool isLoading = true;
+  bool isLoading = true;
   StaffController stCtrl = Get.put(StaffController());
   final TextEditingController searchController = TextEditingController();
 
@@ -32,12 +32,13 @@ class _StaffScreenState extends State<StaffScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        //  leading: const Icon(Icons.arrow_back_ios),
+         backgroundColor: Colors.white,
+  
         title: Text(
           "Staffs",
           style: GoogleFonts.poppins(
             fontSize: 18.sp,
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w600,
             color: Colors.black,
           ),
         ),
@@ -89,8 +90,7 @@ class _StaffScreenState extends State<StaffScreen> {
           child: GetBuilder<StaffController>(builder: (_) {
             return Column(
               children: [
-                SizedBox(height: 15.h),
-                _buildSearchBox(),
+                
                 SizedBox(height: 15.h),
                 Expanded(
                   child: _.isLoading
@@ -121,44 +121,6 @@ class _StaffScreenState extends State<StaffScreen> {
             );
           }),
         ),
-      ),
-    );
-  }
-
-  Widget _buildSearchBox() {
-    return Container(
-      height: 47.h,
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF7F6F5),
-        borderRadius: BorderRadius.circular(14.r),
-      ),
-      child: Row(
-        children: [
-          SizedBox(width: 8.w),
-          Expanded(
-            child: TextField(
-              controller: searchController,
-              onChanged: (value) {
-                setState(() {}); // Trigger a rebuild on search input
-              },
-              decoration: InputDecoration(
-                hintText: 'Search',
-                hintStyle:
-                    TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500),
-                border: InputBorder.none,
-              ),
-            ),
-          ),
-          // GestureDetector(
-          //   onTap: () {},
-          //   child: Image.asset(
-          //     'assets/Filters.png',
-          //     width: 70.sp,
-          //     height: 24.sp,
-          //   ),
-          // ),
-        ],
       ),
     );
   }

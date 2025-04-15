@@ -35,6 +35,7 @@ class _CleaningHistoryState extends State<CleaningHistory> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+         backgroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_outlined,
               color: Colors.black),
@@ -43,8 +44,9 @@ class _CleaningHistoryState extends State<CleaningHistory> {
         title: appText.primaryText(
             text: "Cleaning History",
             fontSize: 18.sp,
-            fontWeight: FontWeight.w700),
+            fontWeight: FontWeight.w600),
       ),
+     
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

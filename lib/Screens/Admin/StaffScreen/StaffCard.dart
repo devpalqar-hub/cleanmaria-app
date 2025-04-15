@@ -38,18 +38,19 @@ class _StaffCardState extends State<StaffCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
+       width: 352.w,
+      height: 90.h,
       margin: EdgeInsets.only(bottom: 10.h),
       padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 15.w),
       decoration: BoxDecoration(
-        color: const Color(0xFFF3F5F6),
-        border: Border.all(color: const Color(0x00757d7f), width: 0.5),
-        borderRadius: BorderRadius.circular(17.w),
+        borderRadius: BorderRadius.circular(10.r),
+        color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF000000).withOpacity(0.05),
-            blurRadius: 1,
-            spreadRadius: 0.5,
-            offset: const Offset(0, 1),
+          offset: const Offset(0, 1),
+            blurRadius: 4,
+            spreadRadius: 0,
+          color: Colors.black.withOpacity(0.1),
           ),
         ],
       ),
@@ -81,19 +82,19 @@ class _StaffCardState extends State<StaffCard> {
             ),
           ),
           Container(
-            height: 18.h,
-            width: 56.w,
+            height: 24.h,
+            width: 82.w,
             decoration: BoxDecoration(
               color: isActive ? const Color(0xFF1C9F0B) : Colors.red,
-              borderRadius: BorderRadius.circular(20.w),
+              borderRadius: BorderRadius.circular(10.r),
             ),
             child: Center(
               child: Text(
                 isActive ? "Active" : "Disabled",
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 8.sp,
-                  fontWeight: FontWeight.w500,
+                  fontSize: 11.sp,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
             ),
@@ -167,16 +168,17 @@ class _StaffCardState extends State<StaffCard> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: Text("Confirm $content"),
           content: Text(
               "Are you sure you want to ${content.toLowerCase()} this staff member?"),
           actions: [
             TextButton(
-              child: const Text("Cancel"),
+              child: const Text("Cancel",style: TextStyle(color: Colors.blue),),
               onPressed: () => Navigator.of(context).pop(),
             ),
             TextButton(
-              child: Text(content),
+              child: Text(content,style: TextStyle(color: Colors.blue) ,),
               onPressed: () {
                 callback();
                 Navigator.of(context).pop();

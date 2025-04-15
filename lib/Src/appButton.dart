@@ -33,23 +33,10 @@ class AppButton extends StatefulWidget {
 class _AppButtonState extends State<AppButton> {
   bool _isLoading = false;
 
-  void _handlePress() async {
-  if (!mounted) return; // Ensure the widget is still in the tree
-
-  setState(() {
-    _isLoading = true;
-  });
-
-  await Future.delayed(const Duration(seconds: 2)); // Simulate a delay
-
-  if (!mounted) return; // Ensure the widget is still in the tree
-
-  setState(() {
-    _isLoading = false;  // Should be false, not true
-  });
-
-  widget.onPressed();
-}
+  void _handlePress() {
+    if (!mounted) return;
+    widget.onPressed();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +51,7 @@ class _AppButtonState extends State<AppButton> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.r),
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 10.w), // Ensure content fits
+                padding: EdgeInsets.symmetric(horizontal: 10.w),
               ),
               child: _isLoading
                   ? LoadingAnimationWidget.staggeredDotsWave(
@@ -72,7 +59,7 @@ class _AppButtonState extends State<AppButton> {
                       size: 20.sp,
                     )
                   : Row(
-                      mainAxisAlignment: MainAxisAlignment.center, // Center content
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         if (widget.icon != null) ...[
                           Icon(widget.icon, size: 14.sp, color: widget.iconColor ?? Colors.white),
@@ -97,7 +84,7 @@ class _AppButtonState extends State<AppButton> {
                       size: 20.sp,
                     )
                   : Row(
-                      mainAxisAlignment: MainAxisAlignment.center, // Center content
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         if (widget.icon != null) ...[
                           Icon(widget.icon, size: 14.sp, color: widget.iconColor ?? const Color(0xFF19A4C6)),

@@ -91,12 +91,12 @@ class BookingsController extends GetxController {
 
   Color getStatusColor(String status) {
     switch (status) {
-      case "scheduled":
+      case "Scheduled":
         return Color(0xFFE89F18);
         break;
-      case "missed":
+      case "Missed":
         return Color(0xFFAE1D03);
-      case "completed":
+      case "Completed":
         return Color(0xFF03AE9D);
     }
     return Color(0xFFE89F18);
@@ -135,6 +135,39 @@ class BookingsController extends GetxController {
 
     update();
   }
+  
+  Future<void> cancelSubscription({
+  required String subscriptionId,
+  required String status,
+  required String type,
+}) async {
+  final prefs = await SharedPreferences.getInstance();
+  final token = prefs.getString("access_token");
+
+  if (token == null || token.isEmpty) {
+    errorMessage = 'Access token is missing';
+    update();
+    return;
+  }
+
+  final response = await http.patch(
+    Uri.parse('$baseUrl/subscriptions/$subscriptionId/cancel'),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+  );
+
+  if (response.statusCode == 200) {
+    await fetchBookings(status, type); 
+    Get.back(); 
+    Get.offAllNamed('/client');
+  } else {
+    errorMessage = 'Failed to cancel subscription (${response.statusCode})';
+    update();
+    fetchBookings(status, type);
+  }
+}
 
   Future<void> fetchBookings(String status, String type) async {
     isLoading = true;

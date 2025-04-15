@@ -36,14 +36,6 @@ class _ClientScreenState extends State<ClientScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        //  elevation: 0,
-        // leading: IconButton(
-        //   icon: const Icon(Icons.arrow_back_ios_new_outlined,
-        //       color: Colors.black),
-        //   onPressed: () {
-        //     Navigator.pop(context);
-        //   },
-        // ),
         title: appText.primaryText(
           text: "Bookings",
           fontSize: 18.sp,
@@ -54,7 +46,6 @@ class _ClientScreenState extends State<ClientScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: 10.h),
-
           Container(
             alignment: Alignment.center,
             margin: EdgeInsets.symmetric(horizontal: 16.w),
@@ -89,7 +80,6 @@ class _ClientScreenState extends State<ClientScreen> {
               },
             ),
           ),
-
           SizedBox(height: 10.h),
           Container(
             width: 360.w,
@@ -111,7 +101,7 @@ class _ClientScreenState extends State<ClientScreen> {
                     setState(() {});
                   },
                   decoration: InputDecoration(
-                      border: InputBorder.none, hintText: "Search Clients"),
+                      border: InputBorder.none, hintText: "Search for Bookings"),
                 ))
               ],
             ),

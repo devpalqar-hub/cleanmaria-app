@@ -27,7 +27,7 @@ class _HomeContentState extends State<HomeContent> {
     return GetBuilder<HomeController>(builder: (_) {
       return SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.fromLTRB(12.w, 10.h, 12.w, 0),
+          padding: EdgeInsets.fromLTRB(12.w, 40.h, 12.w, 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -37,7 +37,6 @@ class _HomeContentState extends State<HomeContent> {
               ),
               SizedBox(height: 32.h),
               _buildGreetingAndDropdown(),
-              //SizedBox(height: .h),
               OverViewCard(),
               SizedBox(height: 20.h),
               appText.primaryText(
@@ -72,8 +71,6 @@ class _HomeContentState extends State<HomeContent> {
 
   Widget _buildTopBar() {
     return Row(
-      //crossAxisAlignment: CrossAxisAlignment.start,
-      //mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         Image.asset("assets/bname.png", height: 50.h, width: 115.w),
         SizedBox(
@@ -105,7 +102,6 @@ class _HomeContentState extends State<HomeContent> {
           child: DropdownButton<String>(
             value: hCtrl.filterRange,
             icon: const Icon(Icons.arrow_drop_down_sharp),
-            //  hint: const SizedBox.shrink(), // No visible hint
             items: ["Last Week", "Last Month", "Last Year"].map((String value) {
               return DropdownMenuItem<String>(
                 value: value,
@@ -170,11 +166,8 @@ class _HomeContentState extends State<HomeContent> {
         appText.primaryText(
             text: label, fontSize: 12.sp, fontWeight: FontWeight.w500),
         SpacerH(5.w),
-        InkWell(
-          onTap: () {
-            hCtrl.selectDate(context, controller);
-          },
-          child: Container(
+       
+           Container(
             width: 125.w,
             height: 45.h,
             alignment: Alignment.center,
@@ -186,7 +179,7 @@ class _HomeContentState extends State<HomeContent> {
             child: TextField(
               controller: controller,
               textAlignVertical: TextAlignVertical.top,
-              readOnly: true,
+             readOnly: true,
               textAlign: TextAlign.start,
               style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600),
               decoration: InputDecoration(
@@ -198,6 +191,9 @@ class _HomeContentState extends State<HomeContent> {
                     right: 10.w,
                   ),
                   suffix: InkWell(
+                    onTap: () {
+                hCtrl.selectDate(context, controller); // Open date picker
+              },
                     child: Icon(
                       Icons.calendar_month,
                       size: 15.sp,
@@ -211,7 +207,7 @@ class _HomeContentState extends State<HomeContent> {
                   ),
             ),
           ),
-        ),
+      
       ],
     );
   }

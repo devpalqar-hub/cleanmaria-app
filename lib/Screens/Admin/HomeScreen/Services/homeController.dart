@@ -60,12 +60,12 @@ class HomeController extends GetxController {
 
   Color getStatusColor(String status) {
     switch (status) {
-      case "scheduled":
+      case "Scheduled":
         return Color(0xFFE89F18);
         break;
-      case "missed":
+      case "Missed":
         return Color(0xFFAE1D03);
-      case "completed":
+      case "Completed":
         return Color(0xFF03AE9D);
     }
     return Color(0xFFE89F18);

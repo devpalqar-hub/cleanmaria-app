@@ -28,10 +28,10 @@ class BStatusCard extends StatelessWidget {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            offset: const Offset(0, 4),
-            blurRadius: 10,
-            spreadRadius: 2,
-            color: Colors.black.withOpacity(0.1),
+          offset: const Offset(0, 1),
+            blurRadius: 4,
+            spreadRadius: 0,
+          color: Colors.black.withOpacity(0.1),
           ),
         ],
       ),

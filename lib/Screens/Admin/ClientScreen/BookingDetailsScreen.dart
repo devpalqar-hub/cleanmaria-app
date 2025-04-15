@@ -18,6 +18,7 @@ class BookingDetailsScreen extends StatefulWidget {
   final String? status;
   final String? scheduleId;
   final String? date;
+  final String? subscriptionId;
   bool isStaff;
   BookingDetailsScreen(
       {required this.bookingId,
@@ -25,6 +26,7 @@ class BookingDetailsScreen extends StatefulWidget {
       this.staff,
       this.status,
       this.scheduleId,
+      this.subscriptionId,
       this.isStaff = false,
       super.key});
 
@@ -75,16 +77,33 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("No", style: TextStyle(color: Colors.black)),
+            child: const Text("No", style: TextStyle(color: Colors.blue)),
           ),
           TextButton(
             onPressed: () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Subscription Cancelled")),
-              );
-            },
-            child: const Text("Yes", style: TextStyle(color: Colors.red)),
+  Navigator.pop(context);
+
+  final subscriptionId = controller.bookingDetail?.id;
+  final type = controller.bookingDetail?.type ?? 'subscription';
+
+  if (subscriptionId != null) {
+    controller.cancelSubscription(
+      subscriptionId: subscriptionId,
+      status: "active",
+  type: type,
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Subscription Cancelled")),
+    );
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Subscription ID is missing.")),
+    );
+  }
+},
+
+            child: const Text("Yes", style: TextStyle(color: Colors.blue)),
           ),
         ],
       ),
@@ -96,6 +115,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_outlined,
               color: Colors.black),
@@ -104,7 +124,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
         title: appText.primaryText(
           text: "Booking Details",
           fontSize: 18.sp,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w600,
         ),
       ),
       body: SingleChildScrollView(
@@ -140,7 +160,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                       launchUrl(Uri.parse("tel:${detail.customer!.phone!}"));
                     },
                     child: Image.asset(
-                      'assets/call.png',
+                      'assets/call2.png',
                       width: 30.w,
                       height: 30.h,
                     ),
@@ -241,7 +261,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                   appText.primaryText(
                     text: "Rooms: ${detail.noOfRooms ?? 'N/A'}",
                   ),
-                  SizedBox(width: 69.w),
+                  SizedBox(width: 120.w),
                   appText.primaryText(
                     text: "Bathrooms: ${detail.noOfBathRooms ?? 'N/A'}",
                   ),
@@ -273,10 +293,16 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                     ),
                 ],
               ),
-              SizedBox(height: 25.h),
               if (widget.scheduleId != null) SizedBox(height: 8.h),
               if (widget.scheduleId != null)
-                InkWell(
+              if (detail!.materialProvided != null && detail!.materialProvided!)
+                appText.primaryText(
+                  text: "Cleaning items given",
+                  color: const Color(0xFF1C9F0B),
+                  fontSize: 12.sp,
+                ),
+                SizedBox(height: 0.h,),
+                 InkWell(
                   onTap: () {
                     Get.bottomSheet(BookingStatusBottomSheet(
                         isStaff: widget.isStaff,
@@ -286,28 +312,23 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                           booking.status = value;
                         }));
                   },
-                  child: Container(
-                    width: 360.w,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30.r),
-                        color: Color(0xff19A4C6)),
-                    height: 50,
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Change Status",
-                      style: TextStyle(
-                          fontSize: 14.w,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500),
+                  child: Center(
+                    child: Container(
+                      width: 320.w,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30.r),
+                          color: Color(0xff19A4C6)),
+                      height: 50,
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Change Status",
+                        style: TextStyle(
+                            fontSize: 14.w,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500),
+                      ),
                     ),
                   ),
-                ),
-              SizedBox(height: 8.h),
-              if (detail!.materialProvided != null && detail!.materialProvided!)
-                appText.primaryText(
-                  text: "Cleaning items given",
-                  color: const Color(0xFF1C9F0B),
-                  fontSize: 12.sp,
                 ),
               SizedBox(height: 40.h),
               if (widget.date == null)

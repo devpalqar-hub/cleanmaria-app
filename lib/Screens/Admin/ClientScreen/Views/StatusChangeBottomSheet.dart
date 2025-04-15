@@ -47,23 +47,23 @@ class _BookingStatusBottomSheetState extends State<BookingStatusBottomSheet> {
     _statusOptions = [
       if (!widget.isStaff)
         {
-          'status': 'scheduled',
+          'status': 'Scheduled',
           'icon': Icons.event_note,
           'color': Colors.blueAccent,
         },
       {
-        'status': 'missed',
+        'status': 'Missed',
         'icon': Icons.event_busy,
         'color': Colors.red,
       },
       if (!widget.isStaff)
         {
-          'status': 'refunded',
+          'status': 'Refunded',
           'icon': Icons.money_off,
           'color': Colors.amber,
         },
       {
-        'status': 'completed',
+        'status': 'Completed',
         'icon': Icons.event_available_rounded,
         'color': Colors.green,
       },
@@ -115,6 +115,7 @@ class _BookingStatusBottomSheetState extends State<BookingStatusBottomSheet> {
 
           // Save button
           ElevatedButton(
+        
             onPressed: () async {
               final prefs = await SharedPreferences.getInstance();
               final token = prefs.getString("access_token");
@@ -152,7 +153,9 @@ class _BookingStatusBottomSheetState extends State<BookingStatusBottomSheet> {
               }
             },
             style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 14),
+               backgroundColor: const Color(0xFF2196F3), 
+    
+              padding: EdgeInsets.symmetric(vertical: 14),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -162,7 +165,7 @@ class _BookingStatusBottomSheetState extends State<BookingStatusBottomSheet> {
                     color: Colors.blue, size: 25)
                 : Text(
                     'Save Changes',
-                    style: TextStyle(fontSize: 12.sp),
+                    style: TextStyle(fontSize: 15.sp,color: Colors.white),
                   ),
           ),
         ],

@@ -46,9 +46,9 @@ class _HomescreenState extends State<Homescreen> {
         bottomNavigationBar: BottomNavigationBar(
           items: [
             _buildBarItem("assets/home.png", "Home", 0),
-            _buildBarItem("assets/search.png", "Client", 1),
-            _buildBarItem("assets/shop.png", "History", 2),
-            _buildBarItem("assets/cart.png", "Staff", 3),
+            _buildBarItem("assets/search1.png", "Client", 1),
+            _buildBarItem("assets/shop_icon.png", "History", 2),
+            _buildBarItem("assets/cart1.png", "Staff", 3),
           ],
           currentIndex: indexnum,
           onTap: (index) => setState(() => indexnum = index),

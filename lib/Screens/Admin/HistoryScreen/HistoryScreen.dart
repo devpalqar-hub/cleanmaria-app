@@ -71,7 +71,9 @@ class _BookingsaScreenState extends State<BookingsaScreen> {
                   setState(() {});
                   hisCtrl.fetchShedules();
                 },
-                child: Text("Apply"),
+                style: ElevatedButton.styleFrom(
+                   backgroundColor: const Color(0xFF19A4C6), ),
+                child: Text("Apply",style: TextStyle(color:  Colors.white),),
               ),
             ],
           ),
@@ -126,7 +128,7 @@ class _BookingsaScreenState extends State<BookingsaScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         appText.primaryText(
-                          text: 'Shedules',
+                          text: 'Schedules',
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w500,
                         ),
