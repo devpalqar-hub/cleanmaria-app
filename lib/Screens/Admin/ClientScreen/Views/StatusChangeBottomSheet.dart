@@ -121,8 +121,8 @@ class _BookingStatusBottomSheetState extends State<BookingStatusBottomSheet> {
                 isLoading = true;
               });
               final response = await put(
-                  Uri.parse(
-                      baseUrl + "/scheduler/schedules/${widget.sheduleID}"),
+                  Uri.parse(baseUrl +
+                      "/scheduler/schedules/${widget.sheduleID}/change-status"),
                   headers: {
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer $token',
