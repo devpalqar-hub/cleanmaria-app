@@ -4,8 +4,8 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:cleanby_maria/Screens/admin_cleabby_maria/HomeScreen/HomeScreen.dart';
-import 'package:cleanby_maria/Screens/staff_cleanbymaria/DashBoardScreen.dart';
+import 'package:cleanby_maria/Screens/Admin/HomeScreen/HomeScreen.dart';
+import 'package:cleanby_maria/Screens/staff/DashBoardScreen.dart';
 import 'package:cleanby_maria/main.dart'; // Ensure this contains baseUrl
 
 class AuthenticationController extends GetxController {

@@ -4,8 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'Screens/AuthenticationScreen/AutheticationScreen.dart';
-import 'Screens/admin_cleabby_maria/HomeScreen/HomeScreen.dart';
-import 'Screens/staff_cleanbymaria/DashBoardScreen.dart';
+import 'Screens/Admin/HomeScreen/HomeScreen.dart';
+import 'Screens/staff/DashBoardScreen.dart';
 
 String baseUrl = "https://app.cleanmaria.com/api";
 
