@@ -4,8 +4,8 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:cleanby_maria/Screens/admin_cleabby_maria/Dashboard/HomeScreen/HomeScreen.dart';
-import 'package:cleanby_maria/Screens/staff_cleanbymaria/DashBoardScreen/Controller/DashBoardScreen.dart';
+import 'package:cleanby_maria/Screens/admin_cleabby_maria/HomeScreen/HomeScreen.dart';
+import 'package:cleanby_maria/Screens/staff_cleanbymaria/DashBoardScreen.dart';
 import 'package:cleanby_maria/main.dart'; // Ensure this contains baseUrl
 
 class AuthenticationController extends GetxController {
@@ -30,7 +30,6 @@ class AuthenticationController extends GetxController {
 
         SharedPreferences prefs = await SharedPreferences.getInstance();
         String? role = prefs.getString("role");
-        String? userName = prefs.getString("user_name");
 
         print("User role: $role");
 
@@ -71,6 +70,7 @@ class AuthenticationController extends GetxController {
         await prefs.setString("access_token", data['access_token']);
         await prefs.setString("role", data['user']['role'] ?? "user");
         await prefs.setString("user_name", data['user']['name'] ?? "User");
+        await prefs.setString("email", email ?? "User");
         await prefs.setString("LOGIN", "IN");
         return {
           "success": true,

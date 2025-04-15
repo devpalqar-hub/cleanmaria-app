@@ -90,7 +90,7 @@ class Apptextfield {
     required String hintText,
     TextEditingController? controller,
   }) {
-    bool _obscureText = true;
+    bool obscureText = true;
 
     return StatefulBuilder(
       builder: (context, setState) {
@@ -113,7 +113,7 @@ class Apptextfield {
               ),
               child: TextField(
                 controller: controller,
-                obscureText: _obscureText,
+                obscureText: obscureText,
                 textAlign:
                     TextAlign.start, 
                 textAlignVertical: TextAlignVertical.center,
@@ -127,12 +127,12 @@ class Apptextfield {
                   ),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _obscureText ? Icons.visibility : Icons.visibility_off,
+                      obscureText ? Icons.visibility : Icons.visibility_off,
                       color: Colors.grey[600],
                     ),
                     onPressed: () {
                       setState(() {
-                        _obscureText = !_obscureText;
+                        obscureText = !obscureText;
                       });
                     },
                   ),

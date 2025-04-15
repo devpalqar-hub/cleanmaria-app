@@ -14,7 +14,7 @@ class AppButton extends StatefulWidget {
   final Color? iconColor;
 
   const AppButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.onPressed,
     this.isPrimary = true,
@@ -24,7 +24,7 @@ class AppButton extends StatefulWidget {
     this.fontWeight,
     this.icon,
     this.iconColor,
-  }) : super(key: key);
+  });
 
   @override
   _AppButtonState createState() => _AppButtonState();
