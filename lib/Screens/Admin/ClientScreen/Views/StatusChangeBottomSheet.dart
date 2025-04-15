@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cleanby_maria/Screens/Admin/HistoryScreen/Controller/HistoryController.dart';
 import 'package:cleanby_maria/Screens/staff/Controller/SHomeController.dart';
 import 'package:cleanby_maria/main.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +58,7 @@ class _BookingStatusBottomSheetState extends State<BookingStatusBottomSheet> {
       },
       if (!widget.isStaff)
         {
-          'status': 'Refunded',
+          'status': 'refunded',
           'icon': Icons.money_off,
           'color': Colors.amber,
         },
@@ -120,7 +121,7 @@ class _BookingStatusBottomSheetState extends State<BookingStatusBottomSheet> {
               setState(() {
                 isLoading = true;
               });
-              final response = await put(
+              final response = await patch(
                   Uri.parse(baseUrl +
                       "/scheduler/schedules/${widget.sheduleID}/change-status"),
                   headers: {
@@ -136,8 +137,15 @@ class _BookingStatusBottomSheetState extends State<BookingStatusBottomSheet> {
               print(response.statusCode);
               if (response.statusCode == 200) {
                 widget.onStatusChanged(selectedStatus);
-                StaffHomeController hctrl = Get.put(StaffHomeController());
-                hctrl.refreshCtrl.requestRefresh();
+                if (widget.isStaff) {
+                  StaffHomeController hctrl = Get.put(StaffHomeController());
+
+                  hctrl.page = 1;
+                  hctrl.history.clear();
+                  hctrl.fetchShdedule();
+
+                  hctrl.update();
+                }
                 Navigator.pop(context);
               } else {
                 Fluttertoast.showToast(msg: 'Update Failed');

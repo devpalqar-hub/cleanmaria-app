@@ -282,7 +282,9 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                         isStaff: widget.isStaff,
                         sheduleID: widget.scheduleId!,
                         currentStatus: booking.status!,
-                        onStatusChanged: (value) {}));
+                        onStatusChanged: (value) {
+                          booking.status = value;
+                        }));
                   },
                   child: Container(
                     width: 360.w,

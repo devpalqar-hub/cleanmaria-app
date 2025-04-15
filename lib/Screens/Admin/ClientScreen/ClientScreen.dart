@@ -17,9 +17,19 @@ class ClientScreen extends StatefulWidget {
 class _ClientScreenState extends State<ClientScreen> {
   final BookingsController bookingsController = Get.put(BookingsController());
   final TextEditingController searchController = TextEditingController();
+
   // bool _isSubscriptionSelected = true;
 
   int selectedMenu = 0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    bookingsController.fetchBookings("booked", "subscription");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

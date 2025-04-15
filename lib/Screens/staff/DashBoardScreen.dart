@@ -44,6 +44,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 sHCtrl.page = 1;
                 sHCtrl.history.clear();
                 sHCtrl.fetchShdedule();
+                sHCtrl.fetchTodayShedule();
                 sHCtrl.update();
               },
               onLoading: () {
