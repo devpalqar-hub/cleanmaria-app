@@ -20,7 +20,7 @@ class OverViewCard extends StatelessWidget {
             _buildCard(
               imagePath: "assets/pie.png",
               title: "Duty\nAssigned",
-              count: "${sHCtrl.todayHistory.length}",
+              count: "${sHCtrl.total}",
               subtitle: "Total Duty Assigned",
             ),
             SizedBox(width: 20.w),

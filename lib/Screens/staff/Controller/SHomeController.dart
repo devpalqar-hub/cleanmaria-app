@@ -29,6 +29,7 @@ class StaffHomeController extends GetxController {
   }
 
   int completeTask = 0;
+  int total = 0;
 
   fetchShdedule() async {
     // history = [];
@@ -74,7 +75,7 @@ class StaffHomeController extends GetxController {
     final Response = await http.get(
       Uri.parse(
         baseUrl +
-            "/scheduler/schedules?page=1&limit=30&startDate=${DateFormat("yyyy-MM-dd").format(DateTime.now())}&status=scheduled",
+            "/scheduler/schedules?page=1&limit=30&startDate=${DateFormat("yyyy-MM-dd").format(DateTime.now())}",
       ),
       headers: {
         'Content-Type': 'application/json',
@@ -86,7 +87,8 @@ class StaffHomeController extends GetxController {
       var data = json.decode(Response.body);
       for (var his in data["data"]["data"]) {
         HistoryModel model = HistoryModel.fromJson(his);
-        todayHistory.add(model);
+        total = total + 1;
+        if (model.status == "scheduled") todayHistory.add(model);
 
         if (model.status == "completed") completeTask = completeTask + 1;
       }
