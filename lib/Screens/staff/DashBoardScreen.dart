@@ -110,14 +110,15 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                     SizedBox(height: 6.h),
                     OverViewCard(),
                     SizedBox(height: 30.h),
-                    appText.primaryText(
-                      text: "Today Duty",
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black,
-                    ),
-                    Dutycard(),
-                    SizedBox(height: 17.h),
+                    if (sHCtrl.todayHistory.isNotEmpty)
+                      appText.primaryText(
+                        text: "Today Duty",
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black,
+                      ),
+                    if (sHCtrl.todayHistory.isNotEmpty) Dutycard(),
+                    if (sHCtrl.todayHistory.isNotEmpty) SizedBox(height: 17.h),
                     Row(
                       children: [
                         appText.primaryText(
