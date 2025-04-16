@@ -39,7 +39,7 @@ class _StaffCardState extends State<StaffCard> {
   Widget build(BuildContext context) {
     return Container(
        width: 352.w,
-      height: 90.h,
+      height: 80.h,
       margin: EdgeInsets.only(bottom: 10.h),
       padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 15.w),
       decoration: BoxDecoration(
