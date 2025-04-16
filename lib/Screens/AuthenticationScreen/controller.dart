@@ -29,6 +29,7 @@ class AuthenticationController extends GetxController {
         showSnackBar('Login successful');
 
         SharedPreferences prefs = await SharedPreferences.getInstance();
+        
         String? role = prefs.getString("role");
 
         print("User role: $role");

@@ -17,6 +17,7 @@ class _CreateStaffBottomSheetState extends State<CreateStaffBottomSheet> {
   void dispose() {
     super.dispose();
   }
+  bool _obscurePassword = false;
 
   Widget _buildInputField(
       String label, String hint, TextEditingController controller,
@@ -32,7 +33,7 @@ class _CreateStaffBottomSheetState extends State<CreateStaffBottomSheet> {
         SizedBox(height: 5.h),
         TextFormField(
           controller: controller,
-          obscureText: obscureText,
+          obscureText: obscureText? _obscurePassword : true,
           decoration: InputDecoration(
             hintText: hint,
             filled: true,
@@ -43,6 +44,19 @@ class _CreateStaffBottomSheetState extends State<CreateStaffBottomSheet> {
             ),
             contentPadding:
                 EdgeInsets.symmetric(horizontal: 15.w, vertical: 12.h),
+                suffixIcon: obscureText
+              ? IconButton(
+                  icon: Icon(
+                    _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                    color: Colors.grey,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _obscurePassword = !_obscurePassword;
+                    });
+                  },
+                )
+              : null,
           ),
         ),
         SizedBox(height: 15.h),

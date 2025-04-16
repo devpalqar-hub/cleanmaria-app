@@ -22,11 +22,12 @@ class StaffHomeController extends GetxController {
   List<HistoryModel> history = [];
   List<HistoryModel> todayHistory = [];
   String selectedFilter = "All Duty";
+
   loadUser() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-
     userName = pref.getString("user_name") ?? "--:--";
     email = pref.getString("email") ?? "--:--";
+     update();
   }
 
   int completeTask = 0;
@@ -61,11 +62,13 @@ class StaffHomeController extends GetxController {
       },
     );
     refreshCtrl.refreshCompleted();
-    refreshCtrl.loadComplete();
+   refreshCtrl.loadComplete();
 
     print(Response.body);
     print(Response.statusCode);
     if (Response.statusCode == 200) {
+      print("Access Token: $token");
+
       var data = json.decode(Response.body);
       for (var his in data["data"]["data"]) {
         HistoryModel model = HistoryModel.fromJson(his);
@@ -107,7 +110,12 @@ class StaffHomeController extends GetxController {
         if (model.status == "completed") completeTask = completeTask + 1;
       }
     } else if (Response.statusCode == 401) {
+      var body = json.decode(Response.body);
+    if (body["message"] == "User is not active") {
+      Fluttertoast.showToast(msg: "Staff is not active");
+    }else{
       Fluttertoast.showToast(msg: "Session Expired");
+    }
       prefs.setString("LOGIN", "OUT");
       Get.offAll(() => AuthenticationScreen(),
           transition: Transition.rightToLeft);
@@ -131,6 +139,7 @@ class StaffHomeController extends GetxController {
 
   @override
   void onInit() {
+    print("init");
     // TODO: implement onInit
     super.onInit();
     loadUser();

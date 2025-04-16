@@ -139,7 +139,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                     sheduleID: widget.scheduleId!,
                     currentStatus: widget.status!,
                     onStatusChanged: (value) {
-                      //   booking.status = value;
+                      //  booking.status = value;
 
                       if (widget.status != null) widget.status = value;
                       setState(() {});

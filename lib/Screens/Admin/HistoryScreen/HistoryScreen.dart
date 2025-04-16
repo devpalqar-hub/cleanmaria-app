@@ -90,14 +90,6 @@ class _BookingsaScreenState extends State<BookingsaScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      // appBar: AppBar(
-      //   leading: const Icon(Icons.arrow_back_ios),
-      //   title: appText.primaryText(
-      //     text: "Bookings",
-      //     fontSize: 18.sp,
-      //     fontWeight: FontWeight.w700,
-      //   ),
-      // ),
       body: GetBuilder<HistoryController>(builder: (_) {
         return Padding(
           padding: EdgeInsets.symmetric(horizontal: 15.w),
@@ -162,7 +154,7 @@ class _BookingsaScreenState extends State<BookingsaScreen> {
                         onTap: () {
                           Get.to(
                               () => BookingDetailsScreen(
-                                    bookingId: data.booking!.id!,
+                                   bookingId: data.booking!.id!,
                                     staff: data.staff!.name,
                                     pCtrl: hisCtrl,
                                     status: data.status ?? "Unknown",

@@ -7,6 +7,8 @@ Widget tBox(
         String? hint,
         String? prefixText,
         bool? isEnable,
+        
+         
         TextInputType? keyType}) =>
     Container(
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
@@ -17,6 +19,7 @@ Widget tBox(
           borderRadius: BorderRadius.circular(12.r)),
       child: TextField(
         controller: controller,
+        
         style: GoogleFonts.nunitoSans(
             fontWeight: FontWeight.w700,
             fontSize: 13.sp,
@@ -42,8 +45,10 @@ class Apptextfield {
     required String labelText,
     required String hintText,
     bool isEnable = true,
+     bool obscureText = false,
     TextInputType keyType = TextInputType.text,
     TextEditingController? controller,
+    Widget? suffixIcon,
     Function(String)? onChanged,
   }) {
     return Column(
@@ -65,6 +70,7 @@ class Apptextfield {
           ),
           child: TextField(
             controller: controller,
+             obscureText: obscureText,
             enabled: isEnable,
             keyboardType: TextInputType.name,
             decoration: InputDecoration(
@@ -76,6 +82,7 @@ class Apptextfield {
                 fontSize: 16.sp,
           
               ),
+              suffixIcon: suffixIcon,
             ),
            
           ),
