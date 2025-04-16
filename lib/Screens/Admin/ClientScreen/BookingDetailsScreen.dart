@@ -130,6 +130,40 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      bottomNavigationBar: (widget.scheduleId == null)
+          ? null
+          : InkWell(
+              onTap: () {
+                Get.bottomSheet(BookingStatusBottomSheet(
+                    isStaff: widget.isStaff,
+                    sheduleID: widget.scheduleId!,
+                    currentStatus: widget.status!,
+                    onStatusChanged: (value) {
+                      //   booking.status = value;
+
+                      if (widget.status != null) widget.status = value;
+                      setState(() {});
+                      if (widget.pCtrl != null) widget.pCtrl.reload();
+                    }));
+              },
+              child: Center(
+                child: Container(
+                  width: 320.w,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30.r),
+                      color: Color(0xff19A4C6)),
+                  height: 50,
+                  alignment: Alignment.center,
+                  child: Text(
+                    "Change Status",
+                    style: TextStyle(
+                        fontSize: 14.w,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500),
+                  ),
+                ),
+              ),
+            ),
       appBar: AppBar(
         backgroundColor: Colors.white,
         leading: IconButton(
@@ -318,41 +352,6 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                     color: const Color(0xFF1C9F0B),
                     fontSize: 12.sp,
                   ),
-              SizedBox(
-                height: 0.h,
-              ),
-              InkWell(
-                onTap: () {
-                  Get.bottomSheet(BookingStatusBottomSheet(
-                      isStaff: widget.isStaff,
-                      sheduleID: widget.scheduleId!,
-                      currentStatus: booking.status!,
-                      onStatusChanged: (value) {
-                        //   booking.status = value;
-
-                        if (widget.status != null) widget.status = value;
-                        setState(() {});
-                        if (widget.pCtrl != null) widget.pCtrl.reload();
-                      }));
-                },
-                child: Center(
-                  child: Container(
-                    width: 320.w,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30.r),
-                        color: Color(0xff19A4C6)),
-                    height: 50,
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Change Status",
-                      style: TextStyle(
-                          fontSize: 14.w,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500),
-                    ),
-                  ),
-                ),
-              ),
               SizedBox(height: 40.h),
               if (widget.date == null)
                 GestureDetector(
@@ -385,6 +384,9 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                     ),
                   ),
                 ),
+              SizedBox(
+                height: 70.h,
+              )
             ],
           );
         }),
