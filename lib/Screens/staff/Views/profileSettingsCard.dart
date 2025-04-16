@@ -146,7 +146,8 @@ void showSettingsBottomSheet(
                 title: "Estimate Service",
                 onTap: () {
                   // Navigate to help center
-                  launchUrl(Uri.parse("www.mariacleaning.com"));
+                  launchUrl(
+                      Uri.parse("https://cleanmaria.com/estimate-service"));
                   // Add your navigation logic here
                 },
               ),
@@ -156,7 +157,7 @@ void showSettingsBottomSheet(
                 title: "Help Center",
                 onTap: () {
                   // Navigate to help center
-                  launchUrl(Uri.parse("www.mariacleaning.com"));
+                  launchUrl(Uri.parse("https://mariacleaning.com"));
                   // Add your navigation logic here
                 },
               ),

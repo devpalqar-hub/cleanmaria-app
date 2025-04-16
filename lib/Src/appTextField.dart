@@ -7,8 +7,6 @@ Widget tBox(
         String? hint,
         String? prefixText,
         bool? isEnable,
-        
-         
         TextInputType? keyType}) =>
     Container(
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
@@ -19,11 +17,8 @@ Widget tBox(
           borderRadius: BorderRadius.circular(12.r)),
       child: TextField(
         controller: controller,
-        
         style: GoogleFonts.nunitoSans(
-            fontWeight: FontWeight.w700,
-            fontSize: 13.sp,
-            color: Colors.black),
+            fontWeight: FontWeight.w700, fontSize: 13.sp, color: Colors.black),
         keyboardType: keyType,
         textAlignVertical: TextAlignVertical.center,
         textAlign: TextAlign.start,
@@ -45,7 +40,7 @@ class Apptextfield {
     required String labelText,
     required String hintText,
     bool isEnable = true,
-     bool obscureText = false,
+    bool obscureText = false,
     TextInputType keyType = TextInputType.text,
     TextEditingController? controller,
     Widget? suffixIcon,
@@ -57,8 +52,8 @@ class Apptextfield {
         SizedBox(height: 5.h),
         Text(
           labelText,
-          style:
-              GoogleFonts.nunitoSans(fontSize: 13.sp, fontWeight: FontWeight.w700),
+          style: GoogleFonts.nunitoSans(
+              fontSize: 13.sp, fontWeight: FontWeight.w700),
         ),
         SizedBox(height: 7.h),
         Container(
@@ -66,25 +61,23 @@ class Apptextfield {
           width: 330.w,
           decoration: BoxDecoration(
             color: Color(0xFFF5F5F5),
-            borderRadius: BorderRadius.circular(12.r),  
+            borderRadius: BorderRadius.circular(12.r),
           ),
           child: TextField(
             controller: controller,
-             obscureText: obscureText,
+            obscureText: obscureText,
             enabled: isEnable,
             keyboardType: TextInputType.name,
             decoration: InputDecoration(
               border: InputBorder.none,
               contentPadding: EdgeInsets.symmetric(horizontal: 18.w),
               hintText: hintText,
-               hintStyle: GoogleFonts.nunitoSans(
+              hintStyle: GoogleFonts.nunitoSans(
                 fontWeight: FontWeight.w400,
                 fontSize: 16.sp,
-          
               ),
               suffixIcon: suffixIcon,
             ),
-           
           ),
         ),
         SizedBox(height: 10.h),
@@ -112,29 +105,28 @@ class Apptextfield {
             ),
             SizedBox(height: 7.h),
             Container(
-              height:50.h,
+              height: 50.h,
               width: 330.w,
               decoration: BoxDecoration(
-                color: Color(0xFFDEDEDE),
+                color: Color(0xFFF5F5F5),
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: TextField(
                 controller: controller,
                 obscureText: obscureText,
-                textAlign:
-                    TextAlign.start, 
+                textAlign: TextAlign.start,
                 textAlignVertical: TextAlignVertical.center,
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.symmetric(horizontal: 18.w),
                   hintText: hintText,
-                 hintStyle: GoogleFonts.nunitoSans(
-                fontWeight: FontWeight.w400,
-                fontSize: 16.sp,
+                  hintStyle: GoogleFonts.nunitoSans(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 16.sp,
                   ),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      obscureText ? Icons.visibility : Icons.visibility_off,
+                      !obscureText ? Icons.visibility : Icons.visibility_off,
                       color: Colors.grey[600],
                     ),
                     onPressed: () {
@@ -144,7 +136,6 @@ class Apptextfield {
                     },
                   ),
                 ),
-               
               ),
             ),
             //SizedBox(height: 17.h),
