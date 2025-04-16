@@ -28,6 +28,8 @@ class Cancellationcard extends StatelessWidget {
                         () => BookingDetailsScreen(
                               bookingId: data.booking!.id!,
                               staff: data.staff!.name,
+                              scheduleId: data.id,
+                              pCtrl: hctlr,
                               status: data.status ?? "Unknown",
                               date:
                                   "${DateFormat("MMM dd,yyyy | hh:mm a").format(DateTime.parse(data.startTime!))} - ${DateFormat("hh:mm a").format(DateTime.parse(data.endTime!))}",

@@ -6,6 +6,7 @@ import 'package:cleanby_maria/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get_utils/get_utils.dart';
 import 'package:get/instance_manager.dart';
 import 'package:http/http.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -47,23 +48,23 @@ class _BookingStatusBottomSheetState extends State<BookingStatusBottomSheet> {
     _statusOptions = [
       if (!widget.isStaff)
         {
-          'status': 'Scheduled',
+          'status': 'scheduled',
           'icon': Icons.event_note,
           'color': Colors.blueAccent,
         },
       {
-        'status': 'Missed',
+        'status': 'missed',
         'icon': Icons.event_busy,
         'color': Colors.red,
       },
       if (!widget.isStaff)
         {
-          'status': 'Refunded',
+          'status': 'refunded',
           'icon': Icons.money_off,
           'color': Colors.amber,
         },
       {
-        'status': 'Completed',
+        'status': 'completed',
         'icon': Icons.event_available_rounded,
         'color': Colors.green,
       },
@@ -115,7 +116,6 @@ class _BookingStatusBottomSheetState extends State<BookingStatusBottomSheet> {
 
           // Save button
           ElevatedButton(
-        
             onPressed: () async {
               final prefs = await SharedPreferences.getInstance();
               final token = prefs.getString("access_token");
@@ -138,23 +138,14 @@ class _BookingStatusBottomSheetState extends State<BookingStatusBottomSheet> {
               print(response.statusCode);
               if (response.statusCode == 200) {
                 widget.onStatusChanged(selectedStatus);
-                if (widget.isStaff) {
-                  StaffHomeController hctrl = Get.put(StaffHomeController());
 
-                  hctrl.page = 1;
-                  hctrl.history.clear();
-                  hctrl.fetchShdedule();
-
-                  hctrl.update();
-                }
                 Navigator.pop(context);
               } else {
                 Fluttertoast.showToast(msg: 'Update Failed');
               }
             },
             style: ElevatedButton.styleFrom(
-               backgroundColor: const Color(0xFF2196F3), 
-    
+              backgroundColor: const Color(0xFF2196F3),
               padding: EdgeInsets.symmetric(vertical: 14),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
@@ -165,7 +156,7 @@ class _BookingStatusBottomSheetState extends State<BookingStatusBottomSheet> {
                     color: Colors.blue, size: 25)
                 : Text(
                     'Save Changes',
-                    style: TextStyle(fontSize: 15.sp,color: Colors.white),
+                    style: TextStyle(fontSize: 15.sp, color: Colors.white),
                   ),
           ),
         ],
@@ -199,7 +190,7 @@ class _BookingStatusBottomSheetState extends State<BookingStatusBottomSheet> {
             children: [
               Icon(icon, color: color),
               const SizedBox(width: 16),
-              Text(status,
+              Text(status.toString().capitalize ?? "",
                   style:
                       TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500)),
               const Spacer(),

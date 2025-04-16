@@ -3,6 +3,8 @@ import 'dart:ui';
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/Models/BookingDetailModel.dart';
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/Models/bookingModel.dart';
 import 'package:cleanby_maria/Screens/Admin/HistoryScreen/Models/HistoryModel.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:http/http.dart' as http;
@@ -21,6 +23,13 @@ class BookingsController extends GetxController {
   RefreshController refreshCtrl = RefreshController();
   List<HistoryModel> history = [];
   int page = 1;
+  String status = "subscription";
+
+  reload() {
+    history.clear();
+    update();
+    fetchBookings("booked", status);
+  }
 
   String weektoDay(int i) {
     switch (i) {
@@ -91,13 +100,15 @@ class BookingsController extends GetxController {
 
   Color getStatusColor(String status) {
     switch (status) {
-      case "Scheduled":
+      case "scheduled":
         return Color(0xFFE89F18);
         break;
-      case "Missed":
+      case "missed":
         return Color(0xFFAE1D03);
-      case "Completed":
+      case "completed":
         return Color(0xFF03AE9D);
+      case "refunded":
+        return Colors.blue;
     }
     return Color(0xFFE89F18);
   }
@@ -135,41 +146,44 @@ class BookingsController extends GetxController {
 
     update();
   }
-  
-  Future<void> cancelSubscription({
-  required String subscriptionId,
-  required String status,
-  required String type,
-}) async {
-  final prefs = await SharedPreferences.getInstance();
-  final token = prefs.getString("access_token");
 
-  if (token == null || token.isEmpty) {
-    errorMessage = 'Access token is missing';
-    update();
-    return;
+  Future<bool> cancelSubscription({
+    required String subscriptionId,
+    required String status,
+    required String type,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString("access_token");
+
+    if (token == null || token.isEmpty) {
+      errorMessage = 'Access token is missing';
+      update();
+      return false;
+    }
+
+    final response = await http.patch(
+      Uri.parse('$baseUrl/subscriptions/$subscriptionId/cancel'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+    print(response.body);
+    print(response.statusCode);
+
+    if (response.statusCode == 200) {
+      await fetchBookings(status, type);
+      return true;
+    } else {
+      // errorMessage = 'Failed to cancel subscription (${response.statusCode})';
+      Fluttertoast.showToast(msg: "Failed to cancel Subscription");
+      update();
+      return false;
+    }
   }
 
-  final response = await http.patch(
-    Uri.parse('$baseUrl/subscriptions/$subscriptionId/cancel'),
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    },
-  );
-
-  if (response.statusCode == 200) {
-    await fetchBookings(status, type); 
-    Get.back(); 
-    Get.offAllNamed('/client');
-  } else {
-    errorMessage = 'Failed to cancel subscription (${response.statusCode})';
-    update();
-    fetchBookings(status, type);
-  }
-}
-
-  Future<void> fetchBookings(String status, String type) async {
+  Future<void> fetchBookings(String st, String type) async {
+    status = st;
     isLoading = true;
     update();
     final prefs = await SharedPreferences.getInstance();

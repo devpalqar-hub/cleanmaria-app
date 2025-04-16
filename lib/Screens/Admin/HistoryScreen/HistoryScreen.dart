@@ -72,8 +72,12 @@ class _BookingsaScreenState extends State<BookingsaScreen> {
                   hisCtrl.fetchShedules();
                 },
                 style: ElevatedButton.styleFrom(
-                   backgroundColor: const Color(0xFF19A4C6), ),
-                child: Text("Apply",style: TextStyle(color:  Colors.white),),
+                  backgroundColor: const Color(0xFF19A4C6),
+                ),
+                child: Text(
+                  "Apply",
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
           ),
@@ -160,6 +164,7 @@ class _BookingsaScreenState extends State<BookingsaScreen> {
                               () => BookingDetailsScreen(
                                     bookingId: data.booking!.id!,
                                     staff: data.staff!.name,
+                                    pCtrl: hisCtrl,
                                     status: data.status ?? "Unknown",
                                     scheduleId: data.id,
                                     date:

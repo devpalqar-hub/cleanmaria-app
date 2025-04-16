@@ -60,6 +60,7 @@ class Staff {
   String? id;
   String? name;
   String? email;
+  String? phone;
 
   Staff({this.id, this.name, this.email});
 
@@ -67,6 +68,7 @@ class Staff {
     id = json['id'];
     name = json['name'];
     email = json['email'];
+    phone = json["phone"];
   }
 
   Map<String, dynamic> toJson() {
@@ -74,6 +76,7 @@ class Staff {
     data['id'] = this.id;
     data['name'] = this.name;
     data['email'] = this.email;
+    data["phone"] = this.phone;
     return data;
   }
 }

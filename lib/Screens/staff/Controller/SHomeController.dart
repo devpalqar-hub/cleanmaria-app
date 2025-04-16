@@ -5,6 +5,7 @@ import 'package:cleanby_maria/Screens/AuthenticationScreen/AutheticationScreen.d
 import 'package:cleanby_maria/Screens/Admin/HistoryScreen/Controller/HistoryController.dart';
 import 'package:cleanby_maria/Screens/Admin/HistoryScreen/Models/HistoryModel.dart';
 import 'package:cleanby_maria/main.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart' show Fluttertoast;
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -30,6 +31,19 @@ class StaffHomeController extends GetxController {
 
   int completeTask = 0;
   int total = 0;
+
+  reload() {
+    history.clear();
+    todayHistory.clear();
+    history = [];
+    todayHistory = [];
+    update();
+    refreshCtrl.resetNoData();
+
+    page = 1;
+    fetchTodayShedule();
+    fetchShdedule();
+  }
 
   fetchShdedule() async {
     // history = [];
@@ -105,11 +119,12 @@ class StaffHomeController extends GetxController {
     switch (status) {
       case "scheduled":
         return Color(0xFFE89F18);
-
       case "missed":
         return Color(0xFFAE1D03);
       case "completed":
         return Color(0xFF03AE9D);
+      case "refunded":
+        return Colors.blue;
     }
     return Color(0xFFE89F18);
   }

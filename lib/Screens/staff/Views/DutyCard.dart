@@ -104,7 +104,7 @@ class Dutycard extends StatelessWidget {
                       InkWell(
                         onTap: () {
                           launchUrl(Uri.parse(
-                              "tel:${history.booking!.customer!.email}"));
+                              "tel:${history.booking!.customer!.phone ?? "+1"}"));
                         },
                         child: Image.asset(
                           "assets/call.png",

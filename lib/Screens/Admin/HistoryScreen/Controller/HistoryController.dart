@@ -18,6 +18,14 @@ class HistoryController extends GetxController {
 
   RefreshController refreshController = RefreshController(initialRefresh: true);
 
+  reload() {
+    history.clear();
+    update();
+    page = 1;
+    fetchShedules();
+    refreshController.resetNoData();
+  }
+
   fetchShedules() async {
     history.clear();
     update();
@@ -98,13 +106,15 @@ class HistoryController extends GetxController {
 
   Color getStatusColor(String status) {
     switch (status) {
-      case "Scheduled":
+      case "scheduled":
         return Color(0xFFE89F18);
         break;
-      case "Missed":
+      case "missed":
         return Color(0xFFAE1D03);
-      case "Completed":
+      case "completed":
         return Color(0xFF03AE9D);
+      case "refunded":
+        return Colors.blue;
     }
     return Color(0xFFE89F18);
   }

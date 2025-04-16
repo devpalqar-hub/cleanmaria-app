@@ -167,6 +167,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                         bookingId: data.booking!.id!,
                                         staff: data.staff!.name,
                                         isStaff: true,
+                                        pCtrl: sHCtrl,
                                         scheduleId: data.id,
                                         status: data.status ?? "Unknown",
                                         date:

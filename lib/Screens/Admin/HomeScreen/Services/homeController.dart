@@ -58,19 +58,26 @@ class HomeController extends GetxController {
     update();
   }
 
-  Color getStatusColor(String status) {
+  reload() {
+    history.clear();
+    update();
+    fetchShdedule();
+  }
+
+ Color getStatusColor(String status) {
     switch (status) {
-      case "Scheduled":
+      case "scheduled":
         return Color(0xFFE89F18);
         break;
-      case "Missed":
+      case "missed":
         return Color(0xFFAE1D03);
-      case "Completed":
+      case "completed":
         return Color(0xFF03AE9D);
+      case "refunded":
+        return Colors.blue;
     }
     return Color(0xFFE89F18);
   }
-
   Future<void> fetchBusinessSummary(String startDate, String endDate) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString("access_token");

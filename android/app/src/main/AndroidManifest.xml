@@ -1,11 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Add this line to disable OpenGL ES version requirement -->
     <uses-feature android:glEsVersion="0x00020000" android:required="false"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-        android:label="cleanby_maria"
+        android:label="Maria Cleaning"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"
