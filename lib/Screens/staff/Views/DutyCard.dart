@@ -54,8 +54,8 @@ class Dutycard extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               offset: Offset(0, 4),
-              blurRadius: 5,
-              spreadRadius: 2,
+              blurRadius: 2,
+              spreadRadius: 0,
               color: Colors.black.withOpacity(0.1),
             ),
           ],

@@ -52,8 +52,8 @@ class OverViewCard extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             offset: Offset(0, 4),
-            blurRadius: 10,
-            spreadRadius: 2,
+            blurRadius: 2,
+            spreadRadius: 0,
             color: Colors.black.withOpacity(0.1),
           )
         ],

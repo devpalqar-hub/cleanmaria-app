@@ -128,28 +128,32 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                           color: Colors.black,
                         ),
                         Spacer(),
-                        DropdownButton<String>(
-                          value: _selectedDutyStatus,
-                          icon:
-                              Icon(Icons.arrow_drop_down, color: Colors.black),
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              _selectedDutyStatus = newValue!;
-                              sHCtrl.selectedFilter = newValue;
-                              sHCtrl.refreshCtrl.requestRefresh();
-                            });
-                          },
-                          items: _dutyOptions
-                              .map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value.toString().capitalize!,
-                                  style: TextStyle(
-                                      fontSize: 11.sp,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.black)),
-                            );
-                          }).toList(),
+                        DropdownButtonHideUnderline(
+                          child: DropdownButton<String>(
+                            value: _selectedDutyStatus,
+                            icon:
+                                Icon(Icons.arrow_drop_down, color: Colors.black),
+                                style: const TextStyle(color: Colors.black),
+                              dropdownColor: Colors.white,
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                _selectedDutyStatus = newValue!;
+                                sHCtrl.selectedFilter = newValue;
+                                sHCtrl.refreshCtrl.requestRefresh();
+                              });
+                            },
+                            items: _dutyOptions
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value.toString().capitalize!,
+                                    style: TextStyle(
+                                        fontSize: 11.sp,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.black)),
+                              );
+                            }).toList(),
+                          ),
                         ),
                       ],
                     ),

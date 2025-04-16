@@ -311,10 +311,12 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                   children: [
                     appText.primaryText(
                       text: "Rooms: ${detail.noOfRooms ?? 'N/A'}",
+                        fontWeight: FontWeight.w500,
                     ),
                     SizedBox(width: 120.w),
                     appText.primaryText(
                       text: "Bathrooms: ${detail.noOfBathRooms ?? 'N/A'}",
+                      fontWeight: FontWeight.w500,
                     ),
                   ],
                 ),
