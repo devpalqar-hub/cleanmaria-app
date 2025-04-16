@@ -146,21 +146,20 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                       if (widget.pCtrl != null) widget.pCtrl.reload();
                     }));
               },
-              child: Center(
-                child: Container(
-                  width: 320.w,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30.r),
-                      color: Color(0xff19A4C6)),
-                  height: 50,
-                  alignment: Alignment.center,
-                  child: Text(
-                    "Change Status",
-                    style: TextStyle(
-                        fontSize: 14.w,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500),
-                  ),
+              child: Container(
+                width: 320.w,
+                margin: EdgeInsets.only(bottom: 20, left: 20, right: 20),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30.r),
+                    color: Color(0xff19A4C6)),
+                height: 50,
+                alignment: Alignment.center,
+                child: Text(
+                  "Change Status",
+                  style: TextStyle(
+                      fontSize: 14.w,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500),
                 ),
               ),
             ),
@@ -177,220 +176,224 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
           fontWeight: FontWeight.w600,
         ),
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
-        child: GetBuilder<BookingsController>(builder: (_) {
-          if (controller.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (controller.errorMessage.isNotEmpty) {
-            return Center(child: Text(controller.errorMessage));
-          }
-          if (controller.bookingDetail == null) {
-            return const Center(child: Text('No booking details found'));
-          }
+      body: GetBuilder<BookingsController>(builder: (_) {
+        return SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
+          child: GetBuilder<BookingsController>(builder: (_) {
+            if (controller.isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (controller.errorMessage.isNotEmpty) {
+              return Center(child: Text(controller.errorMessage));
+            }
+            if (controller.bookingDetail == null) {
+              return const Center(child: Text('No booking details found'));
+            }
 
-          final detail = controller.bookingDetail!;
-          final customer = detail.customer;
-          final service = detail.service;
-          final booking = detail;
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: _infoText(
-                      title: "Name",
-                      value: customer?.name ?? 'N/A',
+            final detail = controller.bookingDetail!;
+            final customer = detail.customer;
+            final service = detail.service;
+            final booking = detail;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: _infoText(
+                        title: "Name",
+                        value: customer?.name ?? 'N/A',
+                      ),
                     ),
+                    InkWell(
+                      onTap: () {
+                        launchUrl(Uri.parse("tel:${detail.customer!.phone!}"));
+                      },
+                      child: Image.asset(
+                        'assets/call2.png',
+                        width: 30.w,
+                        height: 30.h,
+                      ),
+                    ),
+                  ],
+                ),
+                _infoText(
+                  title: "Contact Number",
+                  value: customer?.phone ?? 'N/A',
+                ),
+                _infoText(
+                  title: "Email",
+                  value: customer?.email ?? 'N/A',
+                ),
+                _infoText(
+                  title: "Address",
+                  value:
+                      "${booking.bookingAddress!.address!.line1!},  ${booking.bookingAddress!.address!.line2 ?? "--:--"} \n${booking.bookingAddress!.address!.city ?? ""} ${booking.bookingAddress!.address!.zip ?? ""} ",
+                ),
+                if (widget.date == null)
+                  _infoText(
+                    title: "Booking Date",
+                    value: DateFormat("dd MMM yyyy | hh:mm a")
+                            .format(DateTime.parse(booking!.createdAt!)) ??
+                        'N/A',
                   ),
-                  InkWell(
+                if (widget.date != null)
+                  _infoText(
+                    title: "Cleaning Shedule",
+                    value: widget.date ?? 'N/A',
+                  ),
+                if (widget.date == null)
+                  _infoText(
+                    title: "Shedules",
+                    value: (detail.type == "subscription")
+                        ? booking.monthSchedules!
+                            .map((value) =>
+                                "Week ${value.weekOfMonth} - ${controller.weektoDay(value.dayOfWeek!)}, ${value.time!} ")
+                            .join("\n")
+                        : controller.WeekDatetoDate(
+                            createdDate: DateTime.parse(booking.createdAt!),
+                            weekOfMonth:
+                                booking.monthSchedules!.first.weekOfMonth!,
+                            dayOfWeek:
+                                booking.monthSchedules!.first.dayOfWeek!),
+                  ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _infoText(
+                        title: "Service Cost",
+                        value: "Estimated Cost: ${booking.price ?? 'N/A'}",
+                      ),
+                    ),
+                    if (booking.transactions!.isEmpty ||
+                        controller.checkTransation(booking.transactions!.first))
+                      Container(
+                        width: 65.w,
+                        height: 19.h,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.r),
+                          color: const Color(0xFF19A4C6),
+                        ),
+                        child: Center(
+                          child: appText.primaryText(
+                            text: "NOT PAID",
+                            fontSize: 8.sp,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                _infoText(
+                  title: "Total Sq",
+                  value: "Estimated sqft: ${booking.areaSize ?? 'N/A'}",
+                ),
+                _infoText(
+                  title: "Type of cleaning",
+                  value: booking.type ?? 'N/A',
+                ),
+                if (widget.date != null)
+                  _infoText(
+                    title: "Cleaned By",
+                    value: widget.staff ?? 'N/A',
+                  ),
+                if (widget.date != null)
+                  _infoText(
+                    title: "Status",
+                    value: widget.status ?? 'N/A',
+                  ),
+                _infoText(
+                  title: "Type of property",
+                  value: booking.propertyType ?? 'N/A',
+                ),
+                Row(
+                  children: [
+                    appText.primaryText(
+                      text: "Rooms: ${detail.noOfRooms ?? 'N/A'}",
+                    ),
+                    SizedBox(width: 120.w),
+                    appText.primaryText(
+                      text: "Bathrooms: ${detail.noOfBathRooms ?? 'N/A'}",
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10.h),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _infoText(
+                          title: "Service plan", value: service!.name ?? ""),
+                    ),
+                    if (detail!.isEco != null && detail!.isEco!)
+                      Container(
+                        width: 65.w,
+                        height: 19.h,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.r),
+                          color: const Color(0xFF1C9F0B),
+                        ),
+                        child: Center(
+                          child: appText.primaryText(
+                            text: "ECO SERVICE",
+                            fontSize: 8.sp,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                if (widget.scheduleId != null) SizedBox(height: 8.h),
+                if (widget.scheduleId != null)
+                  if (detail!.materialProvided != null &&
+                      detail!.materialProvided!)
+                    appText.primaryText(
+                      text: "Cleaning items given",
+                      color: const Color(0xFF1C9F0B),
+                      fontSize: 12.sp,
+                    ),
+                if (widget.date == null) SizedBox(height: 40.h),
+                if (widget.date == null)
+                  GestureDetector(
                     onTap: () {
-                      launchUrl(Uri.parse("tel:${detail.customer!.phone!}"));
+                      Get.to(
+                          () => CleaningHistory(
+                                bookingId: booking.id!,
+                              ),
+                          transition: Transition.rightToLeft);
                     },
-                    child: Image.asset(
-                      'assets/call2.png',
-                      width: 30.w,
-                      height: 30.h,
-                    ),
-                  ),
-                ],
-              ),
-              _infoText(
-                title: "Contact Number",
-                value: customer?.phone ?? 'N/A',
-              ),
-              _infoText(
-                title: "Email",
-                value: customer?.email ?? 'N/A',
-              ),
-              _infoText(
-                title: "Address",
-                value:
-                    "${booking.bookingAddress!.address!.line1!},  ${booking.bookingAddress!.address!.line2 ?? "--:--"} \n${booking.bookingAddress!.address!.city ?? ""} ${booking.bookingAddress!.address!.zip ?? ""} ",
-              ),
-              if (widget.date == null)
-                _infoText(
-                  title: "Booking Date",
-                  value: DateFormat("dd MMM yyyy | hh:mm a")
-                          .format(DateTime.parse(booking!.createdAt!)) ??
-                      'N/A',
-                ),
-              if (widget.date != null)
-                _infoText(
-                  title: "Cleaning Shedule",
-                  value: widget.date ?? 'N/A',
-                ),
-              if (widget.date == null)
-                _infoText(
-                  title: "Shedules",
-                  value: (detail.type == "subscription")
-                      ? booking.monthSchedules!
-                          .map((value) =>
-                              "Week ${value.weekOfMonth} - ${controller.weektoDay(value.dayOfWeek!)}, ${value.time!} ")
-                          .join("\n")
-                      : controller.WeekDatetoDate(
-                          createdDate: DateTime.parse(booking.createdAt!),
-                          weekOfMonth:
-                              booking.monthSchedules!.first.weekOfMonth!,
-                          dayOfWeek: booking.monthSchedules!.first.dayOfWeek!),
-                ),
-              Row(
-                children: [
-                  Expanded(
-                    child: _infoText(
-                      title: "Service Cost",
-                      value: "Estimated Cost: ${booking.price ?? 'N/A'}",
-                    ),
-                  ),
-                  if (booking.transactions!.isEmpty ||
-                      controller.checkTransation(booking.transactions!.first))
-                    Container(
-                      width: 65.w,
-                      height: 19.h,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.r),
-                        color: const Color(0xFF19A4C6),
-                      ),
-                      child: Center(
-                        child: appText.primaryText(
-                          text: "NOT PAID",
-                          fontSize: 8.sp,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
-                        ),
+                    child: Center(
+                      child: appText.primaryText(
+                        text: "View Cleaning History",
+                        color: Colors.black,
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                ],
-              ),
-              _infoText(
-                title: "Total Sq",
-                value: "Estimated sqft: ${booking.areaSize ?? 'N/A'}",
-              ),
-              _infoText(
-                title: "Type of cleaning",
-                value: booking.type ?? 'N/A',
-              ),
-              if (widget.date != null)
-                _infoText(
-                  title: "Cleaned By",
-                  value: widget.staff ?? 'N/A',
-                ),
-              if (widget.date != null)
-                _infoText(
-                  title: "Status",
-                  value: widget.status ?? 'N/A',
-                ),
-              _infoText(
-                title: "Type of property",
-                value: booking.propertyType ?? 'N/A',
-              ),
-              Row(
-                children: [
-                  appText.primaryText(
-                    text: "Rooms: ${detail.noOfRooms ?? 'N/A'}",
                   ),
-                  SizedBox(width: 120.w),
-                  appText.primaryText(
-                    text: "Bathrooms: ${detail.noOfBathRooms ?? 'N/A'}",
-                  ),
-                ],
-              ),
-              SizedBox(height: 10.h),
-              Row(
-                children: [
-                  Expanded(
-                    child: _infoText(
-                        title: "Service plan", value: service!.name ?? ""),
-                  ),
-                  if (detail!.isEco != null && detail!.isEco!)
-                    Container(
-                      width: 65.w,
-                      height: 19.h,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.r),
-                        color: const Color(0xFF1C9F0B),
-                      ),
-                      child: Center(
-                        child: appText.primaryText(
-                          text: "ECO SERVICE",
-                          fontSize: 8.sp,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
-                        ),
+                if (widget.date == null && booking.status == "booked")
+                  SizedBox(height: 10.h),
+                if (widget.date == null && booking.status == "booked")
+                  GestureDetector(
+                    onTap: () => _showCancelDialog(context),
+                    child: Center(
+                      child: appText.primaryText(
+                        text: "Cancelation of Subscription",
+                        color: Colors.red,
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                ],
-              ),
-              if (widget.scheduleId != null) SizedBox(height: 8.h),
-              if (widget.scheduleId != null)
-                if (detail!.materialProvided != null &&
-                    detail!.materialProvided!)
-                  appText.primaryText(
-                    text: "Cleaning items given",
-                    color: const Color(0xFF1C9F0B),
-                    fontSize: 12.sp,
                   ),
-              SizedBox(height: 40.h),
-              if (widget.date == null)
-                GestureDetector(
-                  onTap: () {
-                    Get.to(
-                        () => CleaningHistory(
-                              bookingId: booking.id!,
-                            ),
-                        transition: Transition.rightToLeft);
-                  },
-                  child: Center(
-                    child: appText.primaryText(
-                      text: "View Cleaning History",
-                      color: Colors.black,
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              SizedBox(height: 10.h),
-              if (widget.date == null && booking.status == "booked")
-                GestureDetector(
-                  onTap: () => _showCancelDialog(context),
-                  child: Center(
-                    child: appText.primaryText(
-                      text: "Cancelation of Subscription",
-                      color: Colors.red,
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              SizedBox(
-                height: 70.h,
-              )
-            ],
-          );
-        }),
-      ),
+                SizedBox(
+                  height: 20.h,
+                )
+              ],
+            );
+          }),
+        );
+      }),
     );
   }
 }
