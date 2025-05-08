@@ -1,3 +1,4 @@
+import 'package:cleanby_maria/Screens/Admin/BookingScreen/BookingScreen.dart';
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/Views/BStatusCard.dart';
 import 'package:cleanby_maria/Src/appText.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,16 +18,11 @@ class ClientScreen extends StatefulWidget {
 class _ClientScreenState extends State<ClientScreen> {
   final BookingsController bookingsController = Get.put(BookingsController());
   final TextEditingController searchController = TextEditingController();
-
-  // bool _isSubscriptionSelected = true;
-
   int selectedMenu = 0;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-
     bookingsController.fetchBookings("booked", "subscription");
   }
 
@@ -70,8 +66,7 @@ class _ClientScreenState extends State<ClientScreen> {
                   setState(() {
                     selectedMenu = value;
                     if (value == 0) {
-                      bookingsController.fetchBookings(
-                          "booked", "subscription");
+                      bookingsController.fetchBookings("booked", "subscription");
                     } else {
                       bookingsController.fetchBookings("booked", "instant");
                     }
@@ -95,20 +90,21 @@ class _ClientScreenState extends State<ClientScreen> {
                 const Icon(Icons.search, color: Colors.black),
                 SizedBox(width: 10.w),
                 Expanded(
-                    child: TextField(
-                  controller: searchController,
-                  onChanged: (value) {
-                    setState(() {});
-                  },
-                  decoration: InputDecoration(
-                      border: InputBorder.none, hintText: "Search for Bookings"),
-                ))
+                  child: TextField(
+                    controller: searchController,
+                    onChanged: (value) {
+                      setState(() {});
+                    },
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      hintText: "Search for Bookings",
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
           SizedBox(height: 25.h),
-
-          // Booking List
           GetBuilder<BookingsController>(builder: (context) {
             if (bookingsController.isLoading) {
               return const Center(child: CircularProgressIndicator());
@@ -118,27 +114,33 @@ class _ClientScreenState extends State<ClientScreen> {
             }
             return Expanded(
               child: ListView.builder(
-                  itemCount: bookingsController.bookings.length,
-                  itemBuilder: (context, index) {
-                    final booking = bookingsController.bookings[index];
-                    return (searchController.text.isEmpty ||
-                            booking.customer!.name!
-                                .toLowerCase()
-                                .contains(searchController.text.toLowerCase()))
-                        ? GestureDetector(
-                            onTap: () {
-                              {
-                                Get.to(() => BookingDetailsScreen(
-                                    bookingId: booking.id!));
-                              }
-                            },
-                            child: BStatusCard(booking: booking),
-                          )
-                        : Container();
-                  }),
+                itemCount: bookingsController.bookings.length,
+                itemBuilder: (context, index) {
+                  final booking = bookingsController.bookings[index];
+                  return (searchController.text.isEmpty ||
+                          booking.customer!.name!
+                              .toLowerCase()
+                              .contains(searchController.text.toLowerCase()))
+                      ? GestureDetector(
+                          onTap: () {
+                            Get.to(() => BookingDetailsScreen(
+                                bookingId: booking.id!));
+                          },
+                          child: BStatusCard(booking: booking),
+                        )
+                      : Container();
+                },
+              ),
             );
           }),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Get.to(() => EstimateScreen());
+        },
+        backgroundColor: Colors.blue,
+        child:  Icon(Icons.add,),
       ),
     );
   }

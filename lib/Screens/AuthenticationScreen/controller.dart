@@ -23,6 +23,7 @@ class AuthenticationController extends GetxController {
     try {
       final response =
           await login(emailController.text, passwordController.text);
+          
       print(response);
 
       if (response['success']) {
@@ -62,28 +63,22 @@ class AuthenticationController extends GetxController {
 
       print("Status code: ${response.statusCode}");
       print("Raw response body: ${response.body}");
+      final Map<String, dynamic> data = json.decode(response.body);
 
-      if (response.statusCode == 201) {
-        try {
-          final Map<String, dynamic> data = json.decode(response.body);
-
-          final accessToken = data['access_token'];
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setString("access_token", accessToken);
-          await prefs.setString("role", data['user']['role'] ?? "user");
-          await prefs.setString("user_name", data['user']['name'] ?? "User");
-          await prefs.setString("email", email);
-          await prefs.setString("LOGIN", "IN");
-
-          return {
-            "success": true,
-            "accessToken": accessToken,
-            "user": data['user']
-          };
-        } catch (e) {
-          print("JSON parsing error: $e");
-          return {"success": false, "error": "Failed to parse server response"};
-        }
+      if (response.statusCode == 201 && data.containsKey('access_token')) {
+        final accessToken = data['access_token'];
+        print("Access Token: $accessToken");
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString("access_token", data['access_token']);
+        await prefs.setString("role", data['user']['role'] ?? "user");
+        await prefs.setString("user_name", data['user']['name'] ?? "User");
+        await prefs.setString("email", email ?? "User");
+        await prefs.setString("LOGIN", "IN");
+        return {
+          "success": true,
+          "accessToken": data['access_token'],
+          "user": data['user']
+        };
       } else {
         print("Non-201 response received");
         return {
@@ -101,3 +96,4 @@ class AuthenticationController extends GetxController {
     Get.snackbar("Message", message, snackPosition: SnackPosition.BOTTOM);
   }
 }
+

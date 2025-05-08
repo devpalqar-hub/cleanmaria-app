@@ -11,25 +11,28 @@ Widget tBox(
     Container(
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
       decoration: BoxDecoration(
-          border: Border.all(
-            color: Colors.white,
-          ),
+        
           borderRadius: BorderRadius.circular(12.r)),
       child: TextField(
         controller: controller,
-        style: GoogleFonts.nunitoSans(
-            fontWeight: FontWeight.w700, fontSize: 13.sp, color: Colors.black),
+        style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w700, fontSize: 16.sp, color: Colors.black),
         keyboardType: keyType,
         textAlignVertical: TextAlignVertical.center,
         textAlign: TextAlign.start,
         enabled: isEnable,
         decoration: InputDecoration(
+          fillColor: Colors.grey[100],
             prefixText: prefixText,
-            hintStyle: GoogleFonts.nunitoSans(
+            hintStyle: GoogleFonts.poppins(
                 fontWeight: FontWeight.w400,
                 fontSize: 16.sp,
-                color: Color(0xFF838383)),
-            border: InputBorder.none,
+               // color: Color(0xFF838383)
+               ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.r),
+              borderSide: BorderSide.none,
+            ),
             isDense: true,
             hintText: hint),
       ),
@@ -52,15 +55,15 @@ class Apptextfield {
         SizedBox(height: 5.h),
         Text(
           labelText,
-          style: GoogleFonts.nunitoSans(
-              fontSize: 13.sp, fontWeight: FontWeight.w700),
+          style: GoogleFonts.poppins(
+              fontSize: 14.sp, fontWeight: FontWeight.w700),
         ),
         SizedBox(height: 7.h),
         Container(
           height: 50.h,
-          width: 330.w,
+          width: 345.w,
           decoration: BoxDecoration(
-            color: Color(0xFFF5F5F5),
+            color: Colors.grey[200],
             borderRadius: BorderRadius.circular(12.r),
           ),
           child: TextField(
@@ -72,7 +75,7 @@ class Apptextfield {
               border: InputBorder.none,
               contentPadding: EdgeInsets.symmetric(horizontal: 18.w),
               hintText: hintText,
-              hintStyle: GoogleFonts.nunitoSans(
+              hintStyle: GoogleFonts.poppins(
                 fontWeight: FontWeight.w400,
                 fontSize: 16.sp,
               ),
@@ -108,7 +111,7 @@ class Apptextfield {
               height: 50.h,
               width: 330.w,
               decoration: BoxDecoration(
-                color: Color(0xFFF5F5F5),
+               // color: Color(0xFFF5F5F5),
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: TextField(
