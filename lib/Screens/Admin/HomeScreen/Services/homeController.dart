@@ -37,6 +37,9 @@ class HomeController extends GetxController {
     history = [];
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString("access_token");
+    if (token == null || token.isEmpty){ 
+      print("Missing token, skipping API call.");
+      return;}
     String parms = "";
     final Response = await http.get(
       Uri.parse(
@@ -158,8 +161,6 @@ class HomeController extends GetxController {
 
     String startDate = DateFormat('yyyy-MM-dd').format(toDate);
     String endDate = DateFormat('yyyy-MM-dd').format(today);
-    // fromDateController.text = startDate;
-    // toDateController.text = endDate;
     print(endDate);
     print(startDate);
     fetchBusinessSummary(endDate, startDate);

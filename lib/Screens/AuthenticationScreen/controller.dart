@@ -6,7 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:cleanby_maria/Screens/Admin/HomeScreen/HomeScreen.dart';
 import 'package:cleanby_maria/Screens/staff/DashBoardScreen.dart';
-import 'package:cleanby_maria/main.dart'; // Ensure this contains baseUrl
 
 class AuthenticationController extends GetxController {
   var isLoading = false.obs;
@@ -20,16 +19,15 @@ class AuthenticationController extends GetxController {
     }
 
     isLoading.value = true;
-
+  
     try {
       final response =
           await login(emailController.text, passwordController.text);
       print(response);
+
       if (response['success']) {
         showSnackBar('Login successful');
-
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        
         String? role = prefs.getString("role");
 
         print("User role: $role");
@@ -51,7 +49,7 @@ class AuthenticationController extends GetxController {
   }
 
   Future<Map<String, dynamic>> login(String email, String password) async {
-    String loginUrl = "$baseUrl/auth/login";
+    String loginUrl = "https://app.cleanmaria.com/api/auth/login";
 
     try {
       final response = await http.post(
@@ -62,31 +60,39 @@ class AuthenticationController extends GetxController {
         },
       );
 
-      final Map<String, dynamic> data = json.decode(response.body);
-      print(response.body);
-      print(response.statusCode);
+      print("Status code: ${response.statusCode}");
+      print("Raw response body: ${response.body}");
 
-      if (response.statusCode == 201 && data.containsKey('access_token')) {
-         final accessToken = data['access_token'];
-        print("Access Token: $accessToken"); 
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString("access_token", data['access_token']);
-        await prefs.setString("role", data['user']['role'] ?? "user");
-        await prefs.setString("user_name", data['user']['name'] ?? "User");
-        await prefs.setString("email", email ?? "User");
-        await prefs.setString("LOGIN", "IN");
-        return {
-          "success": true,
-          "accessToken": data['access_token'],
-          "user": data['user']
-        };
+      if (response.statusCode == 201) {
+        try {
+          final Map<String, dynamic> data = json.decode(response.body);
+
+          final accessToken = data['access_token'];
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString("access_token", accessToken);
+          await prefs.setString("role", data['user']['role'] ?? "user");
+          await prefs.setString("user_name", data['user']['name'] ?? "User");
+          await prefs.setString("email", email);
+          await prefs.setString("LOGIN", "IN");
+
+          return {
+            "success": true,
+            "accessToken": accessToken,
+            "user": data['user']
+          };
+        } catch (e) {
+          print("JSON parsing error: $e");
+          return {"success": false, "error": "Failed to parse server response"};
+        }
       } else {
+        print("Non-201 response received");
         return {
           "success": false,
-          "error": data['message'] ?? "Invalid credentials"
+          "error": "Server returned ${response.statusCode}: ${response.body}"
         };
       }
     } catch (e) {
+      print("Request error: $e");
       return {"success": false, "error": "An error occurred: $e"};
     }
   }

@@ -14,12 +14,6 @@ String? userType = "";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-
-  login = prefs.getString("LOGIN") ?? "";
-  userType = prefs.getString("role") ?? "";
-  print(userType);
-  // Wait for shared preferences to be properly loaded before running the app.
   runApp(const CleanbyMaria());
 }
 
@@ -32,10 +26,41 @@ class CleanbyMaria extends StatelessWidget {
       designSize: const Size(390, 850),
       builder: (context, child) => GetMaterialApp(
         debugShowCheckedModeBanner: false,
-        home: (login == "IN")
-            ? (userType == "staff" ? DashBoardScreen() : Homescreen())
-            : AuthenticationScreen(),
+        home: const SplashScreen(),
       ),
+    );
+  }
+}
+
+class SplashScreen extends StatelessWidget {
+  const SplashScreen({super.key});
+
+  Future<Widget> _checkLoginStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String loginStatus = prefs.getString("LOGIN") ?? "";
+    String userType = prefs.getString("role") ?? "";
+
+    if (loginStatus == "IN") {
+      return userType == "staff" ? DashBoardScreen() : Homescreen();
+    } else {
+      return AuthenticationScreen();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Widget>(
+      future: _checkLoginStatus(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        } 
+        else {
+          return snapshot.data!;
+        }
+      },
     );
   }
 }
