@@ -29,7 +29,7 @@ class AuthenticationController extends GetxController {
         showSnackBar('Login successful');
 
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        
+
         String? role = prefs.getString("role");
 
         print("User role: $role");
@@ -67,8 +67,8 @@ class AuthenticationController extends GetxController {
       print(response.statusCode);
 
       if (response.statusCode == 201 && data.containsKey('access_token')) {
-         final accessToken = data['access_token'];
-        print("Access Token: $accessToken"); 
+        final accessToken = data['access_token'];
+        print("Access Token: $accessToken");
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString("access_token", data['access_token']);
         await prefs.setString("role", data['user']['role'] ?? "user");
