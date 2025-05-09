@@ -42,7 +42,7 @@ class AuthenticationScreen extends StatelessWidget {
               Apptextfield.primary(
                 labelText: 'Email*',
                 hintText: 'Enter your email',
-                controller: _authController.emailController,
+                controller: _authController.emailController, label: '',
               ),
               Apptextfield.password(
                 labelText: 'Password',

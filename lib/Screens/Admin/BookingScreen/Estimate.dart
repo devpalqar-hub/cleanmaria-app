@@ -68,7 +68,7 @@ class _EstimateScreenState extends State<EstimateScreen> {
       return;
     }
 
-    final squareFeet = int.parse(selectedSizeOfHome!.split('-')[0]);
+    final squareFeet = int.parse(selectedSizeOfHome!.split('-')[1]);
     final noOfRooms = int.parse(selectedNoOfRooms!);
     final noOfBathrooms = int.parse(selectedNoOfBathRooms!);
 
@@ -106,7 +106,6 @@ class _EstimateScreenState extends State<EstimateScreen> {
       child: child,
     );
   }
-
  Widget _buildCircularCheckbox({
   required String label,
   required bool value,
@@ -127,8 +126,6 @@ class _EstimateScreenState extends State<EstimateScreen> {
     ],
   );
 }
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

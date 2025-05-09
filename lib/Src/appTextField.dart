@@ -47,7 +47,7 @@ class Apptextfield {
     TextInputType keyType = TextInputType.text,
     TextEditingController? controller,
     Widget? suffixIcon,
-    Function(String)? onChanged,
+    Function(String)? onChanged, required String label,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

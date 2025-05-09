@@ -6,9 +6,11 @@ import 'package:http/http.dart' as http;
 
 class EstimationController {
   
-  // Fetch the list of services
   Future<List<Map<String, dynamic>>> fetchServices() async {
     final response = await http.get(Uri.parse('$baseUrl/services'));
+
+    print("fetchServices - Status Code: ${response.statusCode}");
+    print("fetchServices - Response Body: ${response.body}");
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -18,23 +20,29 @@ class EstimationController {
     }
   }
 
-  // Calculate price estimate
   Future<List<Map<String, dynamic>>> calculateEstimate({
     required String serviceId,
     required int noOfRooms,
     required int noOfBathrooms,
     required int squareFeet,
   }) async {
+    final requestBody = {
+      'service_id': serviceId,
+      'no_of_rooms': noOfRooms,
+      'no_of_bathrooms': noOfBathrooms,
+      'square_feet': squareFeet,
+    };
+
+    print("calculateEstimate - Request Body: ${jsonEncode(requestBody)}");
+
     final response = await http.post(
       Uri.parse('$baseUrl/services/price-estimate'),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'service_id': serviceId,
-        'no_of_rooms': noOfRooms,
-        'no_of_bathrooms': noOfBathrooms,
-        'square_feet': squareFeet,
-      }),
+      body: jsonEncode(requestBody),
     );
+
+    print("calculateEstimate - Status Code: ${response.statusCode}");
+    print("calculateEstimate - Response Body: ${response.body}");
 
     if (response.statusCode == 201) {
       final data = jsonDecode(response.body);
