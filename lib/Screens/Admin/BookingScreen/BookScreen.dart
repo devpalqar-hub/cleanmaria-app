@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:cleanby_maria/Screens/Admin/BookingScreen/Controller/EstimateController.dart';
 import 'package:cleanby_maria/Src/appButton.dart';
@@ -10,7 +11,19 @@ import 'package:http/http.dart' as http;
 
 
 class ClientDetailsScreen extends StatefulWidget {
-  const ClientDetailsScreen({super.key});
+   ClientDetailsScreen({super.key,required this.Serviceid,required this.noofrooms,required this.noofbathrooms,required this.sizeofhome,required this.propertytype,required this.isMaterialprovided,required this.iseEo,required this.recurringType,required this.recurringTypeId,required this.price});
+   String Serviceid;
+  int noofrooms;
+  int noofbathrooms;
+  int sizeofhome;
+  String propertytype;
+  bool isMaterialprovided;
+  bool iseEo;
+  String recurringTypeId;
+  String recurringType;
+  String price;
+
+
 
   @override
   State<ClientDetailsScreen> createState() => _ClientDetailsScreenState();
@@ -19,20 +32,12 @@ class ClientDetailsScreen extends StatefulWidget {
 class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
   String? selectedDay;
   String? selectedTime;
-  List<String> timeSlots = [];
+  List timeSlots = [];
+  
 
-  final List<String> days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  final List<String> days = [ 'Sun','Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat',];
 
-  final Map<String, int> dayToInt = {
-    'Sun': 0,
-    'Mon': 1,
-    'Tue': 2,
-    'Wed': 3,
-    'Thu': 4,
-    'Fri': 5,
-    'Sat': 6,
-  };
-
+  
   // Controllers for text fields
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -130,7 +135,7 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
       builder: (_) {
         return StatefulBuilder(
           builder: (context, setModalState) {
-            List<String> availableSlots = tempSelectedDay != null ? timeSlots : [];
+          
 
             return Padding(
               padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 24.h),
@@ -161,6 +166,7 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
                             showTimeSlots = true;
                             tempSelectedTime = null;
                             _fetchTimeSlots(day, setModalState);
+
                           });
                         },
                         selectedColor: const Color(0xff19A4C6),
@@ -172,19 +178,19 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
                     SizedBox(height: 24.h),
                     const Text("Choose a time", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                     SizedBox(height: 16.h),
-                    if (availableSlots.isEmpty)
+                    if (timeSlots.isEmpty)
                       const Text("No time slots available", style: TextStyle(color: Colors.red)),
-                    if (availableSlots.isNotEmpty)
+                    if (timeSlots.isNotEmpty)
                       Wrap(
                         spacing: 10.w,
-                        children: availableSlots.map((time) {
-                          final isSelected = time == tempSelectedTime;
+                        children: timeSlots.map((slot) {
+                          final isSelected = slot["time"] == tempSelectedTime;
                           return ChoiceChip(
-                            label: Text(time),
+                            label: Text(slot["time"]),
                             selected: isSelected,
                             onSelected: (_) {
                               setModalState(() {
-                                tempSelectedTime = time;
+                                tempSelectedTime = slot["time"];
                               });
                             },
                             selectedColor: const Color(0xff19A4C6),
@@ -195,7 +201,7 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
                   ],
                   SizedBox(height: 24.h),
                   ElevatedButton(
-                    onPressed: tempSelectedDay != null && (availableSlots.isEmpty || tempSelectedTime != null)
+                    onPressed: tempSelectedDay != null && (timeSlots.isEmpty || tempSelectedTime != null)
                         ? () {
                             setState(() {
                               selectedDay = tempSelectedDay;
@@ -221,9 +227,10 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
   }
 
   Future<void> _fetchTimeSlots(String day, void Function(void Function()) setModalState) async {
+  timeSlots.clear();
     
-  final int dayOfWeek = dayToInt[day] ?? 0;
-  final uri = Uri.parse('${baseUrl}scheduler/time-slots?dayOfWeek=$dayOfWeek');
+  final int dayOfWeek = days.indexOf(day);
+  final uri = Uri.parse('${baseUrl}/scheduler/time-slots?dayOfWeek=$dayOfWeek');
 
   try {
     final response = await http.get(uri);
@@ -231,9 +238,16 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
     print('Response Body: ${response.body}');
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      final List<String> slots = List<String>.from(data['slots']);
+      //final  List slots = data['data'];
       setModalState(() {
-        timeSlots = slots;
+        for (var slot in data["data"])
+        {
+          if (slot ["isAvailable"]==true){
+            timeSlots.add(slot);
+            
+          }
+        }
+
       });
     } else {
       setModalState(() {

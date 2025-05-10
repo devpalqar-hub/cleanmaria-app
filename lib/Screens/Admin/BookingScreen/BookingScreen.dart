@@ -83,7 +83,7 @@ class _EstimateScreenState extends State<EstimateScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => SelectPlanScreen(plans: estimates),
+          builder: (context) => SelectPlanScreen(plans: estimates,noofbathrooms: noOfBathrooms,noofrooms: noOfRooms,sizeofhome: squareFeet,Serviceid: selectedServiceId!,isMaterialprovided: isMaterialProvided,iseEo: isEco,propertytype: selectedTypeOfProperty!,),
         ),
       );
     } catch (e) {

@@ -5,8 +5,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SelectPlanScreen extends StatefulWidget {
   final List<Map<String, dynamic>> plans;
+  String Serviceid;
+  int noofrooms;
+  int noofbathrooms;
+  int sizeofhome;
+  String propertytype;
+  bool isMaterialprovided;
+  bool iseEo;
 
-  const SelectPlanScreen({Key? key, required this.plans}) : super(key: key);
+
+   SelectPlanScreen({Key? key, required this.plans,required this.Serviceid,required this.noofrooms,required this.noofbathrooms,required this.sizeofhome,required this.propertytype,required this.isMaterialprovided,required this.iseEo}) : super(key: key);
 
   @override
   _SelectPlanScreenState createState() => _SelectPlanScreenState();
@@ -18,10 +26,13 @@ class _SelectPlanScreenState extends State<SelectPlanScreen> {
   void _continueToBooking() {
     if (selectedPlanIndex != null) {
       final selectedPlan = widget.plans[selectedPlanIndex!];
+      String recType = selectedPlan["recurringTypeId"]=="notASubcriptionTypeId"?"instant":"recurring";
+
+      
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ClientDetailsScreen(),
+          builder: (context) => ClientDetailsScreen(Serviceid:widget.Serviceid,sizeofhome: widget.sizeofhome,noofbathrooms:widget.noofbathrooms,noofrooms: widget.noofrooms,propertytype: widget.propertytype,iseEo: widget.iseEo,isMaterialprovided: widget.isMaterialprovided,price:selectedPlan["finalPrice"].toString(),recurringTypeId: selectedPlan["recurringTypeId"],recurringType: selectedPlan["recurringTypeId"]=="notASubcriptionTypeId"?"instant":"recurring",),
         ),
       );
     }
