@@ -1,11 +1,20 @@
-// controllers/estimation_controller.dart
-
 import 'dart:convert';
+
 import 'package:cleanby_maria/main.dart';
 import 'package:http/http.dart' as http;
 
-class EstimationController {
-  
+class AppController {
+  static final AppController _instance = AppController._internal();
+
+  factory AppController() {
+    return _instance;
+  }
+
+  AppController._internal();
+
+
+
+  // Fetch services
   Future<List<Map<String, dynamic>>> fetchServices() async {
     final response = await http.get(Uri.parse('$baseUrl/services'));
 
@@ -20,6 +29,9 @@ class EstimationController {
     }
   }
 
+  
+
+  // Calculate Estimate
   Future<List<Map<String, dynamic>>> calculateEstimate({
     required String serviceId,
     required int noOfRooms,

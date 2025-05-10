@@ -12,7 +12,7 @@ class EstimateScreen extends StatefulWidget {
 }
 
 class _EstimateScreenState extends State<EstimateScreen> {
-  final EstimationController _controller = EstimationController();
+  final AppController _controller = AppController();
 
   List<Map<String, dynamic>> services = [];
   String? selectedServiceName;
@@ -106,6 +106,7 @@ class _EstimateScreenState extends State<EstimateScreen> {
       child: child,
     );
   }
+
  Widget _buildCircularCheckbox({
   required String label,
   required bool value,
@@ -126,6 +127,8 @@ class _EstimateScreenState extends State<EstimateScreen> {
     ],
   );
 }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
