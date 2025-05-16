@@ -1,6 +1,6 @@
 import 'dart:convert';
-
 import 'package:cleanby_maria/main.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class AppController {
@@ -12,9 +12,7 @@ class AppController {
 
   AppController._internal();
 
-
-
-  // Fetch services
+  // Fetch Services
   Future<List<Map<String, dynamic>>> fetchServices() async {
     final response = await http.get(Uri.parse('$baseUrl/services'));
 
@@ -28,8 +26,6 @@ class AppController {
       throw Exception('Failed to load services');
     }
   }
-
-  
 
   // Calculate Estimate
   Future<List<Map<String, dynamic>>> calculateEstimate({
@@ -63,4 +59,7 @@ class AppController {
       throw Exception('Failed to calculate estimate');
     }
   }
+
+
+  
 }

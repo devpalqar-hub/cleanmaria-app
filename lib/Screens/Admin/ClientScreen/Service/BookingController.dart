@@ -6,7 +6,6 @@ import 'package:cleanby_maria/Screens/Admin/HistoryScreen/Models/HistoryModel.da
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart' show get;
 import 'package:intl/intl.dart';
@@ -161,7 +160,7 @@ class BookingsController extends GetxController {
       return false;
     }
 
-    final response = await http.patch(
+    final response = await http.post(
       Uri.parse('$baseUrl/subscriptions/$subscriptionId/cancel'),
       headers: {
         'Content-Type': 'application/json',
@@ -175,7 +174,7 @@ class BookingsController extends GetxController {
       await fetchBookings(status, type);
       return true;
     } else {
-      // errorMessage = 'Failed to cancel subscription (${response.statusCode})';
+      //errorMessage = 'Failed to cancel subscription (${response.statusCode})';
       Fluttertoast.showToast(msg: "Failed to cancel Subscription");
       update();
       return false;
@@ -188,6 +187,8 @@ class BookingsController extends GetxController {
     update();
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString("access_token");
+    //print("Token: $token");
+  // print("Fetching bookings from: $baseUrl/bookings?status=booked&type=recurring");
 
     if (token == null || token.isEmpty) {
       errorMessage = 'Access token is missing';
@@ -210,6 +211,7 @@ class BookingsController extends GetxController {
           data.map((booking) => BookingModel.fromJson(booking)).toList();
     } else {
       errorMessage = 'Failed to load bookings (${response.statusCode})';
+      print("Body: ${response.body}");
     }
 
     isLoading = false;
@@ -245,6 +247,7 @@ class BookingsController extends GetxController {
       bookingDetail = BookingDetailModel.fromJson(data["data"]);
     } else {
       errorMessage = 'Failed to load booking details (${response.statusCode})';
+        print("Response body: ${response.body}");
     }
 
     isLoading = false;

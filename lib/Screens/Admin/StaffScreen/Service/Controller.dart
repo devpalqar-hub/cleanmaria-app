@@ -12,6 +12,7 @@ class StaffController extends GetxController {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+   final TextEditingController priorityController = TextEditingController();
 
   Map<String, String> authHeader = {};
 
@@ -19,25 +20,27 @@ class StaffController extends GetxController {
   List<Staff> staffList = [];
 
   // Create staff
-  Future<void> createStaff(BuildContext context) async {
+  Future<void> createStaff(BuildContext context,{required String priority}) async {
     final name = nameController.text.trim();
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
 
-    if (name.isEmpty || email.isEmpty || password.isEmpty) {
+    if (name.isEmpty || email.isEmpty || password.isEmpty|| priority.isEmpty) {
       Fluttertoast.showToast(msg: "Please fill all required fields");
       return;
     }
     isLoading = true;
+    update();
     try {
       final response = await http.post(
-        Uri.parse("$baseUrl/auth/register"),
+        Uri.parse("$baseUrl/users"),
         headers: authHeader,
         body: json.encode({
           "name": name,
           "email": email,
           "password": password,
           "role": "staff",
+          "priority": priority,
         }),
       );
       final data = jsonDecode(response.body);
@@ -45,6 +48,7 @@ class StaffController extends GetxController {
       if (response.statusCode == 200 || response.statusCode == 201) {
         Navigator.of(context).pop();
         Fluttertoast.showToast(msg: "Staff created successfully");
+        print("Response Body:${response.body} ");
         fetchStaffList();
         clearText();
       } else {
@@ -63,6 +67,7 @@ class StaffController extends GetxController {
     emailController.clear();
     passwordController.clear();
     phoneController.clear();
+    priorityController.clear();
     update();
   }
 

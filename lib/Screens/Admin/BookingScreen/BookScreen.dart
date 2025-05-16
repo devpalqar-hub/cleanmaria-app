@@ -1,7 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
-
-import 'package:cleanby_maria/Screens/Admin/BookingScreen/Controller/EstimateController.dart';
 import 'package:cleanby_maria/Src/appButton.dart';
 import 'package:cleanby_maria/Src/appTextField.dart';
 import 'package:cleanby_maria/main.dart';
@@ -9,21 +6,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 
-
 class ClientDetailsScreen extends StatefulWidget {
-   ClientDetailsScreen({super.key,required this.Serviceid,required this.noofrooms,required this.noofbathrooms,required this.sizeofhome,required this.propertytype,required this.isMaterialprovided,required this.iseEo,required this.recurringType,required this.recurringTypeId,required this.price});
-   String Serviceid;
-  int noofrooms;
-  int noofbathrooms;
-  int sizeofhome;
-  String propertytype;
-  bool isMaterialprovided;
-  bool iseEo;
-  String recurringTypeId;
-  String recurringType;
-  String price;
+  ClientDetailsScreen({
+    super.key,
+    required this.Serviceid,
+    required this.noofrooms,
+    required this.noofbathrooms,
+    required this.sizeofhome,
+    required this.propertytype,
+    required this.isMaterialprovided,
+    required this.iseEo,
+    required this.recurringType,
+    required this.recurringTypeId,
+    required this.price,
+  });
 
-
+  final String Serviceid;
+  final int noofrooms;
+  final int noofbathrooms;
+  final int sizeofhome;
+  final String propertytype;
+  final bool isMaterialprovided;
+  final bool iseEo;
+  final String recurringTypeId;
+  final String recurringType;
+  final String price;
 
   @override
   State<ClientDetailsScreen> createState() => _ClientDetailsScreenState();
@@ -33,12 +40,8 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
   String? selectedDay;
   String? selectedTime;
   List timeSlots = [];
-  
+  final List<String> days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-  final List<String> days = [ 'Sun','Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat',];
-
-  
-  // Controllers for text fields
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
@@ -47,7 +50,6 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _zipCodeController = TextEditingController();
   final TextEditingController _landmarkController = TextEditingController();
-  final TextEditingController _paymentMethodController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -72,19 +74,20 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
               Apptextfield.primary(labelText: "City", hintText: "Enter City", label: '', controller: _cityController),
               Apptextfield.primary(labelText: "Zip Code", hintText: "Enter Zip Code", label: '', controller: _zipCodeController),
               Apptextfield.primary(labelText: "Landmark", hintText: "Enter Landmark", label: '', controller: _landmarkController),
-              Apptextfield.primary(labelText: "Payment Method", hintText: "Enter Payment Method", label: '', controller: _paymentMethodController),
               SizedBox(height: 16.h),
               _buildServiceDateCard(context),
               if (selectedDay != null && selectedTime != null)
                 Padding(
                   padding: EdgeInsets.only(top: 12.h),
-                  child: Text(
-                    "Selected: $selectedDay, $selectedTime",
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
+                  child: Text("Selected: $selectedDay, $selectedTime", style: const TextStyle(fontWeight: FontWeight.bold)),
                 ),
               SizedBox(height: 20.h),
-              Center(child: AppButton(text: "Book", onPressed: () {})),
+              Center(
+                child: AppButton(
+                  text: "Book",
+                  onPressed: _bookService,
+                ),
+              ),
             ],
           ),
         ),
@@ -129,27 +132,16 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (_) {
         return StatefulBuilder(
           builder: (context, setModalState) {
-          
-
             return Padding(
               padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 24.h),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Container(
-                    width: 50,
-                    height: 5,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[400],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
+                  Container(width: 50, height: 5, decoration: BoxDecoration(color: Colors.grey[400], borderRadius: BorderRadius.circular(10))),
                   SizedBox(height: 16.h),
                   const Text("Choose a day", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   SizedBox(height: 16.h),
@@ -166,7 +158,6 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
                             showTimeSlots = true;
                             tempSelectedTime = null;
                             _fetchTimeSlots(day, setModalState);
-
                           });
                         },
                         selectedColor: const Color(0xff19A4C6),
@@ -227,37 +218,93 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
   }
 
   Future<void> _fetchTimeSlots(String day, void Function(void Function()) setModalState) async {
-  timeSlots.clear();
-    
-  final int dayOfWeek = days.indexOf(day);
-  final uri = Uri.parse('${baseUrl}/scheduler/time-slots?dayOfWeek=$dayOfWeek');
+    timeSlots.clear();
+    final int dayOfWeek = days.indexOf(day);
+    final uri = Uri.parse('${baseUrl}/scheduler/time-slots?dayOfWeek=$dayOfWeek');
+
+    try {
+      final response = await http.get(uri);
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setModalState(() {
+          timeSlots = data['data'].where((slot) => slot['isAvailable'] == true).toList();
+        });
+      } else {
+        setModalState(() => timeSlots = []);
+      }
+    } catch (e) {
+      setModalState(() => timeSlots = []);
+    }
+  }
+
+ void _bookService() async {
+  if (selectedDay == null || selectedTime == null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Please select a day and time")),
+    );
+    return;
+  }
+
+  final bookingData = {
+    "serviceId": widget.Serviceid,
+    "type": "recurring",
+    "paymentMethod": "offline",
+    "recurringTypeId": widget.recurringTypeId,
+    "no_of_rooms": widget.noofrooms,
+    "no_of_bathrooms": widget.noofbathrooms,
+    "propertyType": widget.propertytype,
+    "materialProvided": widget.isMaterialprovided,
+    "areaSize": widget.sizeofhome,
+    "isEco": widget.iseEo,
+    "price": int.tryParse(widget.price) ?? 0,
+    "address": {
+      "street": _addressController.text,
+      "landmark": _landmarkController.text,
+      "addressLine1": _addressController.text,
+      "addressLine2": _address2Controller.text,
+      "city": _cityController.text,
+      "state": "Unknown",
+      "zip": _zipCodeController.text,
+      "specialInstructions": ""
+    },
+    "name": _nameController.text,
+    "email": _emailController.text,
+    "phone": _phoneController.text,
+    "schedule": {
+      "dayOfWeek": days.indexOf(selectedDay!),
+      "time": selectedTime,
+    }
+  };
 
   try {
-    final response = await http.get(uri);
-    print('Status Code: ${response.statusCode}');
-    print('Response Body: ${response.body}');
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      //final  List slots = data['data'];
-      setModalState(() {
-        for (var slot in data["data"])
-        {
-          if (slot ["isAvailable"]==true){
-            timeSlots.add(slot);
-            
-          }
-        }
+    final response = await http.post(
+      Uri.parse('$baseUrl/bookings?status=&type'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(bookingData),
+    );
 
-      });
+    if (response.statusCode == 201) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Booking successful!")),
+      );
+      print("Booking Payload: ${jsonEncode(bookingData)}");
+      await Future.delayed(const Duration(seconds: 1));
+
+
+      Navigator.popUntil(context, ModalRoute.withName('/ClientScreen'));
     } else {
-      setModalState(() {
-        timeSlots = [];
-      });
+      print("Booking Failed - Status Code: ${response.statusCode}");
+      print("Booking Failed - Response Body: ${response.body}");
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to book: ${response.statusCode}")),
+      );
     }
   } catch (e) {
-    setModalState(() {
-      timeSlots = [];
-    });
+    print("Booking Error: $e");
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Error: $e")),
+    );
   }
 }
-}
+} 

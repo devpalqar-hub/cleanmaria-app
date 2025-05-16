@@ -205,6 +205,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                         value: customer?.name ?? 'N/A',
                       ),
                     ),
+                    if (detail.customer?.phone != null && detail.customer!.phone!.isNotEmpty)
                     InkWell(
                       onTap: () {
                         launchUrl(Uri.parse("tel:${detail.customer!.phone!}"));
@@ -228,7 +229,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                 _infoText(
                   title: "Address",
                   value:
-                      "${booking.bookingAddress!.address!.line1!},  ${booking.bookingAddress!.address!.line2 ?? "--:--"} \n${booking.bookingAddress!.address!.city ?? ""} ${booking.bookingAddress!.address!.zip ?? ""} ",
+                      "${booking.bookingAddress!.address!.line1?? "N/A"},  ${booking.bookingAddress!.address!.line2 ?? "--:--"} \n${booking.bookingAddress!.address!.city ?? ""} ${booking.bookingAddress!.address!.zip ?? ""} ",
                 ),
                 if (widget.date == null)
                   _infoText(
@@ -245,10 +246,10 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                 if (widget.date == null)
                   _infoText(
                     title: "Shedules",
-                    value: (detail.type == "subscription")
+                    value: (detail.type == "recurring")
                         ? booking.monthSchedules!
                             .map((value) =>
-                                "Week ${value.weekOfMonth} - ${controller.weektoDay(value.dayOfWeek!)}, ${value.time!} ")
+                                "  ${controller.weektoDay(value.dayOfWeek!)}, ${value.time!} ")
                             .join("\n")
                         : controller.WeekDatetoDate(
                             createdDate: DateTime.parse(booking.createdAt!),

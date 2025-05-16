@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/ClientScreen.dart';
 import 'package:cleanby_maria/Screens/Admin/HistoryScreen/HistoryScreen.dart';
 import 'package:cleanby_maria/Screens/Admin/HomeScreen/views/HomeView.dart';
+import 'package:cleanby_maria/Screens/Admin/ServiceScreen/ServiceScreen.dart';
 import 'package:cleanby_maria/Screens/Admin/StaffScreen/StaffScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -35,6 +38,7 @@ class _HomescreenState extends State<Homescreen> {
     ClientScreen(),
     BookingsaScreen(),
     StaffScreen(),
+    ServiceScreen(),
   ];
 
   @override
@@ -49,6 +53,7 @@ class _HomescreenState extends State<Homescreen> {
             _buildBarItem("assets/booking_new.png", "Client", 1),
             _buildBarItem("assets/history_new.png", "History", 2),
             _buildBarItem("assets/staff_new.png", "Staff", 3),
+             _buildBarItem("assets/staff_new.png", "Service", 3),
           ],
           currentIndex: indexnum,
           onTap: (index) => setState(() => indexnum = index),

@@ -147,6 +147,7 @@ class _BookingsaScreenState extends State<BookingsaScreen> {
                   ),
                   SizedBox(height: 15.h),
                   for (var data in hisCtrl.history)
+                   if (data.booking != null && data.booking!.customer != null && data.staff != null) 
                     StatusCard(
                         status: data.status ?? "Unknown",
                         color: hisCtrl.getStatusColor(data.status!),

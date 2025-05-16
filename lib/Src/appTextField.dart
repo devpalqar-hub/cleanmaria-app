@@ -109,11 +109,12 @@ class Apptextfield {
             SizedBox(height: 7.h),
             Container(
               height: 50.h,
-              width: 330.w,
-              decoration: BoxDecoration(
-               // color: Color(0xFFF5F5F5),
-                borderRadius: BorderRadius.circular(12.r),
-              ),
+              width: 345.w,
+               decoration: BoxDecoration(
+            color: Colors.grey[200],
+            borderRadius: BorderRadius.circular(12.r),
+          ),
+              
               child: TextField(
                 controller: controller,
                 obscureText: obscureText,

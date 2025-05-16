@@ -1,5 +1,6 @@
 import 'package:cleanby_maria/Screens/Admin/StaffScreen/Service/Controller.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -17,6 +18,8 @@ class _CreateStaffBottomSheetState extends State<CreateStaffBottomSheet> {
   void dispose() {
     super.dispose();
   }
+ 
+ // String? _selectedPriority;
 
   bool _obscurePassword = false;
 
@@ -106,14 +109,23 @@ class _CreateStaffBottomSheetState extends State<CreateStaffBottomSheet> {
                 _buildInputField(
                     "Password", "Enter Password", _.passwordController,
                     obscureText: true),
+              _buildInputField(
+                    "Priority", "Enter Priority", _.priorityController),
+                    
                 SizedBox(height: 20.h),
                 _.isLoading
                     ? const Center(child: CircularProgressIndicator())
                     : AppButton(
                         text: "Create Staff",
                         onPressed: () {
-                          _.createStaff(context);
-                        },
+                          {
+    final priority = _.priorityController.text.trim();
+if (priority.isEmpty) {
+  Fluttertoast.showToast(msg: "Please enter priority");
+  return;
+}
+_.createStaff(context, priority: priority);
+                          };},
                       ),
                 TextButton(
                   onPressed: () => Navigator.pop(context),

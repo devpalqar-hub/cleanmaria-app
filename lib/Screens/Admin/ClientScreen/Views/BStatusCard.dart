@@ -2,38 +2,36 @@ import 'package:cleanby_maria/Screens/Admin/ClientScreen/Models/bookingModel.dar
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/Service/BookingController.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:cleanby_maria/Screens/Admin/ClientScreen/Models/BookingDetailModel.dart';
 import 'package:cleanby_maria/Src/appText.dart';
-import 'package:get/get_instance/get_instance.dart';
-import 'package:get/state_manager.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:url_launcher/url_launcher.dart' show launchUrl;
 
 class BStatusCard extends StatelessWidget {
   final BookingModel booking;
-
   BStatusCard({
     super.key,
     required this.booking,
   });
 
-  BookingsController bCtrl = Get.put(BookingsController());
+
+   BookingsController bCtrl = Get.put(BookingsController());
+
   @override
   Widget build(BuildContext context) {
+    final name = booking.customer?.name ?? 'Unknown';
+    final status = booking.status ?? 'N/A';
+    
+    
+
     return Container(
-      width: 352.w,
-      height: 90.h,
-      margin: EdgeInsets.only(left: 15.w, right: 15.w, bottom: 10.h),
-      padding: EdgeInsets.all(10.w),
+      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.r),
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-          offset: const Offset(0, 1),
-            blurRadius: 4,
-            spreadRadius: 0,
-          color: Colors.black.withOpacity(0.1),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(12.r),
+        color: Colors.grey.shade100,
+        boxShadow: [BoxShadow(blurRadius: 4, color: Colors.black12)],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -41,19 +39,20 @@ class BStatusCard extends StatelessWidget {
         children: [
           Expanded(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
+           
               children: [
                 appText.primaryText(
                   text: booking.customer!.name!,
-                  fontSize: 15.sp,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
                 ),
-                SizedBox(height: 3.h),
-                Row(
-                  children: [
-                    Image.asset(
+               SizedBox(height: 3.h),
+            
+            Row(
+              children: [
+                Image.asset(
                       "assets/clock.png",
                       height: 15.h,
                       width: 15.w,
@@ -71,27 +70,50 @@ class BStatusCard extends StatelessWidget {
                             const Color(0xFF19A4C6)
                         //: Colors.black,
                         ),
-                    SizedBox(width: 5.w),
-                    appText.primaryText(
-                      text: (booking.subscriptionType != null)
-                          ? booking.monthSchedules!
-                              .map((value) =>
-                                  "${value.weekOfMonth}-${bCtrl.weektoDay(value.dayOfWeek!)} ")
-                              .join(",")
-                          : bCtrl.WeekDatetoDate(
-                              createdDate: DateTime.parse(booking.createdAt!),
-                              weekOfMonth:
-                                  booking.monthSchedules!.first.weekOfMonth!,
-                              dayOfWeek:
-                                  booking.monthSchedules!.first.dayOfWeek!),
-                      fontSize: 10.sp,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black,
+                        SizedBox(width: 140.w),
+                   // appText.primaryText(
+                     // text: (booking.subscriptionType != null)
+                       //   ? booking.monthSchedules!
+                         //    .map((value) =>
+                           ///       "${bCtrl.weektoDay(value.dayOfWeek!)}, ${value.time!}} ")
+                             // .join(",")
+                        // : bCtrl.WeekDatetoDate(
+                          ///    createdDate: DateTime.parse(booking.createdAt!),
+                             // weekOfMonth:
+                               //   booking.monthSchedules!.first.weekOfMonth!,
+                             // dayOfWeek:
+                               //   booking.monthSchedules!.first.dayOfWeek!),
+                     // fontSize: 10.sp,
+                      //fontWeight: FontWeight.w500,
+                      //color: Colors.black,
+                   // ),
+                    Row(
+                children: [
+                  InkWell(
+                    onTap: () {
+                      launchUrl(Uri.parse("tel:${booking.customer!.phone!}"));
+                    },
+                    child: Image.asset(
+                      "assets/call2.png",
+                      height: 27.w,
+                      width: 27.w,
                     ),
-                  ],
+                  ),
+                
+              SizedBox(width: 20.h),
+              appText.primaryText(
+                text: "\$${booking.price!}",
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
+              ),
+          
+                ],
+              ),
+                
+                     ],
                 ),
-                SizedBox(height: 3.h),
-                appText.primaryText(
+                    appText.primaryText(
                   text:
                       "${booking.bookingAddress!.address!.line1!}, ${booking.bookingAddress!.address!.city ?? ""} - ${booking.bookingAddress!.address!.zip ?? ""} ",
                   fontSize: 11.sp,
@@ -99,33 +121,17 @@ class BStatusCard extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                   color: Colors.black,
                 ),
+               
+             
               ],
+              
             ),
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              InkWell(
-                onTap: () {
-                  launchUrl(Uri.parse("tel:${booking.customer!.phone!}"));
-                },
-                child: Image.asset(
-                  "assets/call2.png",
-                  height: 27.w,
-                  width: 27.w,
-                ),
-              ),
-              SizedBox(height: 10.h),
-              appText.primaryText(
-                text: "\$${booking.price!}",
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.black,
-              ),
-            ],
-          ),
-        ],
-      ),
+                    ],
+            ),
+          
+        
+      
     );
   }
 }

@@ -24,7 +24,7 @@ class _ClientScreenState extends State<ClientScreen> {
   @override
   void initState() {
     super.initState();
-    bookingsController.fetchBookings("booked", "subscription");
+    bookingsController.fetchBookings("booked", "recurring");
   }
 
   @override
@@ -67,9 +67,9 @@ class _ClientScreenState extends State<ClientScreen> {
                   setState(() {
                     selectedMenu = value;
                     if (value == 0) {
-                      bookingsController.fetchBookings("booked", "subscription");
+                      bookingsController.fetchBookings("booked", "recurring");
                     } else {
-                      bookingsController.fetchBookings("booked", "instant");
+                      bookingsController.fetchBookings("booked", "one_time");
                     }
                   });
                 }
@@ -114,25 +114,31 @@ class _ClientScreenState extends State<ClientScreen> {
               return Center(child: Text(bookingsController.errorMessage));
             }
             return Expanded(
-              child: ListView.builder(
-                itemCount: bookingsController.bookings.length,
-                itemBuilder: (context, index) {
-                  final booking = bookingsController.bookings[index];
-                  return (searchController.text.isEmpty ||
-                          booking.customer!.name!
-                              .toLowerCase()
-                              .contains(searchController.text.toLowerCase()))
-                      ? GestureDetector(
-                          onTap: () {
-                            Get.to(() => BookingDetailsScreen(
-                                bookingId: booking.id!));
-                          },
-                          child: BStatusCard(booking: booking),
-                        )
-                      : Container();
-                },
-              ),
-            );
+  child: ListView.builder(
+    itemCount: bookingsController.bookings.length,
+    itemBuilder: (context, index) {
+      final booking = bookingsController.bookings[index];
+
+      if (searchController.text.isEmpty ||
+          booking.customer?.name
+                  ?.toLowerCase()
+                  .contains(searchController.text.toLowerCase()) ==
+              true) {
+        return GestureDetector(
+          onTap: () {
+            Get.to(() => BookingDetailsScreen(
+                  bookingId: booking.id ?? '',
+                ));
+          },
+          child: BStatusCard(booking: booking),
+        );
+      }
+      return SizedBox.shrink();
+    },
+  ),
+);
+
+
           }),
         ],
       ),
