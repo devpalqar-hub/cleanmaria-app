@@ -4,6 +4,7 @@ import 'package:cleanby_maria/Src/appButton.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class EstimateScreen extends StatefulWidget {
@@ -62,9 +63,8 @@ class _EstimateScreenState extends State<EstimateScreen> {
         selectedNoOfBathRooms == null ||
         selectedTypeOfProperty == null ||
         selectedSizeOfHome == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please fill all fields')),
-      );
+   
+      Fluttertoast.showToast(msg: "Please fill all fields");
       return;
     }
 
@@ -87,10 +87,16 @@ class _EstimateScreenState extends State<EstimateScreen> {
         ),
       );
     } catch (e) {
-      print(e);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to fetch estimate')),
-      );
+     print(e);
+Fluttertoast.showToast(
+  msg: "Failed to fetch estimate",
+  toastLength: Toast.LENGTH_SHORT,
+  gravity: ToastGravity.BOTTOM,
+  backgroundColor: Colors.black,
+  textColor: Colors.white,
+  fontSize: 16.0,
+);
+
     }
   }
 
@@ -132,6 +138,7 @@ class _EstimateScreenState extends State<EstimateScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text(

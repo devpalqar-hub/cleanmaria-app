@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,7 +15,7 @@ class AuthenticationController extends GetxController {
 
   Future<void> handleLogin() async {
     if (emailController.text.isEmpty || passwordController.text.isEmpty) {
-      showSnackBar('Email and password cannot be empty');
+     Fluttertoast.showToast(msg:'Email and password cannot be empty');
       return;
     }
 
@@ -27,7 +28,7 @@ class AuthenticationController extends GetxController {
       print(response);
 
       if (response['success']) {
-        showSnackBar('Login successful');
+        Fluttertoast.showToast(msg:'Login successful');
         SharedPreferences prefs = await SharedPreferences.getInstance();
         String? role = prefs.getString("role");
 
@@ -40,10 +41,10 @@ class AuthenticationController extends GetxController {
               transition: Transition.rightToLeft);
         }
       } else {
-        showSnackBar(response['error'] ?? 'Login failed. Invalid credentials.');
+        Fluttertoast.showToast(msg: " Invalid credentials ");
       }
     } catch (e) {
-      showSnackBar('An error occurred: $e');
+     Fluttertoast.showToast (msg:'An error occurred: $e');
     } finally {
       isLoading.value = false;
     }
@@ -92,8 +93,6 @@ class AuthenticationController extends GetxController {
     }
   }
 
-  void showSnackBar(String message) {
-    Get.snackbar("Message", message, snackPosition: SnackPosition.BOTTOM);
-  }
+ 
 }
 

@@ -114,7 +114,7 @@ class StaffHomeController extends GetxController {
     if (body["message"] == "User is not active") {
       Fluttertoast.showToast(msg: "Staff is not active");
     }else{
-      Fluttertoast.showToast(msg: "Session Expired");
+      Fluttertoast.showToast(msg: "Logout Suceesfully");
     }
       prefs.setString("LOGIN", "OUT");
       Get.offAll(() => AuthenticationScreen(),

@@ -101,11 +101,11 @@ class Apptextfield {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 5.h),
-            Text(
-              labelText,
-              style: GoogleFonts.inter(
-                  fontSize: 16.sp, fontWeight: FontWeight.w500),
-            ),
+           Text(
+          labelText,
+          style: GoogleFonts.poppins(
+              fontSize: 14.sp, fontWeight: FontWeight.w700),
+        ),
             SizedBox(height: 7.h),
             Container(
               height: 50.h,

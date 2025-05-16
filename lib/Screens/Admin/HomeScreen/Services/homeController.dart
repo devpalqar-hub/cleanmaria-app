@@ -103,7 +103,7 @@ class HomeController extends GetxController {
         summaryEarnings = summaryData['totalEarnings'] ?? 0;
         summaryStaff = summaryData['totalStaff'] ?? 0;
       } else if (response.statusCode == 401) {
-        Fluttertoast.showToast(msg: "Session Expired");
+        Fluttertoast.showToast(msg: "Logout Successfull");
         prefs.setString("LOGIN", "OUT");
         Get.offAll(() => AuthenticationScreen(),
             transition: Transition.rightToLeft);

@@ -4,6 +4,7 @@ import 'package:cleanby_maria/Src/appTextField.dart';
 import 'package:cleanby_maria/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
 class ClientDetailsScreen extends StatefulWidget {
@@ -54,6 +55,7 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
       appBar: AppBar(
         title: const Text('Client Details', style: TextStyle(fontWeight: FontWeight.w600)),
         backgroundColor: Colors.white,
@@ -239,9 +241,8 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
 
  void _bookService() async {
   if (selectedDay == null || selectedTime == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Please select a day and time")),
-    );
+   
+     Fluttertoast.showToast(msg:"Please select a day and time");
     return;
   }
 
@@ -284,9 +285,8 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
     );
 
     if (response.statusCode == 201) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Booking successful!")),
-      );
+       Fluttertoast.showToast(msg:"Booking successful!");
+   
       print("Booking Payload: ${jsonEncode(bookingData)}");
       await Future.delayed(const Duration(seconds: 1));
 
@@ -295,16 +295,13 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
     } else {
       print("Booking Failed - Status Code: ${response.statusCode}");
       print("Booking Failed - Response Body: ${response.body}");
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Failed to book: ${response.statusCode}")),
-      );
+       Fluttertoast.showToast(msg:"Failed to book: ${response.statusCode}");
+    
     }
   } catch (e) {
     print("Booking Error: $e");
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Error: $e")),
-    );
+    Fluttertoast.showToast(msg:"Error: $e");
+  
   }
 }
 } 
