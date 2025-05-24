@@ -1,10 +1,13 @@
 import 'dart:convert';
+import 'package:cleanby_maria/Screens/Admin/ClientScreen/Service/BookingController.dart';
 import 'package:cleanby_maria/Src/appButton.dart';
 import 'package:cleanby_maria/Src/appTextField.dart';
 import 'package:cleanby_maria/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:http/http.dart' as http;
 
 class ClientDetailsScreen extends StatefulWidget {
@@ -55,9 +58,9 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       appBar: AppBar(
-        title: const Text('Client Details', style: TextStyle(fontWeight: FontWeight.w600)),
+        title: const Text('Client Details',
+            style: TextStyle(fontWeight: FontWeight.w600)),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 0.5,
@@ -68,20 +71,53 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Apptextfield.primary(labelText: 'First Name', hintText: 'Enter First Name', label: '', controller: _nameController),
-              Apptextfield.primary(labelText: "Email", hintText: "Enter Email", label: '', controller: _emailController),
-              Apptextfield.primary(labelText: "Phone", hintText: "Enter Phone", label: '', controller: _phoneController),
-              Apptextfield.primary(labelText: "Address", hintText: "Enter Address", label: '', controller: _addressController),
-              Apptextfield.primary(labelText: "Address 2", hintText: "Enter Address Second Line", label: '', controller: _address2Controller),
-              Apptextfield.primary(labelText: "City", hintText: "Enter City", label: '', controller: _cityController),
-              Apptextfield.primary(labelText: "Zip Code", hintText: "Enter Zip Code", label: '', controller: _zipCodeController),
-              Apptextfield.primary(labelText: "Landmark", hintText: "Enter Landmark", label: '', controller: _landmarkController),
+              Apptextfield.primary(
+                  labelText: 'First Name',
+                  hintText: 'Enter First Name',
+                  label: '',
+                  controller: _nameController),
+              Apptextfield.primary(
+                  labelText: "Email",
+                  hintText: "Enter Email",
+                  label: '',
+                  controller: _emailController),
+              Apptextfield.primary(
+                  labelText: "Phone",
+                  hintText: "Enter Phone",
+                  label: '',
+                  controller: _phoneController),
+              Apptextfield.primary(
+                  labelText: "Address",
+                  hintText: "Enter Address",
+                  label: '',
+                  controller: _addressController),
+              Apptextfield.primary(
+                  labelText: "Address 2",
+                  hintText: "Enter Address Second Line",
+                  label: '',
+                  controller: _address2Controller),
+              Apptextfield.primary(
+                  labelText: "City",
+                  hintText: "Enter City",
+                  label: '',
+                  controller: _cityController),
+              Apptextfield.primary(
+                  labelText: "Zip Code",
+                  hintText: "Enter Zip Code",
+                  label: '',
+                  controller: _zipCodeController),
+              Apptextfield.primary(
+                  labelText: "Landmark",
+                  hintText: "Enter Landmark",
+                  label: '',
+                  controller: _landmarkController),
               SizedBox(height: 16.h),
               _buildServiceDateCard(context),
               if (selectedDay != null && selectedTime != null)
                 Padding(
                   padding: EdgeInsets.only(top: 12.h),
-                  child: Text("Selected: $selectedDay, $selectedTime", style: const TextStyle(fontWeight: FontWeight.bold)),
+                  child: Text("Selected: $selectedDay, $selectedTime",
+                      style: const TextStyle(fontWeight: FontWeight.bold)),
                 ),
               SizedBox(height: 20.h),
               Center(
@@ -111,13 +147,18 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.calendar_month, size: 35, color: Color(0xff19A4C6)),
+            const Icon(Icons.calendar_month,
+                size: 35, color: Color(0xff19A4C6)),
             SizedBox(width: 30.w),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text("Service Date", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
-                Text("Tap to choose day & time", style: TextStyle(color: Colors.grey.shade600, fontSize: 14)),
+                const Text("Service Date",
+                    style:
+                        TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
+                Text("Tap to choose day & time",
+                    style:
+                        TextStyle(color: Colors.grey.shade600, fontSize: 14)),
               ],
             ),
           ],
@@ -134,7 +175,8 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (_) {
         return StatefulBuilder(
           builder: (context, setModalState) {
@@ -143,9 +185,16 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Container(width: 50, height: 5, decoration: BoxDecoration(color: Colors.grey[400], borderRadius: BorderRadius.circular(10))),
+                  Container(
+                      width: 50,
+                      height: 5,
+                      decoration: BoxDecoration(
+                          color: Colors.grey[400],
+                          borderRadius: BorderRadius.circular(10))),
                   SizedBox(height: 16.h),
-                  const Text("Choose a day", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const Text("Choose a day",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   SizedBox(height: 16.h),
                   Wrap(
                     spacing: 10.w,
@@ -163,16 +212,20 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
                           });
                         },
                         selectedColor: const Color(0xff19A4C6),
-                        labelStyle: TextStyle(color: isSelected ? Colors.white : Colors.black),
+                        labelStyle: TextStyle(
+                            color: isSelected ? Colors.white : Colors.black),
                       );
                     }).toList(),
                   ),
                   if (showTimeSlots) ...[
                     SizedBox(height: 24.h),
-                    const Text("Choose a time", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    const Text("Choose a time",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold)),
                     SizedBox(height: 16.h),
                     if (timeSlots.isEmpty)
-                      const Text("No time slots available", style: TextStyle(color: Colors.red)),
+                      const Text("No time slots available",
+                          style: TextStyle(color: Colors.red)),
                     if (timeSlots.isNotEmpty)
                       Wrap(
                         spacing: 10.w,
@@ -187,14 +240,17 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
                               });
                             },
                             selectedColor: const Color(0xff19A4C6),
-                            labelStyle: TextStyle(color: isSelected ? Colors.white : Colors.black),
+                            labelStyle: TextStyle(
+                                color:
+                                    isSelected ? Colors.white : Colors.black),
                           );
                         }).toList(),
                       ),
                   ],
                   SizedBox(height: 24.h),
                   ElevatedButton(
-                    onPressed: tempSelectedDay != null && (timeSlots.isEmpty || tempSelectedTime != null)
+                    onPressed: tempSelectedDay != null &&
+                            (timeSlots.isEmpty || tempSelectedTime != null)
                         ? () {
                             setState(() {
                               selectedDay = tempSelectedDay;
@@ -205,10 +261,13 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
                         : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xff19A4C6),
-                      padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 12.h),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 32.w, vertical: 12.h),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
                     ),
-                    child: const Text("Confirm", style: TextStyle(fontSize: 16, color: Colors.white)),
+                    child: const Text("Confirm",
+                        style: TextStyle(fontSize: 16, color: Colors.white)),
                   ),
                 ],
               ),
@@ -219,17 +278,21 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
     );
   }
 
-  Future<void> _fetchTimeSlots(String day, void Function(void Function()) setModalState) async {
+  Future<void> _fetchTimeSlots(
+      String day, void Function(void Function()) setModalState) async {
     timeSlots.clear();
     final int dayOfWeek = days.indexOf(day);
-    final uri = Uri.parse('${baseUrl}/scheduler/time-slots?dayOfWeek=$dayOfWeek');
+    final uri =
+        Uri.parse('${baseUrl}/scheduler/time-slots?dayOfWeek=$dayOfWeek');
 
     try {
       final response = await http.get(uri);
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         setModalState(() {
-          timeSlots = data['data'].where((slot) => slot['isAvailable'] == true).toList();
+          timeSlots = data['data']
+              .where((slot) => slot['isAvailable'] == true)
+              .toList();
         });
       } else {
         setModalState(() => timeSlots = []);
@@ -239,69 +302,69 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
     }
   }
 
- void _bookService() async {
-  if (selectedDay == null || selectedTime == null) {
-   
-     Fluttertoast.showToast(msg:"Please select a day and time");
-    return;
-  }
-
-  final bookingData = {
-    "serviceId": widget.Serviceid,
-    "type": "recurring",
-    "paymentMethod": "offline",
-    "recurringTypeId": widget.recurringTypeId,
-    "no_of_rooms": widget.noofrooms,
-    "no_of_bathrooms": widget.noofbathrooms,
-    "propertyType": widget.propertytype,
-    "materialProvided": widget.isMaterialprovided,
-    "areaSize": widget.sizeofhome,
-    "isEco": widget.iseEo,
-    "price": int.tryParse(widget.price) ?? 0,
-    "address": {
-      "street": _addressController.text,
-      "landmark": _landmarkController.text,
-      "addressLine1": _addressController.text,
-      "addressLine2": _address2Controller.text,
-      "city": _cityController.text,
-      "state": "Unknown",
-      "zip": _zipCodeController.text,
-      "specialInstructions": ""
-    },
-    "name": _nameController.text,
-    "email": _emailController.text,
-    "phone": _phoneController.text,
-    "schedule": {
-      "dayOfWeek": days.indexOf(selectedDay!),
-      "time": selectedTime,
+  void _bookService() async {
+    if (selectedDay == null || selectedTime == null) {
+      Fluttertoast.showToast(msg: "Please select a day and time");
+      return;
     }
-  };
 
-  try {
-    final response = await http.post(
-      Uri.parse('$baseUrl/bookings?status=&type'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(bookingData),
-    );
+    final bookingData = {
+      "serviceId": widget.Serviceid,
+      "type": widget.recurringType,
+      "paymentMethod": "offline",
+      "recurringTypeId": widget.recurringTypeId,
+      "no_of_rooms": widget.noofrooms,
+      "no_of_bathrooms": widget.noofbathrooms,
+      "propertyType": widget.propertytype,
+      "materialProvided": widget.isMaterialprovided,
+      "areaSize": widget.sizeofhome,
+      "isEco": widget.iseEo,
+      "price": double.parse(widget.price ?? "0"),
+      "address": {
+        "street": _addressController.text,
+        "landmark": _landmarkController.text,
+        "addressLine1": _addressController.text,
+        "addressLine2": _address2Controller.text,
+        "city": _cityController.text,
+        "state": "Unknown",
+        "zip": _zipCodeController.text,
+        "specialInstructions": ""
+      },
+      "name": _nameController.text,
+      "email": _emailController.text,
+      "phone": _phoneController.text,
+      "schedule": {
+        "dayOfWeek": days.indexOf(selectedDay!),
+        "time": selectedTime,
+      }
+    };
 
-    if (response.statusCode == 201) {
-       Fluttertoast.showToast(msg:"Booking successful!");
-   
-      print("Booking Payload: ${jsonEncode(bookingData)}");
-      await Future.delayed(const Duration(seconds: 1));
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/bookings?status=&type'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(bookingData),
+      );
 
+      if (response.statusCode == 201) {
+        Fluttertoast.showToast(msg: "Booking successful!");
 
-      Navigator.popUntil(context, ModalRoute.withName('/ClientScreen'));
-    } else {
-      print("Booking Failed - Status Code: ${response.statusCode}");
-      print("Booking Failed - Response Body: ${response.body}");
-       Fluttertoast.showToast(msg:"Failed to book: ${response.statusCode}");
-    
+        print("Booking Payload: ${jsonEncode(bookingData)}");
+        await Future.delayed(const Duration(seconds: 1));
+
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+        BookingsController ctrl = Get.find();
+        ctrl.fetchBookings("booked", "recurring");
+      } else {
+        print("Booking Failed - Status Code: ${response.statusCode}");
+        print("Booking Failed - Response Body: ${response.body}");
+        Fluttertoast.showToast(msg: "Failed to book: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Booking Error: $e");
+      Fluttertoast.showToast(msg: "Error: $e");
     }
-  } catch (e) {
-    print("Booking Error: $e");
-    Fluttertoast.showToast(msg:"Error: $e");
-  
   }
 }
-} 
