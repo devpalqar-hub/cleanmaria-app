@@ -294,7 +294,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                 ),
                 _infoText(
                   title: "Type of cleaning",
-                  value: booking.type ?? 'N/A',
+                  value: "Weakly",
                 ),
                 if (widget.date != null)
                   _infoText(

@@ -154,9 +154,9 @@ class HomeController extends GetxController {
     if (selectedOption == "Last Week") {
       toDate = today.subtract(Duration(days: 7));
     } else if (selectedOption == "Last Month") {
-      toDate = today.subtract(Duration(days: 30)); // Start of the week
+      toDate = today.subtract(Duration(days: 30)); 
     } else if (selectedOption == "Last Year") {
-      toDate = today.subtract(Duration(days: 365)); // End of the month
+      toDate = today.subtract(Duration(days: 365)); 
     }
 
     String startDate = DateFormat('yyyy-MM-dd').format(toDate);

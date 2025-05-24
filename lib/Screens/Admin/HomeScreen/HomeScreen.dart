@@ -53,7 +53,7 @@ class _HomescreenState extends State<Homescreen> {
             _buildBarItem("assets/booking_new.png", "Client", 1),
             _buildBarItem("assets/history_new.png", "History", 2),
             _buildBarItem("assets/staff_new.png", "Staff", 3),
-             _buildBarItem("assets/staff_new.png", "Service", 3),
+             _buildBarItem("assets/service.png", "Service", 4),
           ],
           currentIndex: indexnum,
           onTap: (index) => setState(() => indexnum = index),
