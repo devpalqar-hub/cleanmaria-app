@@ -205,17 +205,19 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                         value: customer?.name ?? 'N/A',
                       ),
                     ),
-                    if (detail.customer?.phone != null && detail.customer!.phone!.isNotEmpty)
-                    InkWell(
-                      onTap: () {
-                        launchUrl(Uri.parse("tel:${detail.customer!.phone!}"));
-                      },
-                      child: Image.asset(
-                        'assets/call2.png',
-                        width: 30.w,
-                        height: 30.h,
+                    if (detail.customer?.phone != null &&
+                        detail.customer!.phone!.isNotEmpty)
+                      InkWell(
+                        onTap: () {
+                          launchUrl(
+                              Uri.parse("tel:${detail.customer!.phone!}"));
+                        },
+                        child: Image.asset(
+                          'assets/call2.png',
+                          width: 30.w,
+                          height: 30.h,
+                        ),
                       ),
-                    ),
                   ],
                 ),
                 _infoText(
@@ -229,7 +231,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                 _infoText(
                   title: "Address",
                   value:
-                      "${booking.bookingAddress!.address!.line1?? "N/A"},  ${booking.bookingAddress!.address!.line2 ?? "--:--"} \n${booking.bookingAddress!.address!.city ?? ""} ${booking.bookingAddress!.address!.zip ?? ""} ",
+                      "${booking.bookingAddress!.address!.line1 ?? "N/A"},  ${booking.bookingAddress!.address!.line2 ?? "--:--"} \n${booking.bookingAddress!.address!.city ?? ""} ${booking.bookingAddress!.address!.zip ?? ""} ",
                 ),
                 if (widget.date == null)
                   _infoText(
@@ -254,7 +256,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                         : controller.WeekDatetoDate(
                             createdDate: DateTime.parse(booking.createdAt!),
                             weekOfMonth:
-                                booking.monthSchedules!.first.weekOfMonth!,
+                                booking.monthSchedules!.first.weekOfMonth ?? 1,
                             dayOfWeek:
                                 booking.monthSchedules!.first.dayOfWeek!),
                   ),
@@ -312,7 +314,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                   children: [
                     appText.primaryText(
                       text: "Rooms: ${detail.noOfRooms ?? 'N/A'}",
-                        fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w500,
                     ),
                     SizedBox(width: 120.w),
                     appText.primaryText(
