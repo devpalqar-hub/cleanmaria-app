@@ -12,7 +12,7 @@ class StaffController extends GetxController {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-   final TextEditingController priorityController = TextEditingController();
+  final TextEditingController priorityController = TextEditingController();
 
   Map<String, String> authHeader = {};
 
@@ -20,12 +20,13 @@ class StaffController extends GetxController {
   List<Staff> staffList = [];
 
   // Create staff
-  Future<void> createStaff(BuildContext context,{required String priority}) async {
+  Future<void> createStaff(BuildContext context,
+      {required String priority}) async {
     final name = nameController.text.trim();
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
 
-    if (name.isEmpty || email.isEmpty || password.isEmpty|| priority.isEmpty) {
+    if (name.isEmpty || email.isEmpty || password.isEmpty || priority.isEmpty) {
       Fluttertoast.showToast(msg: "Please fill all required fields");
       return;
     }
@@ -40,7 +41,7 @@ class StaffController extends GetxController {
           "email": email,
           "password": password,
           "role": "staff",
-          "priority": priority,
+          "priority": int.tryParse(priority) ?? 0,
         }),
       );
       final data = jsonDecode(response.body);
@@ -219,7 +220,6 @@ class StaffController extends GetxController {
 
   @override
   void onInit() {
-   
     super.onInit();
 
     print("init");

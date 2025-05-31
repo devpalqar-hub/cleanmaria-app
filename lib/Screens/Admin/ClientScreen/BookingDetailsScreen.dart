@@ -236,8 +236,8 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                 if (widget.date == null)
                   _infoText(
                     title: "Booking Date",
-                    value: DateFormat("dd MMM yyyy | hh:mm a")
-                            .format(DateTime.parse(booking!.createdAt!)) ??
+                    value: DateFormat("dd MMM yyyy | hh:mm a").format(
+                            DateTime.parse(booking!.createdAt!).toLocal()) ??
                         'N/A',
                   ),
                 if (widget.date != null)
@@ -294,7 +294,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                 ),
                 _infoText(
                   title: "Type of cleaning",
-                  value: "Weakly",
+                  value: booking.reccuingType ?? "One Time",
                 ),
                 if (widget.date != null)
                   _infoText(

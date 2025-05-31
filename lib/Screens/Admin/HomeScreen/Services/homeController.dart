@@ -37,9 +37,10 @@ class HomeController extends GetxController {
     history = [];
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString("access_token");
-    if (token == null || token.isEmpty){ 
+    if (token == null || token.isEmpty) {
       print("Missing token, skipping API call.");
-      return;}
+      return;
+    }
     String parms = "";
     final Response = await http.get(
       Uri.parse(
@@ -67,7 +68,7 @@ class HomeController extends GetxController {
     fetchShdedule();
   }
 
- Color getStatusColor(String status) {
+  Color getStatusColor(String status) {
     switch (status) {
       case "scheduled":
         return Color(0xFFE89F18);
@@ -81,12 +82,13 @@ class HomeController extends GetxController {
     }
     return Color(0xFFE89F18);
   }
+
   Future<void> fetchBusinessSummary(String startDate, String endDate) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString("access_token");
     try {
       final String apiUrl =
-          "$baseUrl/analytics/summary?startDate=$startDate&endDate=$endDate";
+          "$baseUrl/analytics/summary?endDate=$startDate&startDate=$endDate";
 
       final response = await http.get(
         Uri.parse(apiUrl),
@@ -154,9 +156,9 @@ class HomeController extends GetxController {
     if (selectedOption == "Last Week") {
       toDate = today.subtract(Duration(days: 7));
     } else if (selectedOption == "Last Month") {
-      toDate = today.subtract(Duration(days: 30)); 
+      toDate = today.subtract(Duration(days: 30));
     } else if (selectedOption == "Last Year") {
-      toDate = today.subtract(Duration(days: 365)); 
+      toDate = today.subtract(Duration(days: 365));
     }
 
     String startDate = DateFormat('yyyy-MM-dd').format(toDate);

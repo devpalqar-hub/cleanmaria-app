@@ -15,15 +15,12 @@ class BStatusCard extends StatelessWidget {
     required this.booking,
   });
 
-
-   BookingsController bCtrl = Get.put(BookingsController());
+  BookingsController bCtrl = Get.put(BookingsController());
 
   @override
   Widget build(BuildContext context) {
     final name = booking.customer?.name ?? 'Unknown';
     final status = booking.status ?? 'N/A';
-    
-    
 
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
@@ -39,29 +36,25 @@ class BStatusCard extends StatelessWidget {
         children: [
           Expanded(
             child: Column(
-               crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
-           
               children: [
                 appText.primaryText(
                   text: booking.customer!.name!,
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
                 ),
-               SizedBox(height: 3.h),
-            
-            Row(
-              children: [
-                Image.asset(
+                SizedBox(height: 3.h),
+                Row(
+                  children: [
+                    Image.asset(
                       "assets/clock.png",
                       height: 15.h,
                       width: 15.w,
                     ),
                     SizedBox(width: 5.w),
                     appText.primaryText(
-                        text: (booking.subscriptionType != null)
-                            ? "${booking.subscriptionType!.name!} |"
-                            : "One Time | ",
+                        text: booking.reccuingType ?? "One Time",
                         fontSize: 11.sp,
                         fontWeight: FontWeight.w500,
                         color:
@@ -70,50 +63,48 @@ class BStatusCard extends StatelessWidget {
                             const Color(0xFF19A4C6)
                         //: Colors.black,
                         ),
-                        SizedBox(width: 140.w),
-                   // appText.primaryText(
-                     // text: (booking.subscriptionType != null)
-                       //   ? booking.monthSchedules!
-                         //    .map((value) =>
-                           ///       "${bCtrl.weektoDay(value.dayOfWeek!)}, ${value.time!}} ")
-                             // .join(",")
-                        // : bCtrl.WeekDatetoDate(
-                          ///    createdDate: DateTime.parse(booking.createdAt!),
-                             // weekOfMonth:
-                               //   booking.monthSchedules!.first.weekOfMonth!,
-                             // dayOfWeek:
-                               //   booking.monthSchedules!.first.dayOfWeek!),
-                     // fontSize: 10.sp,
-                      //fontWeight: FontWeight.w500,
-                      //color: Colors.black,
-                   // ),
+                    SizedBox(width: 140.w),
+                    // appText.primaryText(
+                    // text: (booking.subscriptionType != null)
+                    //   ? booking.monthSchedules!
+                    //    .map((value) =>
+                    ///       "${bCtrl.weektoDay(value.dayOfWeek!)}, ${value.time!}} ")
+                    // .join(",")
+                    // : bCtrl.WeekDatetoDate(
+                    ///    createdDate: DateTime.parse(booking.createdAt!),
+                    // weekOfMonth:
+                    //   booking.monthSchedules!.first.weekOfMonth!,
+                    // dayOfWeek:
+                    //   booking.monthSchedules!.first.dayOfWeek!),
+                    // fontSize: 10.sp,
+                    //fontWeight: FontWeight.w500,
+                    //color: Colors.black,
+                    // ),
                     Row(
-                children: [
-                  InkWell(
-                    onTap: () {
-                      launchUrl(Uri.parse("tel:${booking.customer!.phone!}"));
-                    },
-                    child: Image.asset(
-                      "assets/call2.png",
-                      height: 27.w,
-                      width: 27.w,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            launchUrl(
+                                Uri.parse("tel:${booking.customer!.phone!}"));
+                          },
+                          child: Image.asset(
+                            "assets/call2.png",
+                            height: 27.w,
+                            width: 27.w,
+                          ),
+                        ),
+                        SizedBox(width: 20.h),
+                        appText.primaryText(
+                          text: "\$${booking.price!}",
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
+                        ),
+                      ],
                     ),
-                  ),
-                
-              SizedBox(width: 20.h),
-              appText.primaryText(
-                text: "\$${booking.price!}",
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.black,
-              ),
-          
-                ],
-              ),
-                
-                     ],
+                  ],
                 ),
-                    appText.primaryText(
+                appText.primaryText(
                   text:
                       "${booking.bookingAddress!.address!.line1!}, ${booking.bookingAddress!.address!.city ?? ""} - ${booking.bookingAddress!.address!.zip ?? ""} ",
                   fontSize: 11.sp,
@@ -121,17 +112,11 @@ class BStatusCard extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                   color: Colors.black,
                 ),
-               
-             
               ],
-              
             ),
           ),
-                    ],
-            ),
-          
-        
-      
+        ],
+      ),
     );
   }
 }

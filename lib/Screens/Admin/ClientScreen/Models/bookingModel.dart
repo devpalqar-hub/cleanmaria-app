@@ -10,6 +10,8 @@ class BookingModel {
   String? createdAt;
   String? price;
   Customer? customer;
+  String? reccuingType;
+
   List<MonthSchedules>? monthSchedules;
   BookingAddress? bookingAddress;
   SubscriptionType? subscriptionType;
@@ -24,6 +26,7 @@ class BookingModel {
       this.isEco,
       this.status,
       this.createdAt,
+      this.reccuingType,
       this.price,
       this.customer,
       this.monthSchedules,
@@ -50,6 +53,10 @@ class BookingModel {
         monthSchedules!.add(new MonthSchedules.fromJson(v));
       });
     }
+    reccuingType = (json['recurringType'] == null)
+        ? ""
+        : json['recurringType']["name"] ?? "";
+
     bookingAddress = json['bookingAddress'] != null
         ? new BookingAddress.fromJson(json['bookingAddress'])
         : null;

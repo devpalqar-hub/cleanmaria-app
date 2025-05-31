@@ -14,6 +14,7 @@ class BookingDetailModel {
   Customer? customer;
   BookingAddress? bookingAddress;
   Service? service;
+  String? reccuingType;
   List<MonthSchedules>? monthSchedules;
   List<Transactions>? transactions;
 
@@ -30,6 +31,7 @@ class BookingDetailModel {
       this.status,
       this.price,
       this.createdAt,
+      this.reccuingType,
       this.customer,
       this.bookingAddress,
       this.service,
@@ -49,6 +51,9 @@ class BookingDetailModel {
     status = json['status'];
     price = json['price'];
     createdAt = json['createdAt'];
+    reccuingType = (json['recurringType'] == null)
+        ? ""
+        : json['recurringType']["name"] ?? "";
     customer = json['customer'] != null
         ? new Customer.fromJson(json['customer'])
         : null;
