@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/Models/BookingDetailModel.dart';
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/Models/bookingModel.dart';
 import 'package:cleanby_maria/Screens/Admin/HistoryScreen/Models/HistoryModel.dart';
@@ -30,6 +29,7 @@ class BookingsController extends GetxController {
     fetchBookings("booked", status);
   }
 
+
   String weektoDay(int i) {
     switch (i) {
       case 0:
@@ -51,6 +51,8 @@ class BookingsController extends GetxController {
     }
   }
 
+
+
   String WeekDatetoDate({
     required DateTime createdDate,
     required int weekOfMonth,
@@ -59,7 +61,6 @@ class BookingsController extends GetxController {
     if (weekOfMonth < 1 || weekOfMonth > 5 || dayOfWeek < 0 || dayOfWeek > 6) {
       return "";
     }
-
     DateTime calculateTargetDate(int year, int month) {
       DateTime firstOfMonth = DateTime(year, month, 1);
 
@@ -75,7 +76,6 @@ class BookingsController extends GetxController {
       if (targetDate.month != month) {
         return DateTime(year, month + 1, 1).subtract(const Duration(days: 1));
       }
-
       return targetDate;
     }
 
@@ -85,7 +85,6 @@ class BookingsController extends GetxController {
     DateTime target = calculateTargetDate(year, month);
 
     if (target.isBefore(createdDate)) {
-      // Move to next month
       if (month == 12) {
         year += 1;
         month = 1;
@@ -112,12 +111,12 @@ class BookingsController extends GetxController {
     return Color(0xFFE89F18);
   }
 
+
+
   fetchShedules(String bookingId) async {
-//history = [];
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString("access_token");
     String parms = "";
-
     final Response = await get(
       Uri.parse(
         baseUrl +
@@ -128,7 +127,6 @@ class BookingsController extends GetxController {
         'Authorization': 'Bearer $token',
       },
     );
-
     refreshCtrl.refreshCompleted();
     if (Response.statusCode == 200) {
       var data = json.decode(Response.body);
@@ -142,9 +140,11 @@ class BookingsController extends GetxController {
         page = page + 1;
       }
     }
-
     update();
   }
+
+
+
 
   Future<bool> cancelSubscription({
     required String subscriptionId,
@@ -159,7 +159,6 @@ class BookingsController extends GetxController {
       update();
       return false;
     }
-
     final response = await http.post(
       Uri.parse('$baseUrl/subscriptions/$subscriptionId/cancel'),
       headers: {
@@ -174,12 +173,13 @@ class BookingsController extends GetxController {
       await fetchBookings(status, type);
       return true;
     } else {
-      //errorMessage = 'Failed to cancel subscription (${response.statusCode})';
       Fluttertoast.showToast(msg: "Failed to cancel Subscription");
       update();
       return false;
     }
   }
+
+
 
   Future<void> fetchBookings(String st, String type) async {
     status = st;
@@ -187,15 +187,11 @@ class BookingsController extends GetxController {
     update();
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString("access_token");
-    //print("Token: $token");
-  // print("Fetching bookings from: $baseUrl/bookings?status=booked&type=recurring");
-
     if (token == null || token.isEmpty) {
       errorMessage = 'Access token is missing';
       isLoading = false;
       return;
     }
-
     final response = await http.get(
       Uri.parse('$baseUrl/bookings?status=$status&type=$type'),
       headers: {
@@ -203,7 +199,6 @@ class BookingsController extends GetxController {
         'Authorization': 'Bearer $token',
       },
     );
-
     if (response.statusCode == 200) {
       final responseBody = json.decode(response.body);
       final List<dynamic> data = responseBody["data"];
@@ -218,20 +213,19 @@ class BookingsController extends GetxController {
     update();
   }
 
+
+
   Future<void> fetchBookingDetails(String bookingId) async {
     isLoading = true;
-
-    errorMessage = '';
+     errorMessage = '';
     update();
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString("access_token");
-
     if (token == null || token.isEmpty) {
       errorMessage = 'Access token is missing';
       isLoading = false;
       return;
     }
-
     final response = await http.get(
       Uri.parse('$baseUrl/bookings/$bookingId'),
       headers: {
@@ -239,21 +233,17 @@ class BookingsController extends GetxController {
         'Authorization': 'Bearer $token',
       },
     );
-
     if (response.statusCode == 200) {
       print('Booking Detail Response Body: ${response.body}');
-
-      final data = json.decode(response.body);
+     final data = json.decode(response.body);
       bookingDetail = BookingDetailModel.fromJson(data["data"]);
     } else {
       errorMessage = 'Failed to load booking details (${response.statusCode})';
         print("Response body: ${response.body}");
     }
-
     isLoading = false;
     update();
   }
-
   bool checkTransation(Transactions tr) {
     DateTime tm = DateTime.parse(tr.createdAt!);
     DateTime cdate = DateTime.now();

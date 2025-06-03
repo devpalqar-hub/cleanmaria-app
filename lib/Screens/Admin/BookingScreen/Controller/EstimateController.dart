@@ -12,7 +12,6 @@ class AppController {
 
   AppController._internal();
 
-  // Fetch Services
   Future<List<Map<String, dynamic>>> fetchServices() async {
     final response = await http.get(Uri.parse('$baseUrl/services'));
 

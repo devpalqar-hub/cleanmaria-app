@@ -33,7 +33,7 @@ class StatusCard extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10.r),
             color: Colors.white,
-            boxShadow: [
+            boxShadow: [ 
               BoxShadow(
                 offset: Offset(0, 1),
                 blurRadius: 4,

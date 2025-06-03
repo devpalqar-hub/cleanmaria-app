@@ -86,7 +86,6 @@ class _BookingStatusBottomSheetState extends State<BookingStatusBottomSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Handle bar
           Center(
             child: Container(
               width: 40,
@@ -99,19 +98,16 @@ class _BookingStatusBottomSheetState extends State<BookingStatusBottomSheet> {
             ),
           ),
 
-          // Header
+        
           Text('Change  Status',
               style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600)),
 
           const SizedBox(height: 24),
-
-          // Status options
           ...(_statusOptions.map((option) => _buildStatusOption(
                 option['status'],
                 option['icon'],
                 option['color'],
               ))),
-
           const SizedBox(height: 24),
 
           // Save button

@@ -137,9 +137,7 @@ class _ClientScreenState extends State<ClientScreen> {
     },
   ),
 );
-
-
-          }),
+  }),
         ],
       ),
       floatingActionButton: FloatingActionButton(
