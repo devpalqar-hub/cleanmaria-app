@@ -138,110 +138,99 @@ class BookingsController extends GetxController {
       if (data["data"]["data"].isEmpty) {
         refreshCtrl.loadNoData();
       } else {
-        page = page + 1;
+       page = page + 1;
       }
-      }else {
-      refreshController.loadNoData();
-  
     }
     update();
   }
 
 
 Future<bool> cancelBooking({
-  required String bookingId,
-  required String status,
-  required String type,
-}) async {
-  final prefs = await SharedPreferences.getInstance();
-  final token = prefs.getString("access_token");
+    required String bookingId,
+    required String status,
+    required String type,
+  }) async {
+    print("[DEBUG] cancelBooking called with bookingId: $bookingId, status: $status, type: $type");
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString("access_token");
 
-  if (token == null || token.isEmpty) {
-    errorMessage = 'Access token is missing';
-    update();
-    return false;
+    if (token == null || token.isEmpty) {
+      errorMessage = 'Access token is missing';
+      print("[ERROR] cancelBooking failed: token is missing");
+      update();
+      return false;
+    }
+
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/bookings/$bookingId/cancel'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      print('[DEBUG] Cancel Booking Response Status: ${response.statusCode}');
+      print('[DEBUG] Cancel Booking Response Body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        Fluttertoast.showToast(msg: "Booking cancelled successfully");
+        print("[DEBUG] Booking cancelled successfully. Refreshing bookings...");
+        await fetchBookings(status, type);
+        return true;
+      } else {
+        final msg = jsonDecode(response.body)['message'] ?? "Failed to cancel booking";
+        Fluttertoast.showToast(msg: msg);
+        print("[ERROR] Cancel booking failed with message: $msg");
+        return false;
+      }
+    } catch (e) {
+      print("[ERROR] Exception while cancelling booking: $e");
+      Fluttertoast.showToast(msg: "Something went wrong");
+      return false;
+    } finally {
+      update();
+    }
   }
 
-  try {
-    final response = await http.post(
-      Uri.parse('$baseUrl/bookings/$bookingId/cancel'),
+
+  
+
+
+
+  Future<void> fetchBookings(String st, String type) async {
+    status = st;
+    isLoading = true;
+    update();
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString("access_token");
+    if (token == null || token.isEmpty) {
+      errorMessage = 'Access token is missing';
+      isLoading = false;
+      return;
+    }
+    final response = await http.get(
+      Uri.parse('$baseUrl/bookings?status=$status&type=$type'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
     );
-
-    print('Cancel Booking Response: ${response.body}');
-    print('Status Code: ${response.statusCode}');
-    refreshCtrl.refreshCompleted();
     if (response.statusCode == 200) {
-      Fluttertoast.showToast(msg: "Booking cancelled");
-      await fetchBookings(status, type); 
-       if (Get.isDialogOpen ?? false) {
-    Get.back(); 
-  } else {
-   
-  }
-      return true;
-      
+      final responseBody = json.decode(response.body);
+      final List<dynamic> data = responseBody["data"];
+      bookings.value =
+          data.map((booking) => BookingModel.fromJson(booking)).toList();
     } else {
-      refreshCtrl.loadNoData();
-      final msg = jsonDecode(response.body)['message'] ?? "Failed to cancel booking";
-      Fluttertoast.showToast(msg: msg);
-      return false;
+      errorMessage = 'Failed to load bookings (${response.statusCode})';
+      print("Body: ${response.body}");
     }
-  } catch (e) {
-    refreshCtrl.loadNoData();
-    print("Error while cancelling: $e");
-    Fluttertoast.showToast(msg: "Something went wrong");
-    return false;
-  } finally {
+
+    isLoading = false;
     update();
   }
-}
-Future<void> fetchBookings(String st, String type) async {
-  status = st;
-  isLoading = true;
-  update();
-  
-  final prefs = await SharedPreferences.getInstance();
-  final token = prefs.getString("access_token");
-  
-  if (token == null || token.isEmpty) {
-    errorMessage = 'Access token is missing';
-    isLoading = false;
-    return;
-  }
-
-  final response = await http.get(
-    Uri.parse('$baseUrl/bookings?status=$status&type=$type'),
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    },
-  );
-
-  if (response.statusCode == 201) {
-    final responseBody = json.decode(response.body);
-    final List<dynamic> data = responseBody["data"];
-    
-    bookings.clear();
-    bookings.value = data.map((booking) => BookingModel.fromJson(booking)).toList();
-  } else {
-    errorMessage = 'Failed to load bookings (${response.statusCode})';
-    print("Body: ${response.body}");
-  }
-
-  isLoading = false;
-  update();
-}
 
 
-  
-
-
-
-  
 
   Future<void> fetchBookingDetails(String bookingId) async {
     isLoading = true;

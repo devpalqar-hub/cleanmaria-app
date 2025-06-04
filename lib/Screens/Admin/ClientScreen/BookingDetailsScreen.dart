@@ -95,57 +95,50 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
           onPressed: () => Navigator.pop(context),
           child: const Text("No", style: TextStyle(color: Colors.blue)),
         ),
-        StatefulBuilder(
-          builder: (context, setState) {
-            return TextButton(
-              onPressed: isLoading
-                  ? null
-                  : () async {
-                      final bookingId = booking?.id;
-                      final type = booking?.type ?? 'subscription';
+        StatefulBuilder(builder: (context, state) {
+          return TextButton(
+            onPressed: () async {
+              final bookingId = widget.bookingId;
+              final type = booking?.type ?? 'subscription'; 
+              final currentStatus = 'active'; 
 
-                      setState(() {
-                        isLoading = true;
-                      });
+              state(() {
+                isLoading = true;
+              });
 
-                      if (bookingId != null) {
-                        bool value = await controller.cancelBooking(
-                          bookingId: bookingId,
-                          status: "booked",
-                          type: type,
-                        );
+              bool result = await controller.cancelBooking(
+                bookingId: bookingId,
+                status: currentStatus,
+                type: type,
+              );
 
-                        setState(() {
-                          isLoading = false;
-                        });
+              state(() {
+                isLoading = false;
+              });
 
-                        if (value) {
-                          Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Booking cancelled successfully.")),
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Failed to cancel booking.")),
-                          );
-                        }
-                      }
-                    },
-              child: isLoading
-                  ? LoadingAnimationWidget.staggeredDotsWave(
-                      color: Colors.blue,
-                      size: 24,
-                    )
-                  : const Text("Yes", style: TextStyle(color: Colors.blue)),
-            );
-          },
-        ),
+              if (result) {
+                Navigator.pop(context); 
+                Get.back(); 
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Booking cancelled successfully")),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Failed to cancel booking")),
+                );
+              }
+            },
+            child: (isLoading)
+                ? LoadingAnimationWidget.staggeredDotsWave(
+                    color: Colors.blue, size: 24.sp)
+                : const Text("Yes", style: TextStyle(color: Colors.blue)),
+          );
+        }),
       ],
     ),
   );
 }
-
-
 
 
   @override

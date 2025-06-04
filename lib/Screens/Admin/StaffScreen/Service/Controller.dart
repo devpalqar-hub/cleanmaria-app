@@ -18,8 +18,6 @@ class StaffController extends GetxController {
 
   bool isLoading = false;
   List<Staff> staffList = [];
-
-  // Create staff
   Future<void> createStaff(BuildContext context,
       {required String priority}) async {
     final name = nameController.text.trim();

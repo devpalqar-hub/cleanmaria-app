@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 import 'package:cleanby_maria/Screens/AuthenticationScreen/AutheticationScreen.dart';
 import 'package:cleanby_maria/Screens/Admin/HistoryScreen/Models/HistoryModel.dart';
@@ -12,16 +11,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class HomeController extends GetxController {
-  // Controllers
+  // Date controllers
   TextEditingController fromDateController = TextEditingController(
-    text: DateFormat('yyyy/MM/dd')
-        .format(DateTime.now().subtract(Duration(days: 7))),
-  );
+      text: DateFormat('yyyy/MM/dd')
+          .format(DateTime.now().subtract(Duration(days: 7))));
   TextEditingController toDateController = TextEditingController(
-    text: DateFormat('yyyy/MM/dd').format(DateTime.now()),
-  );
-
+      text: DateFormat('yyyy/MM/dd').format(DateTime.now()));
   String filterRange = "Last Week";
+
   String userName = "";
   String userEmail = "";
 
@@ -36,41 +33,32 @@ class HomeController extends GetxController {
   List<PerformanceOverTimeModel> GraphData = [];
   List<HistoryModel> history = [];
 
-  Timer? _refreshTimer; // ⏱ For auto-refresh
-
-  // Fetch missed/cancelled schedules
   fetchShdedule() async {
-    history.clear(); // Clear old data
-
+    history = [];
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString("access_token");
     if (token == null || token.isEmpty) {
       print("Missing token, skipping API call.");
       return;
     }
-
-    final response = await http.get(
+    String parms = "";
+    final Response = await http.get(
       Uri.parse(
-        "$baseUrl/scheduler/schedules?page=1&limit=30&status=missed",
+        baseUrl + "/scheduler/schedules?page=1&limit=30$parms&status=missed",
       ),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
     );
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
+    if (Response.statusCode == 200) {
+      var data = json.decode(Response.body);
       for (var his in data["data"]["data"]) {
         HistoryModel model = HistoryModel.fromJson(his);
-        if (model.status == "missing" || model.status == "cancelled") {
-          history.add(model);
-        }
+        // if (model.status == "missing" || model.status == "cancelled")
+        history.add(model);
       }
-    } else {
-      print("Error fetching schedule: ${response.body}");
     }
-
     update();
   }
 
@@ -84,24 +72,23 @@ class HomeController extends GetxController {
     switch (status) {
       case "scheduled":
         return Color(0xFFE89F18);
+        break;
       case "missed":
         return Color(0xFFAE1D03);
       case "completed":
         return Color(0xFF03AE9D);
       case "refunded":
         return Colors.blue;
-      default:
-        return Color(0xFFE89F18);
     }
+    return Color(0xFFE89F18);
   }
 
   Future<void> fetchBusinessSummary(String startDate, String endDate) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString("access_token");
-
     try {
       final String apiUrl =
-          "$baseUrl/analytics/summary?startDate=$startDate&endDate=$endDate";
+          "$baseUrl/analytics/summary?endDate=$startDate&startDate=$endDate";
 
       final response = await http.get(
         Uri.parse(apiUrl),
@@ -110,7 +97,6 @@ class HomeController extends GetxController {
           'Authorization': 'Bearer $token',
         },
       );
-
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         final summaryData = data['data'] ?? {};
@@ -119,24 +105,23 @@ class HomeController extends GetxController {
         totalEarnings = summaryData['totalEarnings'] ?? 0;
         totalStaff = summaryData['totalStaff'] ?? 0;
       } else if (response.statusCode == 401) {
-        Fluttertoast.showToast(msg: "Logout Successful");
+        Fluttertoast.showToast(msg: "Logout Successfull");
         prefs.setString("LOGIN", "OUT");
         Get.offAll(() => AuthenticationScreen(),
             transition: Transition.rightToLeft);
       } else {
-        print("Summary API Error: ${response.body}");
+        print("Error: ${response.body}");
       }
     } catch (e) {
       print("Error fetching business summary: $e");
     }
-
     update();
   }
 
+  // Fetch performance data based on selected date range
   Future<void> fetchPerformanceData() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString("access_token");
-
     final String apiUrl =
         "$baseUrl/analytics/performance?startDate=${fromDateController.text}&endDate=${toDateController.text}";
 
@@ -147,43 +132,44 @@ class HomeController extends GetxController {
         'Authorization': 'Bearer $token',
       },
     );
-
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
+
       if (data["data"] != null) {
         totalBookings = data["data"]["avgBookingPerDay"];
         avgStaff = data["data"]["avgStaffPerBooking"];
         totalCancel = data["data"]["canceledBookings"];
       }
     } else {
-      print("Performance data error: ${response.body}");
+      print("Error fetching performance data: ${response.body}");
     }
 
     update();
   }
 
+  // Set date range based on selected option
   void setDateRangeFromDropdown(String selectedOption) {
     DateTime today = DateTime.now();
-    DateTime fromDate;
+
+    DateTime toDate = today;
 
     if (selectedOption == "Last Week") {
-      fromDate = today.subtract(Duration(days: 7));
+      toDate = today.subtract(Duration(days: 7));
     } else if (selectedOption == "Last Month") {
-      fromDate = today.subtract(Duration(days: 30));
+      toDate = today.subtract(Duration(days: 30));
     } else if (selectedOption == "Last Year") {
-      fromDate = today.subtract(Duration(days: 365));
-    } else {
-      fromDate = today.subtract(Duration(days: 7));
+      toDate = today.subtract(Duration(days: 365));
     }
 
-    String startDate = DateFormat('yyyy-MM-dd').format(fromDate);
+    String startDate = DateFormat('yyyy-MM-dd').format(toDate);
     String endDate = DateFormat('yyyy-MM-dd').format(today);
-
-    filterRange = selectedOption;
-    fetchBusinessSummary(startDate, endDate);
+    print(endDate);
+    print(startDate);
+    fetchBusinessSummary(endDate, startDate);
     update();
   }
 
+  // Open a date picker and set the selected date to the controller
   Future<void> selectDate(
       BuildContext context, TextEditingController controller) async {
     DateTime? pickedDate = await showDatePicker(
@@ -198,18 +184,16 @@ class HomeController extends GetxController {
     }
 
     fetchPerformanceData();
+    //fetchChartData();
     update();
   }
 
   bool isChartLoader = false;
-
   Future<void> fetchChartData() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString("access_token");
-
     isChartLoader = true;
     update();
-
     final url = Uri.parse(
       '$baseUrl/analytics/bookings-over-time?startDate=${fromDateController.text}&endDate=${toDateController.text}',
     );
@@ -221,60 +205,48 @@ class HomeController extends GetxController {
         'Authorization': 'Bearer $token',
       },
     );
-
-    print("Chart Response: ${response.body}");
-
+    print(response.body);
+    print(response.statusCode);
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
-      GraphData.clear();
 
       for (var data in jsonData["data"]) {
         GraphData.add(PerformanceOverTimeModel.fromJson(data));
       }
-    }
 
+      update();
+    }
     isChartLoader = false;
     update();
   }
 
+  // Set today's date to the date fields
   void setTodayDate() {
-    String today = DateFormat('yyyy/MM/dd').format(DateTime.now());
+    String today = DateFormat('yyyy-MM/-dd').format(DateTime.now());
     fromDateController.text = today;
     toDateController.text = today;
     update();
   }
+
+  // Dispose controllers and notifiers when no longer needed
 
   loadUser() async {
     final prefs = await SharedPreferences.getInstance();
     userName = prefs.getString("user_name") ?? "name";
     userEmail = prefs.getString("email") ?? "email";
     update();
-
     setDateRangeFromDropdown(filterRange);
-  }
-
-  void startAutoRefresh() {
-    _refreshTimer?.cancel();
-    _refreshTimer = Timer.periodic(Duration(minutes: 5), (timer) {
-      fetchShdedule();
-      print("Auto-refreshed missed schedules");
-    });
   }
 
   @override
   void onInit() {
+    // TODO: implement onInit
     super.onInit();
-    print("HomeController initialized");
+
+    print("init");
     loadUser();
     fetchPerformanceData();
     fetchChartData();
     fetchShdedule();
-    startAutoRefresh();
-  }
-
-  @override
-  void onClose() {
-    _refreshTimer?.cancel(); 
-    super.onClose();
   }
 }

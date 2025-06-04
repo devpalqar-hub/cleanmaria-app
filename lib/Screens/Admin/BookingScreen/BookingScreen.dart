@@ -120,15 +120,18 @@ Fluttertoast.showToast(
 }) {
   return Row(
     children: [
-      Checkbox(
-        value: value,
-        onChanged: onChanged,
-        shape: CircleBorder(),
-        side: BorderSide(color: Colors.grey), 
-        activeColor: Colors.blue, 
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      Padding(
+        padding:  EdgeInsets.fromLTRB(8,0,15,0),
+        child: Checkbox(
+          value: value,
+          onChanged: onChanged,
+          shape: CircleBorder(),
+          side: BorderSide(color: Colors.grey), 
+          activeColor: Colors.blue, 
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        ),
       ),
-      SizedBox(width: 10),
+      SizedBox(width: 5),
       Text(label, style: TextStyle(fontSize: 14.sp)),
     ],
   );

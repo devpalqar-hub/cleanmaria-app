@@ -23,14 +23,14 @@ class OverViewCard extends StatelessWidget {
                 color: const Color(0xffE5FDF3),
                 subtitle: "Total Clients",
               ),
-              SizedBox(width: 8.w),
+              SizedBox(width: 7.w),
               _overview(
                 count: _controller.totalEarnings,
                 imagePath: "assets/earnings.png",
                 color: const Color(0xffFDFDE5),
                 subtitle: "Total Revenue",
               ),
-              SizedBox(width: 8.w),
+              SizedBox(width: 7.w),
               _overview(
                 count: _controller.totalStaff,
                 imagePath: "assets/person.png",
