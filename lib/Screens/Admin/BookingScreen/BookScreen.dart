@@ -35,6 +35,8 @@ class ClientDetailsScreen extends StatefulWidget {
   final String recurringTypeId;
   final String recurringType;
   final String price;
+  
+   
 
   @override
   State<ClientDetailsScreen> createState() => _ClientDetailsScreenState();
@@ -54,6 +56,13 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _zipCodeController = TextEditingController();
   final TextEditingController _landmarkController = TextEditingController();
+  final TextEditingController _amountController = TextEditingController();
+   bool isLoading = true;
+@override
+void initState() {
+  super.initState();
+  _amountController.text = widget.price;
+}
 
   @override
   Widget build(BuildContext context) {
@@ -120,6 +129,12 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
                       style: const TextStyle(fontWeight: FontWeight.bold)),
                 ),
               SizedBox(height: 20.h),
+              Apptextfield.primary(
+                  labelText: "Estimate Price",
+                  hintText: "Current Price",
+                  label: '',
+                  controller: _amountController),
+             SizedBox(height: 20.h),
               Center(
                 child: AppButton(
                   text: "Book",
@@ -218,35 +233,36 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
                     }).toList(),
                   ),
                   if (showTimeSlots) ...[
-                    SizedBox(height: 24.h),
-                    const Text("Choose a time",
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold)),
-                    SizedBox(height: 16.h),
-                    if (timeSlots.isEmpty)
-                      const Text("No time slots available",
-                          style: TextStyle(color: Colors.red)),
-                    if (timeSlots.isNotEmpty)
-                      Wrap(
-                        spacing: 10.w,
-                        children: timeSlots.map((slot) {
-                          final isSelected = slot["time"] == tempSelectedTime;
-                          return ChoiceChip(
-                            label: Text(slot["time"]),
-                            selected: isSelected,
-                            onSelected: (_) {
-                              setModalState(() {
-                                tempSelectedTime = slot["time"];
-                              });
-                            },
-                            selectedColor: const Color(0xff19A4C6),
-                            labelStyle: TextStyle(
-                                color:
-                                    isSelected ? Colors.white : Colors.black),
-                          );
-                        }).toList(),
-                      ),
-                  ],
+  SizedBox(height: 24.h),
+  const Text("Choose a time",
+      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+  SizedBox(height: 16.h),
+  if (isLoading)
+    const Center(child: CircularProgressIndicator())
+  else if (timeSlots.isEmpty)
+    const Text("No time slots available",
+        style: TextStyle(color: Colors.red))
+  else
+    Wrap(
+      spacing: 10.w,
+      children: timeSlots.map((slot) {
+        final isSelected = slot["time"] == tempSelectedTime;
+        return ChoiceChip(
+          label: Text(slot["time"]),
+          selected: isSelected,
+          onSelected: (_) {
+            setModalState(() {
+              tempSelectedTime = slot["time"];
+            });
+          },
+          selectedColor: const Color(0xff19A4C6),
+          labelStyle:
+              TextStyle(color: isSelected ? Colors.white : Colors.black),
+        );
+      }).toList(),
+    ),
+],
+
                   SizedBox(height: 24.h),
                   ElevatedButton(
                     onPressed: tempSelectedDay != null &&
@@ -280,8 +296,12 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
 
   Future<void> _fetchTimeSlots(
       String day, void Function(void Function()) setModalState) async {
+      final int dayOfWeek = days.indexOf(day);
+      setModalState(() {
+    isLoading = true;
     timeSlots.clear();
-    final int dayOfWeek = days.indexOf(day);
+  });
+
     final uri =
         Uri.parse('${baseUrl}/scheduler/time-slots?dayOfWeek=$dayOfWeek');
 
@@ -293,13 +313,25 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
           timeSlots = data['data']
               .where((slot) => slot['isAvailable'] == true)
               .toList();
+               setModalState(() {
+        timeSlots = timeSlots;
+        isLoading = false;
+      });
         });
       } else {
-        setModalState(() => timeSlots = []);
+        setModalState(() {
+        timeSlots = [];
+        isLoading = false;
+      });
       }
     } catch (e) {
-      setModalState(() => timeSlots = []);
+      setModalState(() {
+      timeSlots = [];
+      isLoading = false;
+    });
     }
+     
+   
   }
 
   void _bookService() async {
@@ -319,7 +351,8 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
       "materialProvided": widget.isMaterialprovided,
       "areaSize": widget.sizeofhome,
       "isEco": widget.iseEo,
-      "price": double.parse(widget.price ?? "0"),
+    "price": double.tryParse(_amountController.text) ?? 0.0,
+
       "address": {
         "street": _addressController.text,
         "landmark": _landmarkController.text,

@@ -7,7 +7,6 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 void showSettingsBottomSheet(
     BuildContext context, String name, String emailID) {
   showModalBottomSheet(
@@ -71,9 +70,7 @@ void showSettingsBottomSheet(
                   ),
                 ],
               ),
-
               SizedBox(height: 24.h),
-
               // Profile picture
               Container(
                 decoration: BoxDecoration(
@@ -92,9 +89,7 @@ void showSettingsBottomSheet(
                   child: Icon(Icons.person, size: 62.w, color: Colors.white),
                 ),
               ),
-
               SizedBox(height: 16.h),
-
               // User name
               Text(
                 "${name}",

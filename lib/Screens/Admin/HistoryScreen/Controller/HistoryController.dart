@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cleanby_maria/Screens/Admin/HistoryScreen/Models/HistoryModel.dart';
+import 'package:cleanby_maria/Screens/Admin/HomeScreen/Services/homeController.dart';
 import 'package:cleanby_maria/main.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -56,7 +57,7 @@ class HistoryController extends GetxController {
         HistoryModel model = HistoryModel.fromJson(his);
         history.add(model);
       }
-
+      //Get.find<HomeController>().fetchShdedule();
       if (data["data"]["data"].isEmpty) {
         refreshController.loadNoData();
       } else {
@@ -95,6 +96,7 @@ class HistoryController extends GetxController {
         HistoryModel model = HistoryModel.fromJson(his);
         history.add(model);
       }
+       Get.find<HomeController>().fetchShdedule();
       if (data["data"]["data"].isEmpty) {
         refreshController.loadNoData();
       } else {

@@ -61,7 +61,8 @@ class _HomeContentState extends State<HomeContent> {
                 SizedBox(
                   height: 10.w,
                 ),
-              if (hCtrl.history.isNotEmpty) Cancellationcard(),
+              if (hCtrl.history.isNotEmpty)
+               Cancellationcard(),
             ],
           ),
         ),
@@ -253,8 +254,6 @@ class _HomeContentState extends State<HomeContent> {
                 ),
               ),
               SizedBox(height: 15.h),
-
-              /// 🔁 Dynamically display name from ValueNotifier
               Text(
                 hCtrl.userName,
                 style: TextStyle(
@@ -262,10 +261,7 @@ class _HomeContentState extends State<HomeContent> {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-
               SizedBox(height: 2.h),
-
-              /// 🔁 Dynamically display email from ValueNotifier
               Text(
                 hCtrl.userEmail,
                 style: TextStyle(

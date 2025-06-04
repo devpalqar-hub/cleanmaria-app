@@ -117,7 +117,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                         fontWeight: FontWeight.w500,
                         color: Colors.black,
                       ),
-                    if (sHCtrl.todayHistory.isNotEmpty) Dutycard(),
+                    if (sHCtrl.todayHistory.isNotEmpty) Dutycard(),SizedBox(width: 10.w,),
                     if (sHCtrl.todayHistory.isNotEmpty) SizedBox(height: 17.h),
                     Row(
                       children: [

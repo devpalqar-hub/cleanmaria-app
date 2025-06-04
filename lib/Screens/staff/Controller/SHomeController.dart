@@ -87,6 +87,9 @@ class StaffHomeController extends GetxController {
   fetchTodayShedule() async {
     todayHistory = [];
     completeTask = 0;
+  
+  total = 0; 
+
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString("access_token");
     final Response = await http.get(

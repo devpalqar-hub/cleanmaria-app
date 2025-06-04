@@ -11,32 +11,36 @@ class OverViewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _overview(
-            count: _controller.totalClients,
-            imagePath: "assets/client.png",
-            color: const Color(0xffE5FDF3),
-            subtitle: "Total Clients",
+    return GetBuilder<HomeController>(
+    builder: (controller) {
+        return SizedBox(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _overview(
+                count: _controller.totalClients,
+                imagePath: "assets/client.png",
+                color: const Color(0xffE5FDF3),
+                subtitle: "Total Clients",
+              ),
+              SizedBox(width: 8.w),
+              _overview(
+                count: _controller.totalEarnings,
+                imagePath: "assets/earnings.png",
+                color: const Color(0xffFDFDE5),
+                subtitle: "Total Revenue",
+              ),
+              SizedBox(width: 8.w),
+              _overview(
+                count: _controller.totalStaff,
+                imagePath: "assets/person.png",
+                color: const Color(0xffFDE5E5),
+                subtitle: "Total Staff",
+              ),
+            ],
           ),
-          SizedBox(width: 8.w),
-          _overview(
-            count: _controller.summaryEarnings,
-            imagePath: "assets/earnings.png",
-            color: const Color(0xffFDFDE5),
-            subtitle: "Total Revenue",
-          ),
-          SizedBox(width: 8.w),
-          _overview(
-            count: _controller.summaryStaff,
-            imagePath: "assets/person.png",
-            color: const Color(0xffFDE5E5),
-            subtitle: "Total Staff",
-          ),
-        ],
-      ),
+        );
+      }
     );
   }
 

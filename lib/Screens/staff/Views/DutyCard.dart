@@ -22,8 +22,12 @@ class Dutycard extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
-            for (var data in sHCtrl.todayHistory) _buildDutyCard(data),
-          ],
+    for (int i = 0; i < sHCtrl.todayHistory.length; i++)...[
+      _buildDutyCard(sHCtrl.todayHistory[i]),
+      if (i != sHCtrl.todayHistory.length - 1)
+        SizedBox(width: 10.w),
+    ],
+  ],
         ),
       ),
     );
