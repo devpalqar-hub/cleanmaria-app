@@ -173,7 +173,7 @@ Future<bool> cancelBooking({
       print('[DEBUG] Cancel Booking Response Status: ${response.statusCode}');
       print('[DEBUG] Cancel Booking Response Body: ${response.body}');
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         Fluttertoast.showToast(msg: "Booking cancelled successfully");
         print("[DEBUG] Booking cancelled successfully. Refreshing bookings...");
         await fetchBookings(status, type);
