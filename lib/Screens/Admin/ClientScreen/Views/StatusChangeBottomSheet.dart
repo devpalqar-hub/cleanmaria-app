@@ -98,7 +98,6 @@ class _BookingStatusBottomSheetState extends State<BookingStatusBottomSheet> {
             ),
           ),
 
-        
           Text('Change  Status',
               style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600)),
 

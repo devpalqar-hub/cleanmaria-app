@@ -15,6 +15,7 @@ class BookingDetailModel {
   BookingAddress? bookingAddress;
   Service? service;
   String? reccuingType;
+  String? date;
   List<MonthSchedules>? monthSchedules;
   List<Transactions>? transactions;
 
@@ -26,6 +27,7 @@ class BookingDetailModel {
       this.noOfRooms,
       this.noOfBathRooms,
       this.propertyType,
+      this.date,
       this.materialProvided,
       this.isEco,
       this.status,
@@ -50,6 +52,7 @@ class BookingDetailModel {
     isEco = json['isEco'];
     status = json['status'];
     price = json['price'];
+    date = json['date'];
     createdAt = json['createdAt'];
     reccuingType = (json['recurringType'] == null)
         ? ""

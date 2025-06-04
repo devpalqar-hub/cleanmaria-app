@@ -21,7 +21,7 @@ class BookingDetailsScreen extends StatefulWidget {
   final String? date;
   final String? subscriptionId;
   var pCtrl;
-  
+
   bool isStaff;
   BookingDetailsScreen(
       {required this.bookingId,
@@ -74,72 +74,72 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
   }
 
   void _showCancelDialog(BuildContext context) {
-  final booking = controller.bookingDetail;
+    final booking = controller.bookingDetail;
 
-  if (booking?.status == "cancelled" || booking?.status == "completed") {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("This booking cannot be cancelled.")),
+    if (booking?.status == "cancelled" || booking?.status == "completed") {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("This booking cannot be cancelled.")),
+      );
+      return;
+    }
+
+    bool isLoading = false;
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Cancel Booking"),
+        content: const Text("Are you sure you want to cancel this booking?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("No", style: TextStyle(color: Colors.blue)),
+          ),
+          StatefulBuilder(builder: (context, state) {
+            return TextButton(
+              onPressed: () async {
+                final bookingId = widget.bookingId;
+                final type = booking?.type ?? 'subscription';
+                final currentStatus = 'active';
+
+                state(() {
+                  isLoading = true;
+                });
+
+                bool result = await controller.cancelBooking(
+                  bookingId: bookingId,
+                  status: currentStatus,
+                  type: type,
+                );
+
+                state(() {
+                  isLoading = false;
+                });
+
+                if (result) {
+                  Navigator.pop(context);
+                  Get.back();
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text("Booking cancelled successfully")),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Failed to cancel booking")),
+                  );
+                }
+              },
+              child: (isLoading)
+                  ? LoadingAnimationWidget.staggeredDotsWave(
+                      color: Colors.blue, size: 24.sp)
+                  : const Text("Yes", style: TextStyle(color: Colors.blue)),
+            );
+          }),
+        ],
+      ),
     );
-    return;
   }
-
-  bool isLoading = false;
-
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: const Text("Cancel Booking"),
-      content: const Text("Are you sure you want to cancel this booking?"),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text("No", style: TextStyle(color: Colors.blue)),
-        ),
-        StatefulBuilder(builder: (context, state) {
-          return TextButton(
-            onPressed: () async {
-              final bookingId = widget.bookingId;
-              final type = booking?.type ?? 'subscription'; 
-              final currentStatus = 'active'; 
-
-              state(() {
-                isLoading = true;
-              });
-
-              bool result = await controller.cancelBooking(
-                bookingId: bookingId,
-                status: currentStatus,
-                type: type,
-              );
-
-              state(() {
-                isLoading = false;
-              });
-
-              if (result) {
-                Navigator.pop(context); 
-                Get.back(); 
-
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Booking cancelled successfully")),
-                );
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Failed to cancel booking")),
-                );
-              }
-            },
-            child: (isLoading)
-                ? LoadingAnimationWidget.staggeredDotsWave(
-                    color: Colors.blue, size: 24.sp)
-                : const Text("Yes", style: TextStyle(color: Colors.blue)),
-          );
-        }),
-      ],
-    ),
-  );
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -268,12 +268,8 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                             .map((value) =>
                                 "  ${controller.weektoDay(value.dayOfWeek!)}, ${value.time!} ")
                             .join("\n")
-                        : controller.WeekDatetoDate(
-                            createdDate: DateTime.parse(booking.createdAt!),
-                            weekOfMonth:
-                                booking.monthSchedules!.first.weekOfMonth ?? 1,
-                            dayOfWeek:
-                                booking.monthSchedules!.first.dayOfWeek!),
+                        : DateFormat("dd-MM-yyyy | hh:mm:ss a")
+                            .format(DateTime.parse(booking.date!)),
                   ),
                 Row(
                   children: [
