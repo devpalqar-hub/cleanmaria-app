@@ -9,10 +9,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 class BStatusCard extends StatelessWidget {
   final BookingModel booking;
-  BStatusCard({
-    super.key,
-    required this.booking,
-  });
+  final bool isCanceled;
+  BStatusCard({super.key, required this.booking, this.isCanceled = false});
 
   final BookingsController bCtrl = Get.put(BookingsController());
 
@@ -20,7 +18,6 @@ class BStatusCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final name = booking.customer?.name ?? 'Unknown';
     final status = booking.status ?? 'N/A';
-
 
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),

@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:cleanby_maria/Screens/Admin/ClientScreen/Models/BookingDetailModel.dart';
+import 'package:cleanby_maria/Screens/Admin/ClientScreen/Models/bookingModel.dart';
 import 'package:cleanby_maria/Screens/AuthenticationScreen/AutheticationScreen.dart';
 import 'package:cleanby_maria/Screens/Admin/HistoryScreen/Models/HistoryModel.dart';
 import 'package:cleanby_maria/Screens/Admin/HomeScreen/Model/PerformanceOverTimeModel.dart';
@@ -31,39 +33,39 @@ class HomeController extends GetxController {
   int totalStaff = 0;
 
   List<PerformanceOverTimeModel> GraphData = [];
-  List<HistoryModel> history = [];
+  List<BookingModel> history = [];
 
   fetchCancelBooking() async {
-  history = [];
-  final prefs = await SharedPreferences.getInstance();
-  final token = prefs.getString("access_token");
+    history = [];
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString("access_token");
 
-  if (token == null || token.isEmpty) {
-    print("Missing token, skipping API call.");
-    return;
-  }
-
-  final response = await http.get(
-    Uri.parse(baseUrl + "/bookings?status=canceled"),
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    },
-  );
-  
-  if (response.statusCode == 200) {
-    var data = json.decode(response.body);
-    for (var booking in data["data"]) {
-      HistoryModel model = HistoryModel.fromJson(booking);
-      history.add(model);
+    if (token == null || token.isEmpty) {
+      print("Missing token, skipping API call.");
+      return;
     }
-  } else {
-    print("Failed to fetch canceled bookings: ${response.statusCode}");
+
+    final response = await http.get(
+      Uri.parse(baseUrl + "/bookings?status=canceled"),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      for (var booking in data["data"]) {
+        BookingModel model = BookingModel.fromJson(booking);
+        print(model.toJson());
+        history.add(model);
+      }
+    } else {
+      print("Failed to fetch canceled bookings: ${response.statusCode}");
+    }
+
+    update();
   }
-
-  update();
-}
-
 
   reload() {
     history.clear();

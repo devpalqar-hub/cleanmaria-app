@@ -16,6 +16,7 @@ import 'package:url_launcher/url_launcher.dart';
 class BookingDetailsScreen extends StatefulWidget {
   final String bookingId;
   final String? staff;
+  final bool isCanceld;
   String? status;
   final String? scheduleId;
   final String? date;
@@ -32,6 +33,7 @@ class BookingDetailsScreen extends StatefulWidget {
       this.scheduleId,
       this.subscriptionId,
       this.isStaff = false,
+      this.isCanceld = false,
       super.key});
 
   @override
@@ -360,14 +362,12 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                   ],
                 ),
                 if (widget.scheduleId != null) SizedBox(height: 8.h),
-                if (widget.scheduleId != null)
-                  if (detail!.materialProvided != null &&
-                      detail!.materialProvided!)
-                    appText.primaryText(
-                      text: "Cleaning items given",
-                      color: const Color(0xFF1C9F0B),
-                      fontSize: 12.sp,
-                    ),
+                if (detail!.materialProvided ?? false)
+                  appText.primaryText(
+                    text: "Cleaning items given",
+                    color: const Color(0xFF1C9F0B),
+                    fontSize: 12.sp,
+                  ),
                 if (widget.date == null) SizedBox(height: 40.h),
                 if (widget.date == null)
                   GestureDetector(
@@ -389,7 +389,9 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                   ),
                 if (widget.date == null && booking.status == "booked")
                   SizedBox(height: 10.h),
-                if (widget.date == null && booking.status == "booked")
+                if (widget.date == null &&
+                    booking.status == "booked" &&
+                    widget.isCanceld)
                   GestureDetector(
                     onTap: () => _showCancelDialog(context),
                     child: Center(
