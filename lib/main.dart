@@ -56,8 +56,7 @@ class SplashScreen extends StatelessWidget {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
-        } 
-        else {
+        } else {
           return snapshot.data!;
         }
       },

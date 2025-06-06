@@ -11,37 +11,35 @@ class OverViewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<HomeController>(
-    builder: (controller) {
-        return SizedBox(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _overview(
-                count: _controller.totalClients,
-                imagePath: "assets/client.png",
-                color: const Color(0xffE5FDF3),
-                subtitle: "Total Clients",
-              ),
-              SizedBox(width: 7.w),
-              _overview(
-                count: _controller.totalEarnings,
-                imagePath: "assets/earnings.png",
-                color: const Color(0xffFDFDE5),
-                subtitle: "Total Revenue",
-              ),
-              SizedBox(width: 7.w),
-              _overview(
-                count: _controller.totalStaff,
-                imagePath: "assets/person.png",
-                color: const Color(0xffFDE5E5),
-                subtitle: "Total Staff",
-              ),
-            ],
-          ),
-        );
-      }
-    );
+    return GetBuilder<HomeController>(builder: (controller) {
+      return SizedBox(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _overview(
+              count: _controller.totalClients,
+              imagePath: "assets/client.png",
+              color: const Color(0xffE5FDF3),
+              subtitle: "Total Clients",
+            ),
+            SizedBox(width: 7.w),
+            _overview(
+              count: _controller.totalEarnings,
+              imagePath: "assets/earnings.png",
+              color: const Color(0xffFDFDE5),
+              subtitle: "Total Revenue",
+            ),
+            SizedBox(width: 7.w),
+            _overview(
+              count: _controller.totalStaff,
+              imagePath: "assets/person.png",
+              color: const Color(0xffFDE5E5),
+              subtitle: "Total Staff",
+            ),
+          ],
+        ),
+      );
+    });
   }
 
 // UI component for each overview item
@@ -53,9 +51,9 @@ class OverViewCard extends StatelessWidget {
   }) {
     return Container(
       width: 112.w,
-      height: 60.h,
+      // height: 60.h,
       alignment: Alignment.center,
-      padding: EdgeInsets.only(left: 10.w),
+      padding: EdgeInsets.all(10.w),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.w),
         color: color,

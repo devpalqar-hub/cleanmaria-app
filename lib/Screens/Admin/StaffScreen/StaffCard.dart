@@ -38,8 +38,8 @@ class _StaffCardState extends State<StaffCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-       width: 352.w,
-      height: 80.h,
+      width: 352.w,
+      //height: 80.h,
       margin: EdgeInsets.only(bottom: 10.h),
       padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 15.w),
       decoration: BoxDecoration(
@@ -47,10 +47,10 @@ class _StaffCardState extends State<StaffCard> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-          offset: const Offset(0, 1),
+            offset: const Offset(0, 1),
             blurRadius: 4,
             spreadRadius: 0,
-          color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withOpacity(0.1),
           ),
         ],
       ),
@@ -174,11 +174,17 @@ class _StaffCardState extends State<StaffCard> {
               "Are you sure you want to ${content.toLowerCase()} this staff member?"),
           actions: [
             TextButton(
-              child: const Text("Cancel",style: TextStyle(color: Colors.blue),),
+              child: const Text(
+                "Cancel",
+                style: TextStyle(color: Colors.blue),
+              ),
               onPressed: () => Navigator.of(context).pop(),
             ),
             TextButton(
-              child: Text(content,style: TextStyle(color: Colors.blue) ,),
+              child: Text(
+                content,
+                style: TextStyle(color: Colors.blue),
+              ),
               onPressed: () {
                 callback();
                 Navigator.of(context).pop();

@@ -27,13 +27,13 @@ class StatusCard extends StatelessWidget {
       child: Center(
         child: Container(
           width: 352.w,
-          height: 88.h,
+          // height: 88.h,
           padding: EdgeInsets.all(10.w),
           margin: EdgeInsets.only(bottom: 10.h),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10.r),
             color: Colors.white,
-            boxShadow: [ 
+            boxShadow: [
               BoxShadow(
                 offset: Offset(0, 1),
                 blurRadius: 4,

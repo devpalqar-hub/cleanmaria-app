@@ -42,8 +42,9 @@ class detailcardScreen extends StatelessWidget {
   }) {
     return Container(
       width: 115.w,
-      height: 74.h,
-      padding: EdgeInsets.only(left: 10.w, right: 10.w),
+      // height: 74.h,
+      padding:
+          EdgeInsets.only(left: 10.w, right: 10.w, top: 10.h, bottom: 10.h),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.w),
         color: const Color(0xffF6F6F6),
