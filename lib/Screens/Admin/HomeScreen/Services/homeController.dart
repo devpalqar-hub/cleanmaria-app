@@ -33,39 +33,42 @@ class HomeController extends GetxController {
   List<PerformanceOverTimeModel> GraphData = [];
   List<HistoryModel> history = [];
 
-  fetchShdedule() async {
-    history = [];
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString("access_token");
-    if (token == null || token.isEmpty) {
-      print("Missing token, skipping API call.");
-      return;
-    }
-    String parms = "";
-    final Response = await http.get(
-      Uri.parse(
-        baseUrl + "/scheduler/schedules?page=1&limit=30$parms&status=missed",
-      ),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-    );
-    if (Response.statusCode == 200) {
-      var data = json.decode(Response.body);
-      for (var his in data["data"]["data"]) {
-        HistoryModel model = HistoryModel.fromJson(his);
-        // if (model.status == "missing" || model.status == "cancelled")
-        history.add(model);
-      }
-    }
-    update();
+  fetchCancelBooking() async {
+  history = [];
+  final prefs = await SharedPreferences.getInstance();
+  final token = prefs.getString("access_token");
+
+  if (token == null || token.isEmpty) {
+    print("Missing token, skipping API call.");
+    return;
   }
+
+  final response = await http.get(
+    Uri.parse(baseUrl + "/bookings?status=canceled"),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+  );
+  
+  if (response.statusCode == 200) {
+    var data = json.decode(response.body);
+    for (var booking in data["data"]) {
+      HistoryModel model = HistoryModel.fromJson(booking);
+      history.add(model);
+    }
+  } else {
+    print("Failed to fetch canceled bookings: ${response.statusCode}");
+  }
+
+  update();
+}
+
 
   reload() {
     history.clear();
     update();
-    fetchShdedule();
+    fetchCancelBooking();
   }
 
   Color getStatusColor(String status) {
@@ -247,6 +250,6 @@ class HomeController extends GetxController {
     loadUser();
     fetchPerformanceData();
     fetchChartData();
-    fetchShdedule();
+    fetchCancelBooking();
   }
 }

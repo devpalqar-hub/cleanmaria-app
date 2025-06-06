@@ -57,7 +57,7 @@ class _HomeContentState extends State<HomeContent> {
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                 ),
-              if (hCtrl.history.isNotEmpty)
+             if (hCtrl.history.isNotEmpty)
                 SizedBox(
                   height: 10.w,
                 ),

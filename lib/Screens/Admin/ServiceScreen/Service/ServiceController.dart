@@ -112,6 +112,7 @@ class ServiceController extends GetxController {
     try {
       final response = await http.post(
         Uri.parse("$baseUrl/services"),
+        
         headers: authHeader,
         body: json.encode(payload),
       );
@@ -135,6 +136,49 @@ class ServiceController extends GetxController {
       update();
     }
   }
+
+  Future<void> updateService(String serviceID, BuildContext context) async {
+
+   
+  isLoading = true;
+  update();
+
+  final prefs = await SharedPreferences.getInstance();
+  final token = prefs.getString("access_token");
+
+  final body = {
+    "name": nameController.text,
+    "durationMinutes": int.tryParse(durationController.text) ?? 0,
+    "basePrice": double.tryParse(basePriceController.text) ?? 0.0,
+    "bathroomRate": double.tryParse(bathroomRateController.text) ?? 0.0,
+    "roomRate": double.tryParse(roomRateController.text) ?? 0.0,
+    "squareFootPrice": double.tryParse(squareFootPriceController.text) ?? 0.0,
+  };
+
+  final response = await http.patch(
+    Uri.parse('$baseUrl/services/$serviceID'),
+    
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+    
+    body: jsonEncode(body),
+    
+  );
+
+  isLoading = false;
+  update();
+
+  if (response.statusCode == 200) {
+    Fluttertoast.showToast(msg: "Service updated successfully");
+    Navigator.pop(context);
+    fetchServices(); // refresh list
+  } else {
+    Fluttertoast.showToast(msg: "Failed to update service");
+    debugPrint("Error: ${response.statusCode} - ${response.body}");
+  }
+}
 
   void clearText() {
     nameController.clear();

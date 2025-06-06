@@ -22,14 +22,14 @@ class Cancellationcard extends StatelessWidget {
               StatusCard(
                   status: data.status ?? "Unknown",
                   color: hctlr.getStatusColor(data.status!),
-                  customerName: data.booking!.customer!.name!,
+                  customerName: data.booking!.customer!.name ??"Unknown",
                   onTap: () {
                     Get.to(
                         () => BookingDetailsScreen(
                               bookingId: data.booking!.id!,
                               staff: data.staff!.name,
                               scheduleId: data.id,
-                              pCtrl: hctlr,
+                              pCtrl: hctlr, 
                               status: data.status ?? "Unknown",
                               date:
                                   "${DateFormat("MMM dd,yyyy | hh:mm a").format(DateTime.parse(data.startTime!))} - ${DateFormat("hh:mm a").format(DateTime.parse(data.endTime!))}",

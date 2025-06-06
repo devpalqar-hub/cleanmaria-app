@@ -1,4 +1,5 @@
 class ServiceModel {
+  final String id;
   final String name;
   final double durationMinutes;
   final String basePrice;
@@ -7,6 +8,7 @@ class ServiceModel {
   final String squareFootPrice;
 
   ServiceModel({
+    required this.id,
     required this.name,
     required this.durationMinutes,
     required this.basePrice,
@@ -17,17 +19,19 @@ class ServiceModel {
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
     return ServiceModel(
+      id: json['id'],
       name: json['name'] ?? '',
       durationMinutes: double.parse(json['durationMinutes'].toString() ),
-      basePrice: (json['base_price'])  ,
-      bathroomRate: (json['bathroom_rate']),
-      roomRate: (json['room_rate']),
-      squareFootPrice:(json['square_foot_price']),
+       basePrice: json['base_price'] ?? '0',
+      bathroomRate: json['bathroom_rate'] ?? '0',
+      roomRate: json['room_rate'] ?? '0',
+      squareFootPrice: json['square_foot_price'] ?? '0',
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
+      "id":id,
       "name": name,
       "durationMinutes": durationMinutes,
       "base_price": basePrice,
