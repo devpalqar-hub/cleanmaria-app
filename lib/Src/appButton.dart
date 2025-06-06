@@ -13,19 +13,20 @@ class AppButton extends StatefulWidget {
   final FontWeight? fontWeight;
   final IconData? icon;
   final Color? iconColor;
+  final isLoading;
 
-  const AppButton({
-    super.key,
-    required this.text,
-    required this.onPressed,
-    this.isPrimary = true,
-    this.width,
-    this.height,
-    this.fontSize,
-    this.fontWeight,
-    this.icon,
-    this.iconColor,
-  });
+  const AppButton(
+      {super.key,
+      required this.text,
+      required this.onPressed,
+      this.isPrimary = true,
+      this.width,
+      this.height,
+      this.fontSize,
+      this.fontWeight,
+      this.icon,
+      this.iconColor,
+      this.isLoading = false});
 
   @override
   _AppButtonState createState() => _AppButtonState();
@@ -35,8 +36,17 @@ class _AppButtonState extends State<AppButton> {
   bool _isLoading = false;
 
   void _handlePress() {
+    _isLoading = true;
+    setState(() {});
     if (!mounted) return;
     widget.onPressed();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _isLoading = widget.isLoading;
   }
 
   @override
@@ -63,7 +73,9 @@ class _AppButtonState extends State<AppButton> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         if (widget.icon != null) ...[
-                          Icon(widget.icon, size: 14.sp, color: widget.iconColor ?? Colors.white),
+                          Icon(widget.icon,
+                              size: 14.sp,
+                              color: widget.iconColor ?? Colors.white),
                           SizedBox(width: 5.w),
                         ],
                         Text(
@@ -88,7 +100,10 @@ class _AppButtonState extends State<AppButton> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         if (widget.icon != null) ...[
-                          Icon(widget.icon, size: 14.sp, color: widget.iconColor ?? const Color(0xFF19A4C6)),
+                          Icon(widget.icon,
+                              size: 14.sp,
+                              color:
+                                  widget.iconColor ?? const Color(0xFF19A4C6)),
                           SizedBox(width: 5.w),
                         ],
                         Text(

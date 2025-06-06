@@ -13,7 +13,8 @@ class ServiceController extends GetxController {
   final TextEditingController basePriceController = TextEditingController();
   final TextEditingController bathroomRateController = TextEditingController();
   final TextEditingController roomRateController = TextEditingController();
-  final TextEditingController squareFootPriceController = TextEditingController();
+  final TextEditingController squareFootPriceController =
+      TextEditingController();
 
   Map<String, String> authHeader = {};
   List<ServiceModel> services = [];
@@ -66,7 +67,8 @@ class ServiceController extends GetxController {
         }
       } else {
         print(" fetchServices(): HTTP ${response.statusCode}");
-        Fluttertoast.showToast(msg: "Failed to fetch services (${response.statusCode})");
+        Fluttertoast.showToast(
+            msg: "Failed to fetch services (${response.statusCode})");
       }
     } catch (e) {
       print("fetchServices(): Exception: $e");
@@ -78,19 +80,23 @@ class ServiceController extends GetxController {
   }
 
   Future<void> createService(BuildContext context) async {
-    if ([nameController.text, durationController.text, basePriceController.text, bathroomRateController.text, roomRateController.text, squareFootPriceController.text]
-        .any((field) => field.isEmpty)) {
+    if ([
+      nameController.text,
+      durationController.text,
+      basePriceController.text,
+      bathroomRateController.text,
+      roomRateController.text,
+      squareFootPriceController.text
+    ].any((field) => field.isEmpty)) {
       Fluttertoast.showToast(msg: "Please fill all required fields");
       return;
     }
-    final name              = nameController.text.trim();
-    final durationMinutes   = int.parse(durationController.text.trim());
-    final basePrice         = int.parse(basePriceController.text.trim());
-    final bathroomRate      = int.parse(bathroomRateController.text.trim());
-    final roomRate          = int.parse(roomRateController.text.trim());
-    final squareFootPrice   =int.parse(squareFootPriceController.text.trim());
-
-    
+    final name = nameController.text.trim();
+    final durationMinutes = int.parse(durationController.text.trim());
+    final basePrice = int.parse(basePriceController.text.trim());
+    final bathroomRate = int.parse(bathroomRateController.text.trim());
+    final roomRate = int.parse(roomRateController.text.trim());
+    final squareFootPrice = int.parse(squareFootPriceController.text.trim());
 
     final payload = {
       "name": name,
@@ -112,7 +118,6 @@ class ServiceController extends GetxController {
     try {
       final response = await http.post(
         Uri.parse("$baseUrl/services"),
-        
         headers: authHeader,
         body: json.encode(payload),
       );
@@ -126,7 +131,8 @@ class ServiceController extends GetxController {
         await fetchServices();
       } else {
         print(" createService(): HTTP ${response.statusCode}");
-        Fluttertoast.showToast(msg: "Error: Failed to create service (${response.statusCode})");
+        Fluttertoast.showToast(
+            msg: "Error: Failed to create service (${response.statusCode})");
       }
     } catch (e) {
       print(" createService(): Exception: $e");
@@ -138,47 +144,42 @@ class ServiceController extends GetxController {
   }
 
   Future<void> updateService(String serviceID, BuildContext context) async {
+    isLoading = true;
+    update();
 
-   
-  isLoading = true;
-  update();
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString("access_token");
 
-  final prefs = await SharedPreferences.getInstance();
-  final token = prefs.getString("access_token");
+    final body = {
+      "name": nameController.text,
+      "durationMinutes": int.tryParse(durationController.text) ?? 0,
+      "basePrice": double.tryParse(basePriceController.text) ?? 0.0,
+      "bathroomRate": double.tryParse(bathroomRateController.text) ?? 0.0,
+      "roomRate": double.tryParse(roomRateController.text) ?? 0.0,
+      "squareFootPrice": double.tryParse(squareFootPriceController.text) ?? 0.0,
+    };
 
-  final body = {
-    "name": nameController.text,
-    "durationMinutes": int.tryParse(durationController.text) ?? 0,
-    "basePrice": double.tryParse(basePriceController.text) ?? 0.0,
-    "bathroomRate": double.tryParse(bathroomRateController.text) ?? 0.0,
-    "roomRate": double.tryParse(roomRateController.text) ?? 0.0,
-    "squareFootPrice": double.tryParse(squareFootPriceController.text) ?? 0.0,
-  };
+    final response = await http.patch(
+      Uri.parse('$baseUrl/services/$serviceID'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(body),
+    );
 
-  final response = await http.patch(
-    Uri.parse('$baseUrl/services/$serviceID'),
-    
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    },
-    
-    body: jsonEncode(body),
-    
-  );
+    isLoading = false;
+    update();
 
-  isLoading = false;
-  update();
-
-  if (response.statusCode == 200) {
-    Fluttertoast.showToast(msg: "Service updated successfully");
-    Navigator.pop(context);
-    fetchServices(); // refresh list
-  } else {
-    Fluttertoast.showToast(msg: "Failed to update service");
-    debugPrint("Error: ${response.statusCode} - ${response.body}");
+    if (response.statusCode == 200) {
+      Fluttertoast.showToast(msg: "Service updated successfully");
+      Navigator.pop(context);
+      fetchServices(); // refresh list
+    } else {
+      Fluttertoast.showToast(msg: "Failed to update service");
+      debugPrint("Error: ${response.statusCode} - ${response.body}");
+    }
   }
-}
 
   void clearText() {
     nameController.clear();

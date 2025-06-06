@@ -147,10 +147,9 @@ class BookingsController extends GetxController {
 
 Future<bool> cancelBooking({
     required String bookingId,
-    required String status,
     required String type,
   }) async {
-    print("[DEBUG] cancelBooking called with bookingId: $bookingId, status: $status, type: $type");
+    print("[DEBUG] cancelBooking called with bookingId: $bookingId");
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString("access_token");
 

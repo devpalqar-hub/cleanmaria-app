@@ -108,7 +108,6 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
 
                 bool result = await controller.cancelBooking(
                   bookingId: bookingId,
-                  status: currentStatus,
                   type: type,
                 );
 
