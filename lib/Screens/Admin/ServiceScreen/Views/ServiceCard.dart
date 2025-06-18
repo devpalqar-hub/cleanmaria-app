@@ -27,7 +27,7 @@ class _ServiceCardState extends State<ServiceCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 220.h,
+     // height: 220.h,
       width: 352.w,
       margin: EdgeInsets.only(bottom: 5.h),
       padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 15.w),

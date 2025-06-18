@@ -149,13 +149,13 @@ Future<bool> cancelBooking({
     required String bookingId,
     required String type,
   }) async {
-    print("[DEBUG] cancelBooking called with bookingId: $bookingId");
+   // print("[DEBUG] cancelBooking called with bookingId: $bookingId");
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString("access_token");
 
     if (token == null || token.isEmpty) {
       errorMessage = 'Access token is missing';
-      print("[ERROR] cancelBooking failed: token is missing");
+     // print("[ERROR] cancelBooking failed: token is missing");
       update();
       return false;
     }
@@ -169,22 +169,22 @@ Future<bool> cancelBooking({
         },
       );
 
-      print('[DEBUG] Cancel Booking Response Status: ${response.statusCode}');
-      print('[DEBUG] Cancel Booking Response Body: ${response.body}');
+      //print('[DEBUG] Cancel Booking Response Status: ${response.statusCode}');
+      //print('[DEBUG] Cancel Booking Response Body: ${response.body}');
 
       if (response.statusCode == 201) {
         Fluttertoast.showToast(msg: "Booking cancelled successfully");
-        print("[DEBUG] Booking cancelled successfully. Refreshing bookings...");
+      //  print("[DEBUG] Booking cancelled successfully. Refreshing bookings...");
         await fetchBookings(status, type);
         return true;
       } else {
         final msg = jsonDecode(response.body)['message'] ?? "Failed to cancel booking";
         Fluttertoast.showToast(msg: msg);
-        print("[ERROR] Cancel booking failed with message: $msg");
+       // print("[ERROR] Cancel booking failed with message: $msg");
         return false;
       }
     } catch (e) {
-      print("[ERROR] Exception while cancelling booking: $e");
+     // print("[ERROR] Exception while cancelling booking: $e");
       Fluttertoast.showToast(msg: "Something went wrong");
       return false;
     } finally {
@@ -266,6 +266,32 @@ Future<bool> cancelBooking({
 
     return tm.isBefore(cdate) && tr.status == "pending";
   }
+
+Future<bool> updateBookingDetails(String bookingId, Map<String, dynamic> updatedFields) async {
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString("access_token");
+    final response = await http.patch(
+      Uri.parse("$baseUrl/bookings/$bookingId"),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(updatedFields),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 204) {
+      fetchBookingDetails(bookingId); 
+      return true;
+    } else {
+      print("Update failed: ${response.body}");
+      return false;
+    }
+  } catch (e) {
+    print("Exception during update: $e");
+    return false;
+  }
+}
 
   @override
   void onInit() {

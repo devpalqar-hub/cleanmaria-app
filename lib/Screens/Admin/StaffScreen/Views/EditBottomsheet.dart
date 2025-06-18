@@ -23,6 +23,8 @@ class _EditStaffBottomSheetState extends State<EditStaffBottomSheet> {
   late TextEditingController emailController;
   late TextEditingController phoneController;
   late TextEditingController passwordController;
+  late TextEditingController priorityController;
+
   final StaffController controller = StaffController();
   bool isLoading = false;
 
@@ -33,6 +35,8 @@ class _EditStaffBottomSheetState extends State<EditStaffBottomSheet> {
     emailController = TextEditingController(text: widget.staff.email);
     phoneController = TextEditingController(text: widget.staff.phone ?? '');
     passwordController = TextEditingController();
+    priorityController = TextEditingController(text: widget.staff.priority.toString());
+
   }
 
   @override
@@ -106,6 +110,8 @@ class _EditStaffBottomSheetState extends State<EditStaffBottomSheet> {
                 _buildInputField("Staff Name", nameController),
                 _buildInputField("Email", emailController),
                 _buildInputField("Phone", phoneController),
+                _buildInputField("Priority", priorityController, hint: "Enter priority (e.g. 1)"),
+
                 // Uncomment below if password change is allowed
                 // _buildInputField("New Password", passwordController,
                 //     obscure: true, hint: "Leave blank to keep current"),
@@ -122,6 +128,7 @@ class _EditStaffBottomSheetState extends State<EditStaffBottomSheet> {
                             "password": passwordController.text.isEmpty
                                 ? null
                                 : passwordController.text.trim(),
+                                 "priority": int.tryParse(priorityController.text.trim()) ?? 0,
                           }, widget.staff.id, context);
                         },
                       ),

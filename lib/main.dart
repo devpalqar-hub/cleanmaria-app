@@ -46,7 +46,7 @@ class SplashScreen extends StatelessWidget {
       return AuthenticationScreen();
     }
   }
-
+ 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Widget>(

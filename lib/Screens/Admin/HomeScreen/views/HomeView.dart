@@ -22,53 +22,61 @@ class HomeContent extends StatefulWidget {
 class _HomeContentState extends State<HomeContent> {
   HomeController hCtrl = Get.put(HomeController());
 
-  @override
-  Widget build(BuildContext context) {
-    return GetBuilder<HomeController>(builder: (_) {
-      return SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(12.w, 40.h, 12.w, 0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: 2.w),
-                child: _buildTopBar(),
+ @override
+Widget build(BuildContext context) {
+  return GetBuilder<HomeController>(builder: (_) {
+    return Column(
+      children: [
+        // Fixed Top Bar
+        Container(
+          padding: EdgeInsets.fromLTRB(14.w, 40.h, 14.w, 0),
+          color: Colors.white, // Optional: to ensure it doesn't overlap with scroll background
+          child: _buildTopBar(),
+        ),
+
+        // Scrollable Content
+        Expanded(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(12.w, 20.h, 12.w, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildGreetingAndDropdown(),
+                  OverViewCard(),
+                  SizedBox(height: 20.h),
+                  appText.primaryText(
+                    text: "Performance Analysis",
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  SizedBox(height: 10.h),
+                  _buildDateRangePicker(),
+                  SizedBox(height: 15.h),
+                  detailcardScreen(),
+                  SizedBox(height: 30.h),
+                  LineChartWidget(),
+                  SizedBox(height: 15.h),
+                  if (hCtrl.history.isNotEmpty)
+                    appText.primaryText(
+                      text: "Cancellation",
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  if (hCtrl.history.isNotEmpty)
+                    SizedBox(height: 10.w),
+                  if (hCtrl.history.isNotEmpty)
+                    Cancellationcard(),
+                ],
               ),
-              SizedBox(height: 32.h),
-              _buildGreetingAndDropdown(),
-              OverViewCard(),
-              SizedBox(height: 20.h),
-              appText.primaryText(
-                text: "Performance Analysis",
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
-              ),
-              SizedBox(height: 10.h),
-              _buildDateRangePicker(),
-              SizedBox(height: 15.h),
-              detailcardScreen(),
-              SizedBox(height: 30.h),
-              LineChartWidget(),
-              SizedBox(height: 15.h),
-              if (hCtrl.history.isNotEmpty)
-                appText.primaryText(
-                  text: "Cancellation",
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                ),
-             if (hCtrl.history.isNotEmpty)
-                SizedBox(
-                  height: 10.w,
-                ),
-              if (hCtrl.history.isNotEmpty)
-               Cancellationcard(),
-            ],
+            ),
           ),
         ),
-      );
-    });
-  }
+      ],
+    );
+  });
+}
+
 
   Widget _buildTopBar() {
     return Row(

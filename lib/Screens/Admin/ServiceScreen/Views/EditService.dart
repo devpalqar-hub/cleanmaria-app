@@ -74,7 +74,9 @@ class _EditServiceBottomSheetState extends State<EditServiceBottomSheet> {
                       : AppButton(
                           text: "Update Service",
                           onPressed: () {
-                          _.updateService(widget.service.id, context); 
+                             print("Button pressed");
+                          _.updateService(widget.service.id, context)
+                          ; 
                           },
                         ),
                   TextButton(

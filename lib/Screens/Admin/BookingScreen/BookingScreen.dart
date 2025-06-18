@@ -78,12 +78,16 @@ class _EstimateScreenState extends State<EstimateScreen> {
         noOfRooms: noOfRooms,
         noOfBathrooms: noOfBathrooms,
         squareFeet: squareFeet,
+        isEcoCleaning: isEco,
+        materialsProvidedByClient: isMaterialProvided,
       );
+final plans = estimates['estimates'];
+
 
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => SelectPlanScreen(plans: estimates,noofbathrooms: noOfBathrooms,noofrooms: noOfRooms,sizeofhome: squareFeet,Serviceid: selectedServiceId!,isMaterialprovided: isMaterialProvided,iseEo: isEco,propertytype: selectedTypeOfProperty!,),
+          builder: (context) => SelectPlanScreen(plans: plans,noofbathrooms: noOfBathrooms,noofrooms: noOfRooms,sizeofhome: squareFeet,Serviceid: selectedServiceId!,isMaterialprovided: isMaterialProvided,iseEo: isEco,propertytype: selectedTypeOfProperty!,),
         ),
       );
     } catch (e) {
@@ -121,7 +125,7 @@ Fluttertoast.showToast(
   return Row(
     children: [
       Padding(
-        padding:  EdgeInsets.fromLTRB(8,0,15,0),
+        padding:  EdgeInsets.fromLTRB(8,0,8,0),
         child: Checkbox(
           value: value,
           onChanged: onChanged,
@@ -131,7 +135,7 @@ Fluttertoast.showToast(
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
       ),
-      SizedBox(width: 5),
+      SizedBox(width:2),
       Text(label, style: TextStyle(fontSize: 14.sp)),
     ],
   );
@@ -268,10 +272,13 @@ Fluttertoast.showToast(
       value: isMaterialProvided,
       onChanged: (val) => setState(() => isMaterialProvided = val ?? false),
     ),
-    _buildCircularCheckbox(
-      label: "Is Eco",
-      value: isEco,
-      onChanged: (val) => setState(() => isEco = val ?? false),
+    Padding(
+      padding: const EdgeInsets.all(30.0),
+      child: _buildCircularCheckbox(
+        label: "Is Eco",
+        value: isEco,
+        onChanged: (val) => setState(() => isEco = val ?? false),
+      ),
     ),
   ],
 ),    

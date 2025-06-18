@@ -35,134 +35,173 @@ class _StaffCardState extends State<StaffCard> {
 
   StaffController stCtrl = Get.put(StaffController());
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 352.w,
-      //height: 80.h,
-      margin: EdgeInsets.only(bottom: 10.h),
-      padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 15.w),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.r),
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            offset: const Offset(0, 1),
-            blurRadius: 4,
-            spreadRadius: 0,
-            color: Colors.black.withOpacity(0.1),
-          ),
-        ],
+@override
+Widget build(BuildContext context) {
+  return Container(
+    width: 352.w,
+    padding: EdgeInsets.all(15.w),
+    margin: EdgeInsets.only(bottom: 12.h),
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        colors: [Colors.white, Colors.grey[100]!],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
       ),
-      child: Row(
-        children: [
-          SizedBox(width: 10.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: GoogleFonts.poppins(
-                    color: Colors.black,
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                SizedBox(height: 3.h),
-                Text(
-                  email,
-                  style: GoogleFonts.poppins(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey,
-                  ),
-                ),
-              ],
+      borderRadius: BorderRadius.circular(15.r),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.2),
+          blurRadius: 6,
+          offset: Offset(0, 4),
+        ),
+      ],
+    ),
+    child: Row(
+      children: [
+        // Avatar
+        CircleAvatar(
+          radius: 22.r,
+          backgroundColor: Colors.blue.shade100,
+          child: Text(
+            widget.staff.name.isNotEmpty ? widget.staff.name[0] : '?',
+            style: TextStyle(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.bold,
+              color: Colors.blue,
             ),
           ),
-          Container(
-            height: 24.h,
-            width: 82.w,
-            decoration: BoxDecoration(
-              color: isActive ? const Color(0xFF1C9F0B) : Colors.red,
-              borderRadius: BorderRadius.circular(10.r),
-            ),
-            child: Center(
-              child: Text(
+        ),
+        SizedBox(width: 20.w),
+        // Info Column
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                name,
+                style: GoogleFonts.poppins(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black87,
+                ),
+              ),
+              SizedBox(height: 4.h),
+              Text(
+                email,
+                style: GoogleFonts.poppins(
+                  fontSize: 14.sp,
+                  color: Colors.grey[700],
+                ),
+              ),
+              SizedBox(height: 4.h),
+              Row(
+                children: [
+                  Icon(Icons.flag, size: 14.sp, color: Colors.orange),
+                  SizedBox(width: 10.w),
+                  Text(
+                    "Priority: ${widget.staff.priority}",
+                    style: GoogleFonts.poppins(
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w500,
+                    //  color: Colors.deepOrange,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        // Status Tag
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+          decoration: BoxDecoration(
+            color: isActive ? Color(0xFF1C9F0B) : Colors.red,
+            borderRadius: BorderRadius.circular(12.r),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                isActive ? Icons.check_circle : Icons.block,
+                color: Colors.white,
+                size: 14.sp,
+              ),
+              SizedBox(width: 4.w),
+              Text(
                 isActive ? "Active" : "Disabled",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 11.sp,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
-            ),
+            ],
           ),
-          SizedBox(width: 5.w),
-          PopupMenuButton<String>(
-            icon: Icon(Icons.more_vert, size: 18.sp, color: Colors.grey),
-            onSelected: (String value) async {
-              switch (value) {
-                case "Edit":
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.vertical(top: Radius.circular(20.r)),
-                    ),
-                    builder: (context) => EditStaffBottomSheet(
-                      staff: widget.staff,
-                      //      notify: notify,
-                    ),
-                  );
-                  break;
-                case "Enable":
-                  _showDeleteConfirmation("Enable", () {
-                    stCtrl.enableStaff(widget.staff.id);
-                  });
-                  break;
-                case "Disable":
-                  _showDeleteConfirmation("Disable", () {
-                    stCtrl.disableStaff(widget.staff.id);
-                  });
-                  break;
-                case "Delete":
-                  _showDeleteConfirmation("Delete", () {
-                    stCtrl.deleteStaff(widget.staff);
-                  });
-                  break;
-              }
-            },
-            itemBuilder: (BuildContext context) {
-              return <PopupMenuEntry<String>>[
-                const PopupMenuItem<String>(
-                  value: 'Edit',
-                  child: Text('Edit'),
-                ),
-                if (!isActive)
-                  const PopupMenuItem<String>(
-                    value: 'Enable',
-                    child: Text('Enable'),
+        ),
+        SizedBox(width: 5.w),
+        // Menu
+        PopupMenuButton<String>(
+          icon: Icon(Icons.more_vert, size: 20.sp, color: Colors.grey),
+          onSelected: (String value) async {
+            switch (value) {
+              case "Edit":
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(20.r)),
                   ),
-                if (isActive)
-                  const PopupMenuItem<String>(
-                    value: 'Disable',
-                    child: Text('Disable'),
+                  builder: (context) => EditStaffBottomSheet(
+                    staff: widget.staff,
                   ),
+                );
+                break;
+              case "Enable":
+                _showDeleteConfirmation("Enable", () {
+                  stCtrl.enableStaff(widget.staff.id);
+                });
+                break;
+              case "Disable":
+                _showDeleteConfirmation("Disable", () {
+                  stCtrl.disableStaff(widget.staff.id);
+                });
+                break;
+              case "Delete":
+                _showDeleteConfirmation("Delete", () {
+                  stCtrl.deleteStaff(widget.staff);
+                });
+                break;
+            }
+          },
+          itemBuilder: (BuildContext context) {
+            return <PopupMenuEntry<String>>[
+              const PopupMenuItem<String>(
+                value: 'Edit',
+                child: Text('Edit'),
+              ),
+              if (!isActive)
                 const PopupMenuItem<String>(
-                  value: 'Delete',
-                  child: Text('Delete'),
+                  value: 'Enable',
+                  child: Text('Enable'),
                 ),
-              ];
-            },
-          ),
-        ],
-      ),
-    );
-  }
+              if (isActive)
+                const PopupMenuItem<String>(
+                  value: 'Disable',
+                  child: Text('Disable'),
+                ),
+              const PopupMenuItem<String>(
+                value: 'Delete',
+                child: Text('Delete'),
+              ),
+            ];
+          },
+        ),
+      ],
+    ),
+  );
+}
 
+  
   void _showDeleteConfirmation(String content, Function callback) {
     showDialog(
       context: context,
