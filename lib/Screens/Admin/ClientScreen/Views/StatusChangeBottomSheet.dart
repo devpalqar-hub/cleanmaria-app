@@ -57,6 +57,11 @@ class _BookingStatusBottomSheetState extends State<BookingStatusBottomSheet> {
         'icon': Icons.event_busy,
         'color': Colors.red,
       },
+      {
+        'status': 'cancel',
+        'icon': Icons.cancel,
+        'color': Colors.red,
+      },
       if (!widget.isStaff)
         {
           'status': 'refunded',
@@ -68,12 +73,25 @@ class _BookingStatusBottomSheetState extends State<BookingStatusBottomSheet> {
         'icon': Icons.event_available_rounded,
         'color': Colors.green,
       },
+      if (!widget.isStaff)
+        {
+          'status': 'payment success',
+          'icon': Icons.paid,
+          'color': Colors.green,
+        },
+      if (!widget.isStaff)
+        {
+          'status': 'payment failed',
+          'icon': Icons.cancel,
+          'color': Colors.red,
+        },
     ];
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: (!widget.isStaff) ? 600.h : 380.h,
       padding: const EdgeInsets.all(16.0),
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -82,79 +100,81 @@ class _BookingStatusBottomSheetState extends State<BookingStatusBottomSheet> {
           topRight: Radius.circular(16),
         ),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              margin: const EdgeInsets.only(bottom: 16),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(2),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
             ),
-          ),
 
-          Text('Change  Status',
-              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600)),
+            Text('Change  Status',
+                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600)),
 
-          const SizedBox(height: 24),
-          ...(_statusOptions.map((option) => _buildStatusOption(
-                option['status'],
-                option['icon'],
-                option['color'],
-              ))),
-          const SizedBox(height: 24),
+            const SizedBox(height: 24),
+            ...(_statusOptions.map((option) => _buildStatusOption(
+                  option['status'],
+                  option['icon'],
+                  option['color'],
+                ))),
+            const SizedBox(height: 24),
 
-          // Save button
-          ElevatedButton(
-            onPressed: () async {
-              final prefs = await SharedPreferences.getInstance();
-              final token = prefs.getString("access_token");
-              setState(() {
-                isLoading = true;
-              });
-              final response = await patch(
-                  Uri.parse(baseUrl +
-                      "/scheduler/schedules/${widget.sheduleID}/change-status"),
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer $token',
-                  },
-                  body: json.encode({"status": selectedStatus}));
+            // Save button
+            ElevatedButton(
+              onPressed: () async {
+                final prefs = await SharedPreferences.getInstance();
+                final token = prefs.getString("access_token");
+                setState(() {
+                  isLoading = true;
+                });
+                final response = await patch(
+                    Uri.parse(baseUrl +
+                        "/scheduler/schedules/${widget.sheduleID}/change-status"),
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': 'Bearer $token',
+                    },
+                    body: json.encode(
+                        {"status": selectedStatus.replaceAll(" ", "_")}));
 
-              setState(() {
-                isLoading = false;
-              });
-              print(response.body);
-              print(response.statusCode);
-              if (response.statusCode == 200) {
-                widget.onStatusChanged(selectedStatus);
-
-                Navigator.pop(context);
-              } else {
-                Fluttertoast.showToast(msg: 'Update Failed');
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF2196F3),
-              padding: EdgeInsets.symmetric(vertical: 14),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+                setState(() {
+                  isLoading = false;
+                });
+                print(response.body);
+                print(response.statusCode);
+                if (response.statusCode == 200) {
+                  widget.onStatusChanged(selectedStatus);
+                  Navigator.pop(context);
+                } else {
+                  Fluttertoast.showToast(msg: 'Update Failed');
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF2196F3),
+                padding: EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
               ),
+              child: (isLoading)
+                  ? LoadingAnimationWidget.staggeredDotsWave(
+                      color: Colors.blue, size: 25)
+                  : Text(
+                      'Save Changes',
+                      style: TextStyle(fontSize: 15.sp, color: Colors.white),
+                    ),
             ),
-            child: (isLoading)
-                ? LoadingAnimationWidget.staggeredDotsWave(
-                    color: Colors.blue, size: 25)
-                : Text(
-                    'Save Changes',
-                    style: TextStyle(fontSize: 15.sp, color: Colors.white),
-                  ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
