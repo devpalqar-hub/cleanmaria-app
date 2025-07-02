@@ -1,27 +1,20 @@
-import 'dart:convert';
-
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/CleaningHistory.dart';
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/Models/BookingDetailModel.dart';
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/Service/BookingController.dart';
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/Views/StatusChangeBottomSheet.dart';
-import 'package:cleanby_maria/Screens/Admin/HistoryScreen/Controller/HistoryController.dart';
-import 'package:cleanby_maria/Screens/Admin/HistoryScreen/Models/HistoryModel.dart';
 import 'package:cleanby_maria/Src/appButton.dart';
 import 'package:cleanby_maria/Src/appText.dart';
 import 'package:cleanby_maria/Src/utils.dart';
-import 'package:cleanby_maria/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart' show Get;
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class BookingDetailsScreen extends StatefulWidget {
+class AdminBookingDetailsScreen extends StatefulWidget {
   final String bookingId;
   final String? staff;
   final bool isCanceld;
@@ -32,7 +25,7 @@ class BookingDetailsScreen extends StatefulWidget {
   var pCtrl;
 
   bool isStaff;
-  BookingDetailsScreen(
+  AdminBookingDetailsScreen(
       {required this.bookingId,
       this.date,
       this.staff,
@@ -45,19 +38,17 @@ class BookingDetailsScreen extends StatefulWidget {
       super.key});
 
   @override
-  State<BookingDetailsScreen> createState() => _BookingDetailsScreenState();
+  State<AdminBookingDetailsScreen> createState() => _AdminBookingDetailsScreenState();
 }
 
-class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
+class _AdminBookingDetailsScreenState extends State<AdminBookingDetailsScreen> {
   final BookingsController controller = Get.put(BookingsController());
-  final HistoryController hiscontroller = Get.put(HistoryController());
 
   @override
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () {
       controller.fetchBookingDetails(widget.bookingId);
-      hiscontroller.fetchShedules();
     });
   }
 
@@ -156,36 +147,6 @@ void showEditDialog({
       ],
     );
   }
-String _getCurrentStatus(BookingDetailModel booking) {
-  if (widget.scheduleId != null) {
-    final historyMatch = hiscontroller.history.firstWhere(
-      (h) => h.id == widget.scheduleId,
-      orElse: () => HistoryModel(status: booking.status),
-    );
-    return historyMatch.status ?? booking.status ?? 'N/A';
-  } else {
-    return booking.status ?? 'N/A';
-  }
-}
-Future<bool> updateScheduleStatus(String scheduleId, String newStatus) async {
-  final prefs = await SharedPreferences.getInstance();
-  final token = prefs.getString("access_token");
-  final response = await http.patch(
-    Uri.parse('$baseUrl/scheduler/schedules/$scheduleId'),
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    },
-    body: jsonEncode({"status": newStatus}),
-  );
-
-  if (response.statusCode == 200) {
-    await hiscontroller.fetchShedules(); // refresh history
-    return true;
-  }
-
-  return false;
-}
 
   void _showCancelDialog(BuildContext context) {
     final booking = controller.bookingDetail;
@@ -348,12 +309,26 @@ Future<bool> updateScheduleStatus(String scheduleId, String newStatus) async {
       ],
     ),
     SizedBox(height: 10.h),
-
-_infoText(
-      title: "Contact Number",
-      value:customer?.phone??'N/A'
-         
-    ),
+   _editableField(
+  title: "Contact Number",
+  value: customer?.phone ?? 'N/A',
+  onEdit: () {
+    showEditDialog(
+      context: context,
+      fieldName: "Contact Number",
+      initialValue: customer?.phone ?? '',
+      onSave: (newVal) async {
+        final success = await controller.updateBookingDetails(
+          booking.id!,
+          {"customer.phone": newVal}, // Adjust this key based on backend structure
+        );
+        if (success) {
+          Fluttertoast.showToast(msg: "Contact Number updated");
+        }
+      },
+    );
+  },
+),
 SizedBox(height: 10.h),
 
     SizedBox(height: 10.h),
@@ -365,38 +340,24 @@ SizedBox(height: 10.h),
           "${booking.bookingAddress?.address?.line1 ?? ''}, ${booking.bookingAddress?.address?.city ?? ''}",
     ),
     SizedBox(height: 10.h),
-   _editableField(
-  title: "Status",
-  value: _getCurrentStatus(booking),
-  onEdit: () {
-    final initialStatus = _getCurrentStatus(booking);
-
-    showEditDialog(
-      context: context,
-      fieldName: "Status",
-      initialValue: initialStatus,
-      onSave: (newVal) async {
-        bool success = false;
-
-        if (widget.scheduleId != null) {
-          success = await updateScheduleStatus(widget.scheduleId!, newVal);
-        } else {
-          success = await controller.updateBookingDetails(
-            booking.id!,
-            {"status": newVal},
-          );
-        }
-
-        if (success) {
-          Fluttertoast.showToast(msg: "Status updated");
-          setState(() {}); // refresh UI
-        }
+    _editableField(
+      title: "Status",
+      value: booking.status ?? 'N/A',
+      onEdit: () {
+        showEditDialog(
+          context: context,
+          fieldName: "Status",
+          initialValue: booking.status ?? '',
+          onSave: (newVal) async {
+            final success = await controller.updateBookingDetails(
+              booking.id!,
+              {"status": newVal},
+            );
+            if (success) Fluttertoast.showToast(msg: "Status updated");
+          },
+        );
       },
-    );
-  },
-  
-),
-
+    ),
     SizedBox(height: 10.h),
     _infoText(
       title: widget.date == null ? "Booking Date" : "Cleaning Schedule",
@@ -447,7 +408,7 @@ SizedBox(height: 10.h),
             },
           ),
         ),
-       
+      
       ],
     ),
     SizedBox(height: 10.h),
@@ -457,18 +418,14 @@ SizedBox(height: 10.h),
     ),
     SizedBox(height: 10.h),
     _infoText(
-  title: "Payment Method",
-  value: booking.paymentMethod ?? 'N/A',
-),
-SizedBox(height: 10.h),
-    _infoText(
       title: "Type of cleaning",
       value: booking.reccuingType ?? "One Time",
     ),
     SizedBox(height: 10.h),
     if (widget.date != null)
       _infoText(title: "Cleaned By", value: widget.staff ?? 'N/A'),
-    
+    if (widget.date != null)
+      _editableField(title: "Status", value: widget.status ?? 'N/A', onEdit: () {}),
     SizedBox(height: 10.h),
     _infoText(title: "Type of property", value: booking.propertyType ?? 'N/A'),
     SizedBox(height: 10.h),

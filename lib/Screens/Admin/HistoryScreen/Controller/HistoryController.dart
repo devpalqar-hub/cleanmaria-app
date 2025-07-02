@@ -115,6 +115,15 @@ class HistoryController extends GetxController {
         return Color(0xFF03AE9D);
       case "refunded":
         return Colors.blue;
+      case "inprogress":
+        return Colors.orange;
+      case"payment_failed":
+        return Colors.deepOrange;
+      case "rescheduled":
+        return Colors.blueGrey;
+      case "payment_success":
+        return  Colors.green;
+
     }
     return Color(0xFFE89F18);
   }
