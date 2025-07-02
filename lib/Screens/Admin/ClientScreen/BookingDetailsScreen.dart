@@ -410,25 +410,28 @@ SizedBox(height: 10.h),
         ),
         if (booking.transactions!.isEmpty ||
             controller.checkTransation(booking.transactions!.first))
-          Padding(
-            padding: EdgeInsets.only(top: 15.h),
-            child: Container(
-              width: 65.w,
-              height: 19.h,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.r),
-                color: const Color(0xFF19A4C6),
-              ),
-              child: Center(
-                child: appText.primaryText(
-                  text: "NOT PAID",
-                  fontSize: 8.sp,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
+         Padding(
+  padding: EdgeInsets.only(top: 15.h),
+  child: Container(
+    width: 65.w,
+    height: 19.h,
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(10.r),
+      color: booking.status == "completed"
+          ? Colors.green
+          : const Color(0xFF19A4C6),
+    ),
+    child: Center(
+      child: appText.primaryText(
+        text: booking.status == "completed" ? "PAID" : "NOT PAID",
+        fontSize: 8.sp,
+        fontWeight: FontWeight.w500,
+        color: Colors.white,
+      ),
+    ),
+  ),
+),
+ 
       ],
     ),
     SizedBox(height: 10.h),
