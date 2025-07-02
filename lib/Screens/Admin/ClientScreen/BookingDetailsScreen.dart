@@ -309,26 +309,12 @@ void showEditDialog({
       ],
     ),
     SizedBox(height: 10.h),
-   _editableField(
-  title: "Contact Number",
-  value: customer?.phone ?? 'N/A',
-  onEdit: () {
-    showEditDialog(
-      context: context,
-      fieldName: "Contact Number",
-      initialValue: customer?.phone ?? '',
-      onSave: (newVal) async {
-        final success = await controller.updateBookingDetails(
-          booking.id!,
-          {"customer.phone": newVal}, // Adjust this key based on backend structure
-        );
-        if (success) {
-          Fluttertoast.showToast(msg: "Contact Number updated");
-        }
-      },
-    );
-  },
-),
+
+_infoText(
+      title: "Contact Number",
+      value:customer?.phone??'N/A'
+         
+    ),
 SizedBox(height: 10.h),
 
     SizedBox(height: 10.h),
@@ -408,30 +394,7 @@ SizedBox(height: 10.h),
             },
           ),
         ),
-        if (booking.transactions!.isEmpty ||
-            controller.checkTransation(booking.transactions!.first))
-         Padding(
-  padding: EdgeInsets.only(top: 15.h),
-  child: Container(
-    width: 65.w,
-    height: 19.h,
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(10.r),
-      color: booking.status == "completed"
-          ? Colors.green
-          : const Color(0xFF19A4C6),
-    ),
-    child: Center(
-      child: appText.primaryText(
-        text: booking.status == "completed" ? "PAID" : "NOT PAID",
-        fontSize: 8.sp,
-        fontWeight: FontWeight.w500,
-        color: Colors.white,
-      ),
-    ),
-  ),
-),
- 
+       
       ],
     ),
     SizedBox(height: 10.h),
@@ -441,14 +404,18 @@ SizedBox(height: 10.h),
     ),
     SizedBox(height: 10.h),
     _infoText(
+  title: "Payment Method",
+  value: booking.paymentMethod ?? 'N/A',
+),
+SizedBox(height: 10.h),
+    _infoText(
       title: "Type of cleaning",
       value: booking.reccuingType ?? "One Time",
     ),
     SizedBox(height: 10.h),
     if (widget.date != null)
       _infoText(title: "Cleaned By", value: widget.staff ?? 'N/A'),
-    if (widget.date != null)
-      _editableField(title: "Status", value: widget.status ?? 'N/A', onEdit: () {}),
+    
     SizedBox(height: 10.h),
     _infoText(title: "Type of property", value: booking.propertyType ?? 'N/A'),
     SizedBox(height: 10.h),

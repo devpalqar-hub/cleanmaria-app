@@ -230,42 +230,64 @@ Future<bool> cancelBooking({
   }
 
 
+Future<void> fetchBookingDetails(String bookingId) async {
+  isLoading = true;
+  errorMessage = '';
+  update();
 
-  Future<void> fetchBookingDetails(String bookingId) async {
-    isLoading = true;
-     errorMessage = '';
-    update();
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString("access_token");
-    if (token == null || token.isEmpty) {
-      errorMessage = 'Access token is missing';
-      isLoading = false;
-      return;
-    }
-    final response = await http.get(
+  final prefs = await SharedPreferences.getInstance();
+  final token = prefs.getString("access_token");
+
+  if (token == null || token.isEmpty) {
+    errorMessage = 'Access token is missing';
+    isLoading = false;
+    return;
+  }
+
+  try {
+    // 1. Fetch Booking Detail
+    final bookingResponse = await http.get(
       Uri.parse('$baseUrl/bookings/$bookingId'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
     );
-    if (response.statusCode == 200) {
-      print('Booking Detail Response Body: ${response.body}');
-     final data = json.decode(response.body);
-      bookingDetail = BookingDetailModel.fromJson(data["data"]);
-    } else {
-      errorMessage = 'Failed to load booking details (${response.statusCode})';
-        print("Response body: ${response.body}");
-    }
-    isLoading = false;
-    update();
-  }
-  bool checkTransation(Transactions tr) {
-    DateTime tm = DateTime.parse(tr.createdAt!);
-    DateTime cdate = DateTime.now();
 
-    return tm.isBefore(cdate) && tr.status == "pending";
+    if (bookingResponse.statusCode == 200) {
+      final bookingData = json.decode(bookingResponse.body);
+      bookingDetail = BookingDetailModel.fromJson(bookingData["data"]);
+    } else {
+      errorMessage =
+          'Failed to load booking details (${bookingResponse.statusCode})';
+      print("Booking Detail Response Body: ${bookingResponse.body}");
+      isLoading = false;
+      update();
+      return;
+    }
+
+    // 2. Fetch Schedule Data
+    final scheduleResponse = await http.get(
+      Uri.parse('$baseUrl/scheduler/schedules?bookingId=$bookingId'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (scheduleResponse.statusCode == 200) {
+      final scheduleData = json.decode(scheduleResponse.body);
+     
+    } else {
+      print("Failed to fetch schedules: ${scheduleResponse.body}");
+    }
+  } catch (e) {
+    errorMessage = "Something went wrong: $e";
   }
+
+  isLoading = false;
+  update();
+}
 
 Future<bool> updateBookingDetails(String bookingId, Map<String, dynamic> updatedFields) async {
   try {

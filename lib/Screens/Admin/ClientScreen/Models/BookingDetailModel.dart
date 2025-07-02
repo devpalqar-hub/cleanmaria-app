@@ -16,6 +16,7 @@ class BookingDetailModel {
   Service? service;
   String? reccuingType;
   String? date;
+  String? paymentMethod;
   List<MonthSchedules>? monthSchedules;
   List<Transactions>? transactions;
 
@@ -38,7 +39,9 @@ class BookingDetailModel {
       this.bookingAddress,
       this.service,
       this.monthSchedules,
-      this.transactions});
+      this.transactions,
+      this.paymentMethod,
+      });
 
   BookingDetailModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -49,6 +52,7 @@ class BookingDetailModel {
     noOfBathRooms = json['noOfBathRooms'];
     propertyType = json['propertyType'];
     materialProvided = json['materialProvided'];
+    paymentMethod=json['paymentMethod'];
     isEco = json['isEco'];
     status = json['status'];
     price = json['price'];
@@ -93,6 +97,7 @@ class BookingDetailModel {
     data['status'] = this.status;
     data['price'] = this.price;
     data['createdAt'] = this.createdAt;
+     data['paymentMethod'] = paymentMethod;
     if (this.customer != null) {
       data['customer'] = this.customer!.toJson();
     }

@@ -47,84 +47,97 @@ class StaffHomeController extends GetxController {
   }
 
   fetchShdedule() async {
-    // history = [];
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString("access_token");
-    String parms = "";
-    if (selectedFilter != "All Duty") parms = "&status=$selectedFilter";
-    final Response = await http.get(
-      Uri.parse(
-        baseUrl + "/scheduler/schedules?page=${page}&limit=10$parms",
-      ),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-    );
-    refreshCtrl.refreshCompleted();
-   refreshCtrl.loadComplete();
+  final prefs = await SharedPreferences.getInstance();
+  final token = prefs.getString("access_token");
+  String parms = selectedFilter != "All Duty" ? "&status=$selectedFilter" : "";
+  final url = "$baseUrl/scheduler/schedules?page=$page&limit=10$parms";
 
-    print(Response.body);
-    print(Response.statusCode);
-    if (Response.statusCode == 200) {
-      print("Access Token: $token");
+  print("[GET] $url");
+  print("Headers: Authorization Bearer $token");
 
-      var data = json.decode(Response.body);
-      for (var his in data["data"]["data"]) {
-        HistoryModel model = HistoryModel.fromJson(his);
-        history.add(model);
-      }
+  final response = await http.get(
+    Uri.parse(url),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+  );
 
-      if (data["data"]["data"].isNotEmpty) {
-        page = page + 1;
-      } else {
-        refreshCtrl.loadNoData();
-      }
+  refreshCtrl.refreshCompleted();
+  refreshCtrl.loadComplete();
+
+  print("Status Code: ${response.statusCode}");
+  print("Response Body: ${response.body}");
+
+  if (response.statusCode == 200) {
+    var data = json.decode(response.body);
+    for (var his in data["data"]["data"]) {
+      history.add(HistoryModel.fromJson(his));
     }
-    update();
+
+    if (data["data"]["data"].isNotEmpty) {
+      page += 1;
+    } else {
+      refreshCtrl.loadNoData();
+    }
+  } else {
+    print("Error: ${response.reasonPhrase}");
   }
 
-  fetchTodayShedule() async {
-    todayHistory = [];
-    completeTask = 0;
-  
-  total = 0; 
+  update();
+}
 
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString("access_token");
-    final Response = await http.get(
-      Uri.parse(
-        baseUrl +
-            "/scheduler/schedules?page=1&limit=30&startDate=${DateFormat("yyyy-MM-dd").format(DateTime.now())}",
-      ),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-    );
+fetchTodayShedule() async {
+  todayHistory = [];
+  completeTask = 0;
+  total = 0;
 
-    if (Response.statusCode == 200) {
-      var data = json.decode(Response.body);
-      for (var his in data["data"]["data"]) {
-        HistoryModel model = HistoryModel.fromJson(his);
-        total = total + 1;
-        if (model.status == "scheduled") todayHistory.add(model);
+  final prefs = await SharedPreferences.getInstance();
+  final token = prefs.getString("access_token");
+  final today = DateFormat("yyyy-MM-dd").format(DateTime.now());
+  final url = "$baseUrl/scheduler/schedules?page=1&limit=30&startDate=$today";
 
-        if (model.status == "completed") completeTask = completeTask + 1;
-      }
-    } else if (Response.statusCode == 401) {
-      var body = json.decode(Response.body);
+  print("[GET] $url");
+  print("Headers: Authorization Bearer $token");
+
+  final response = await http.get(
+    Uri.parse(url),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+  );
+
+  print("Status Code: ${response.statusCode}");
+  print("Response Body: ${response.body}");
+
+  if (response.statusCode == 200) {
+    var data = json.decode(response.body);
+    for (var his in data["data"]["data"]) {
+      final model = HistoryModel.fromJson(his);
+      total += 1;
+      if (model.status == "scheduled") todayHistory.add(model);
+      if (model.status == "completed") completeTask += 1;
+    }
+  } else if (response.statusCode == 401) {
+    var body = json.decode(response.body);
     if (body["message"] == "User is not active") {
       Fluttertoast.showToast(msg: "Staff is not active");
-    }else{
-      Fluttertoast.showToast(msg: "Logout Suceesfully");
+    } else {
+      Fluttertoast.showToast(msg: "Logout Successfully");
     }
-      prefs.setString("LOGIN", "OUT");
-      Get.offAll(() => AuthenticationScreen(),
-          transition: Transition.rightToLeft);
-    }
-    update();
+
+    prefs.setString("LOGIN", "OUT");
+    Get.offAll(() => AuthenticationScreen(),
+        transition: Transition.rightToLeft);
+  } else {
+    print("Error: ${response.reasonPhrase}");
   }
+
+  update();
+}
+
+  
 
   Color getStatusColor(String status) {
     switch (status) {
