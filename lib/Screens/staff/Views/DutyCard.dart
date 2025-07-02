@@ -1,6 +1,7 @@
 //import 'package:cleanby_maria/Screens/Admin/ClientScreen/BookingDetailsScreen.dart';
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/BookingDetailsScreen.dart';
 import 'package:cleanby_maria/Screens/Admin/HistoryScreen/Models/HistoryModel.dart';
+import 'package:cleanby_maria/Screens/staff/AdminBookingDetailScreen.dart';
 import 'package:cleanby_maria/Screens/staff/Controller/SHomeController.dart';
 import 'package:cleanby_maria/Src/appText.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +39,7 @@ class Dutycard extends StatelessWidget {
     return InkWell(
       onTap: () {
         Get.to(
-            () => BookingDetailsScreen(
+            () => AdminBookingDetailsScreen(
                   bookingId: history.booking!.id!,
                   staff: history.staff!.name,
                   isStaff: true,

@@ -13,7 +13,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class HomeController extends GetxController {
-  // Date controllers
   TextEditingController fromDateController = TextEditingController(
       text: DateFormat('yyyy/MM/dd')
           .format(DateTime.now().subtract(Duration(days: 7))));
@@ -29,7 +28,7 @@ class HomeController extends GetxController {
   int totalCancel = 0;
 
   int totalClients = 0;
-  int totalEarnings = 0;
+  double totalEarnings = 0.0; // ✅ updated
   int totalStaff = 0;
 
   List<PerformanceOverTimeModel> GraphData = [];
@@ -89,39 +88,57 @@ class HomeController extends GetxController {
   }
 
   Future<void> fetchBusinessSummary(String startDate, String endDate) async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString("access_token");
-    try {
-      final String apiUrl =
-          "$baseUrl/analytics/summary?endDate=$startDate&startDate=$endDate";
+  final prefs = await SharedPreferences.getInstance();
+  final token = prefs.getString("access_token");
+  try {
+    final String apiUrl =
+        "$baseUrl/analytics/summary?endDate=$startDate&startDate=$endDate";
 
-      final response = await http.get(
-        Uri.parse(apiUrl),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      );
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        final summaryData = data['data'] ?? {};
+    final response = await http.get(
+      Uri.parse(apiUrl),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
 
-        totalClients = summaryData['totalClients'] ?? 0;
-        totalEarnings = summaryData['totalEarnings'] ?? 0;
-        totalStaff = summaryData['totalStaff'] ?? 0;
-      } else if (response.statusCode == 401) {
-        Fluttertoast.showToast(msg: "Logout Successfull");
-        prefs.setString("LOGIN", "OUT");
-        Get.offAll(() => AuthenticationScreen(),
-            transition: Transition.rightToLeft);
+    print("➡️ API URL: $apiUrl");
+    print("➡️ Response status: ${response.statusCode}");
+    print("📦 Response body: ${response.body}");
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final summaryData = data['data'] ?? {};
+
+      totalClients = summaryData['totalClients'] ?? 0;
+
+      final earnings = summaryData['totalEarnings'];
+      if (earnings is int) {
+        totalEarnings = earnings.toDouble();
+      } else if (earnings is double) {
+        totalEarnings = earnings;
       } else {
-        print("Error: ${response.body}");
+        totalEarnings = 0.0;
       }
-    } catch (e) {
-      print("Error fetching business summary: $e");
+
+      totalStaff = summaryData['totalStaff'] ?? 0;
+
+      print("✅ totalClients: $totalClients");
+      print("✅ totalEarnings: $totalEarnings");
+      print("✅ totalStaff: $totalStaff");
+    } else if (response.statusCode == 401) {
+      Fluttertoast.showToast(msg: "Logout Successful");
+      prefs.setString("LOGIN", "OUT");
+      Get.offAll(() => AuthenticationScreen(),
+          transition: Transition.rightToLeft);
+    } else {
+      print("❌ Error response [${response.statusCode}]: ${response.body}");
     }
-    update();
+  } catch (e) {
+    print("❗ Exception: $e");
   }
+  update();
+}
 
   // Fetch performance data based on selected date range
   Future<void> fetchPerformanceData() async {
@@ -234,6 +251,8 @@ class HomeController extends GetxController {
   }
 
   // Dispose controllers and notifiers when no longer needed
+
+
 
   loadUser() async {
     final prefs = await SharedPreferences.getInstance();

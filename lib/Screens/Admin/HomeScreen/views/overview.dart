@@ -2,12 +2,11 @@ import 'package:cleanby_maria/Screens/Admin/HomeScreen/Services/homeController.d
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/utils.dart';
 
 class OverViewCard extends StatelessWidget {
   OverViewCard({super.key});
 
-  final HomeController _controller = Get.put(HomeController());
+  final HomeController _controller = Get.find<HomeController>(); // ✅ Use existing controller
 
   @override
   Widget build(BuildContext context) {
@@ -17,21 +16,21 @@ class OverViewCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             _overview(
-              count: _controller.totalClients,
+              count: controller.totalClients.toString(),
               imagePath: "assets/client.png",
               color: const Color(0xffE5FDF3),
               subtitle: "Total Clients",
             ),
             SizedBox(width: 7.w),
             _overview(
-              count: _controller.totalEarnings,
+              count: "₹${controller.totalEarnings.toStringAsFixed(2)}", // ✅ Format safely
               imagePath: "assets/earnings.png",
               color: const Color(0xffFDFDE5),
               subtitle: "Total Revenue",
             ),
             SizedBox(width: 7.w),
             _overview(
-              count: _controller.totalStaff,
+              count: controller.totalStaff.toString(),
               imagePath: "assets/person.png",
               color: const Color(0xffFDE5E5),
               subtitle: "Total Staff",
@@ -42,16 +41,14 @@ class OverViewCard extends StatelessWidget {
     });
   }
 
-// UI component for each overview item
   Widget _overview({
-    required int count,
+    required String count,
     required String imagePath,
     required String subtitle,
     required Color color,
   }) {
     return Container(
       width: 112.w,
-      // height: 60.h,
       alignment: Alignment.center,
       padding: EdgeInsets.all(10.w),
       decoration: BoxDecoration(
@@ -67,7 +64,7 @@ class OverViewCard extends StatelessWidget {
               Image.asset(imagePath, width: 16.w, height: 18.w),
               SizedBox(width: 10.w),
               Text(
-                count.toString(),
+                count,
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w500,

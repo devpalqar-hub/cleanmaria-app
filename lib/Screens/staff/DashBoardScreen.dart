@@ -1,5 +1,6 @@
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/BookingDetailsScreen.dart';
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/Views/StatusCard.dart';
+import 'package:cleanby_maria/Screens/staff/AdminBookingDetailScreen.dart';
 
 import 'package:cleanby_maria/Screens/staff/Controller/SHomeController.dart';
 import 'package:cleanby_maria/Screens/staff/Views/DutyCard.dart';
@@ -166,9 +167,9 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                           color: sHCtrl.getStatusColor(data.status!),
                           customerName: data.booking!.customer!.name!,
                           onTap: () {
-                           if (data.status == "scheduled" || data.status == "completed")
+                          
                               Get.to(
-                                  () => BookingDetailsScreen(
+                                  () => AdminBookingDetailsScreen(
                                         bookingId: data.booking!.id!,
                                         staff: data.staff!.name,
                                         isStaff: true,
