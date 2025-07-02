@@ -309,37 +309,35 @@ void showEditDialog({
       ],
     ),
     SizedBox(height: 10.h),
-    _infoText(title: "Contact Number", value: customer?.phone ?? 'N/A'),
+   _editableField(
+  title: "Contact Number",
+  value: customer?.phone ?? 'N/A',
+  onEdit: () {
+    showEditDialog(
+      context: context,
+      fieldName: "Contact Number",
+      initialValue: customer?.phone ?? '',
+      onSave: (newVal) async {
+        final success = await controller.updateBookingDetails(
+          booking.id!,
+          {"customer.phone": newVal}, // Adjust this key based on backend structure
+        );
+        if (success) {
+          Fluttertoast.showToast(msg: "Contact Number updated");
+        }
+      },
+    );
+  },
+),
+SizedBox(height: 10.h),
+
     SizedBox(height: 10.h),
     _infoText(title: "Email", value: customer?.email ?? 'N/A'),
     SizedBox(height: 10.h),
-    _editableField(
+    _infoText(
       title: "Address",
       value:
           "${booking.bookingAddress?.address?.line1 ?? ''}, ${booking.bookingAddress?.address?.city ?? ''}",
-      onEdit: () {
-        showEditDialog(
-          context: context,
-          fieldName: "Address Line 1",
-          initialValue: booking.bookingAddress?.address?.line1 ?? '',
-          onSave: (newVal) async {
-            final success = await controller.updateBookingDetails(
-              booking.id!,
-              {
-                "address": {
-                  "line_1": newVal,
-                  "line_2": booking.bookingAddress?.address?.line2 ?? '',
-                  "city": booking.bookingAddress?.address?.city ?? '',
-                  "state": booking.bookingAddress?.address?.state ?? '',
-                  "zip": booking.bookingAddress?.address?.zip ?? '',
-                  "landmark": booking.bookingAddress?.address?.landmark ?? '',
-                }
-              },
-            );
-            if (success) Fluttertoast.showToast(msg: "Address updated");
-          },
-        );
-      },
     ),
     SizedBox(height: 10.h),
     _editableField(
@@ -393,7 +391,7 @@ void showEditDialog({
                 fieldName: "Service Cost",
                 initialValue: booking.price?.toString() ?? '',
                 onSave: (newVal) async {
-                  final parsedPrice = int.tryParse(newVal);
+                  final parsedPrice = double.tryParse(newVal);
                   if (parsedPrice == null) {
                     Fluttertoast.showToast(msg: "Invalid number");
                     return;

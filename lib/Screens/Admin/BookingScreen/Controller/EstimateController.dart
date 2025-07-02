@@ -24,69 +24,105 @@ class AppController {
   }
 
   Future<Map<String, dynamic>> calculateEstimate({
-    required String serviceId,
-    required int noOfRooms,
-    required int noOfBathrooms,
-    required int squareFeet,
-    required bool isEcoCleaning,
-    required bool materialsProvidedByClient,
-  }) async {
-    final requestBody = {
-      'service_id': serviceId,
-      'no_of_rooms': noOfRooms,
-      'no_of_bathrooms': noOfBathrooms,
-      'square_feet': squareFeet,
-      'isEcoCleaning': isEcoCleaning,
-      'materialsProvidedByClient': materialsProvidedByClient,
-    };
+  required String serviceId,
+  required int noOfRooms,
+  required int noOfBathrooms,
+  required int squareFeet,
+  required bool isEcoCleaning,
+  required bool materialsProvidedByClient,
+}) async {
+  final requestBody = {
+    'service_id': serviceId,
+    'no_of_rooms': noOfRooms,
+    'no_of_bathrooms': noOfBathrooms,
+    'square_feet': squareFeet,
+    'isEcoCleaning': isEcoCleaning,
+    'materialsProvidedByClient': materialsProvidedByClient,
+  };
 
-    print("calculateEstimate - Request Body: ${jsonEncode(requestBody)}");
+  final uri = Uri.parse('$baseUrl/services/price-estimate');
 
+  print("📤 [Request] Calculating Estimate...");
+  print("🔗 URL: $uri");
+  print("📝 Body: ${jsonEncode(requestBody)}");
+
+  try {
     final response = await http.post(
-      Uri.parse('$baseUrl/services/price-estimate'),
+      uri,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(requestBody),
     );
 
-    print("calculateEstimate - Status Code: ${response.statusCode}");
-    print("calculateEstimate - Response Body: ${response.body}");
+    print("📥 [Response] Status Code: ${response.statusCode}");
+    print("📥 [Response Body]: ${response.body}");
 
     if (response.statusCode == 201) {
       final data = jsonDecode(response.body);
+
+      final estimates = List<Map<String, dynamic>>.from(data['data']['estimates']);
+      final totalDuration =(data['data']['totalDuration']);
+
+      print("✅ Estimates: $estimates");
+      print("⏱️ Total Duration (mins): $totalDuration");
+
       return {
-        'estimates': List<Map<String, dynamic>>.from(data['data']['estimates']),
-        'durationOfMinute': data['data']['totalDuration'],
+        'estimates': estimates,
+        'totalDuration': totalDuration,
       };
     } else {
-      throw Exception('Failed to calculate estimate');
+      throw Exception('❌ Failed to calculate estimate');
     }
+  } catch (e) {
+    print("🔥 calculateEstimate - Error: $e");
+    rethrow;
   }
+}
+
 
   Future<List<Map<String, dynamic>>> fetchTimeSlots({
-    required int dayOfWeek,
-    required int durationInMinutes,
-  }) async {
-    final uri = Uri.parse(
-        '$baseUrl/scheduler/time-slots?dayOfWeek=$dayOfWeek&durationMins=$durationInMinutes');
+  required int dayOfWeek,
+  required int totalDuration,
+  required String recurringTypeId,
+}) async {
+  final uri = Uri.parse(
+    '$baseUrl/scheduler/time-slots?dayOfWeek=$dayOfWeek&durationMins=$totalDuration&planid=$recurringTypeId'
+);
+  print("📤 [Request] Fetching time slots...");
+  print("🔗 Full URL: $uri");
 
-    try {
-      final response = await http.get(uri);
-      print("fetchTimeSlots - Status Code: ${response.statusCode}");
-      print("fetchTimeSlots - Response Body: ${response.body}");
+  try {
+    final response = await http.get(uri);
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        final List<Map<String, dynamic>> availableSlots =
-            List<Map<String, dynamic>>.from(data['data'])
-                .where((slot) => slot['isAvailable'] == true)
-                .toList();
-        return availableSlots;
-      } else {
-        throw Exception("Failed to fetch time slots: ${response.statusCode}");
+    print("📥 [Response] Status Code: ${response.statusCode}");
+    print("📥 [Response Body]: ${response.body}");
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+
+      final allSlots = List<Map<String, dynamic>>.from(data['data']);
+
+      print("📊 All Time Slots:");
+      for (var slot in allSlots) {
+        print("⏰ ${slot['time']} — Available: ${slot['isAvailable']}");
       }
-    } catch (e) {
-      print("fetchTimeSlots - Error: $e");
-      rethrow;
+
+      final availableSlots = allSlots
+          .where((slot) => slot['isAvailable'] == true)
+          .toList();
+
+      print("✅ Filtered Available Slots:");
+      for (var slot in availableSlots) {
+        print("🟢 ${slot['time']}");
+      }
+
+      return availableSlots;
+    } else {
+      print("❌ Failed to fetch time slots - Status: ${response.statusCode}");
+      throw Exception("Failed to fetch time slots");
     }
+  } catch (e) {
+    print("🔥 fetchTimeSlots - Error: $e");
+    rethrow;
   }
+}
 }

@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SelectPlanScreen extends StatefulWidget {
   final List<Map<String, dynamic>> plans;
+  final int totalDuration; 
   final String Serviceid;
   final int noofrooms;
   final int noofbathrooms;
@@ -22,6 +23,7 @@ class SelectPlanScreen extends StatefulWidget {
     required this.propertytype,
     required this.isMaterialprovided,
     required this.iseEo,
+    required this.totalDuration,
   }) : super(key: key);
 
   @override
@@ -117,9 +119,7 @@ final filteredPlans = widget.plans
                 child: ElevatedButton(
                   onPressed: () {
                     final selectedPlan = filteredPlans[selectedPlanIndex!];
-
-                    // Ensure the duration field is available
-                    final int duration = selectedPlan['totalDuration'] ?? selectedPlan['durationInMinutes'] ?? 60;
+                 //  final int duration = selectedPlan['totalDuration'] ?? selectedPlan['durationInMinutes'] ?? 60;
 
                     Navigator.push(
                       context,
@@ -135,7 +135,7 @@ final filteredPlans = widget.plans
                           price: selectedPlan["finalPrice"].toString(),
                           recurringTypeId: selectedPlan["recurringTypeId"],
                           recurringType: selectedPlan["recurringTypeId"] == "notASubcriptionTypeId" ? "instant" : "recurring",
-                          totalDuration: duration,
+                         totalDuration: widget.totalDuration,
                         ),
                       ),
                     );
@@ -152,6 +152,9 @@ final filteredPlans = widget.plans
                 ),
               ),
             ),
+
+
+            
         ],
       ),
     );

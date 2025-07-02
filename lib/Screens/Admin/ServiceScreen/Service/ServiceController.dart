@@ -118,7 +118,7 @@ class ServiceController extends GetxController {
       print("Response status: ${response.statusCode}");
       print("Response body: ${response.body}");
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
+      if ( response.statusCode == 201) {
         Fluttertoast.showToast(msg: "Service created successfully");
         Navigator.of(context).pop();
         clearText();
@@ -151,10 +151,10 @@ class ServiceController extends GetxController {
     final body = {
       "name": nameController.text.trim(),
       "durationMinutes": double.parse(durationController.text.trim()),
-      "base_price": int.parse(basePriceController.text.trim()),
-      "bathroom_rate": int.parse(bathroomRateController.text.trim()),
-      "room_rate": int.parse(roomRateController.text.trim()),
-      "square_foot_price": int.parse(squareFootPriceController.text.trim()),
+      "base_price": double.parse(basePriceController.text.trim()),
+      "bathroom_rate": double.parse(bathroomRateController.text.trim()),
+      "room_rate": double.parse(roomRateController.text.trim()),
+      "square_foot_price": double.parse(squareFootPriceController.text.trim()),
     };
 
     isLoading = true;

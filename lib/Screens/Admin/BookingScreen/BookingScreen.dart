@@ -72,25 +72,37 @@ class _EstimateScreenState extends State<EstimateScreen> {
     final noOfRooms = int.parse(selectedNoOfRooms!);
     final noOfBathrooms = int.parse(selectedNoOfBathRooms!);
 
-    try {
-      final estimates = await _controller.calculateEstimate(
-        serviceId: selectedServiceId!,
-        noOfRooms: noOfRooms,
-        noOfBathrooms: noOfBathrooms,
-        squareFeet: squareFeet,
-        isEcoCleaning: isEco,
-        materialsProvidedByClient: isMaterialProvided,
-      );
-final plans = estimates['estimates'];
+   try {
+  final estimates = await _controller.calculateEstimate(
+    serviceId: selectedServiceId!,
+    noOfRooms: noOfRooms,
+    noOfBathrooms: noOfBathrooms,
+    squareFeet: squareFeet,
+    isEcoCleaning: isEco,
+    materialsProvidedByClient: isMaterialProvided,
+  );
 
+  final plans = estimates['estimates'];
+  final totalDuration = estimates['totalDuration']; // ✅ extract here
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => SelectPlanScreen(plans: plans,noofbathrooms: noOfBathrooms,noofrooms: noOfRooms,sizeofhome: squareFeet,Serviceid: selectedServiceId!,isMaterialprovided: isMaterialProvided,iseEo: isEco,propertytype: selectedTypeOfProperty!,),
-        ),
-      );
-    } catch (e) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => SelectPlanScreen(
+        plans: plans,
+        noofbathrooms: noOfBathrooms,
+        noofrooms: noOfRooms,
+        sizeofhome: squareFeet,
+        Serviceid: selectedServiceId!,
+        isMaterialprovided: isMaterialProvided,
+        iseEo: isEco,
+        propertytype: selectedTypeOfProperty!,
+        totalDuration: totalDuration, // ✅ pass here
+      ),
+    ),
+  );
+
+} catch (e) {
      print(e);
 Fluttertoast.showToast(
   msg: "Failed to fetch estimate",

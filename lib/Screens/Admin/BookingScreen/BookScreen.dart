@@ -4,12 +4,12 @@ import 'package:cleanby_maria/Screens/Admin/ClientScreen/Service/BookingControll
 import 'package:cleanby_maria/Src/appButton.dart';
 import 'package:cleanby_maria/Src/appTextField.dart';
 import 'package:cleanby_maria/main.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class ClientDetailsScreen extends StatefulWidget {
   const ClientDetailsScreen({
@@ -44,12 +44,12 @@ class ClientDetailsScreen extends StatefulWidget {
 }
 
 class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
-  String? selectedDay;
+  String? selectedDate;
   String? selectedTime;
+  DateTime? pickedDate;
   List timeSlots = [];
-  bool isLoading = false;
+  bool _isSubmitting = false;
 
-  final List<String> days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
@@ -68,15 +68,18 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('>>> BaseDate: $pickedDate, SelectedDate: $selectedDate');
+print('>>> NextRecurringDate: ${_getNextRecurringDate()}');
+
+    final nextRecurringDate = _getNextRecurringDate();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Client Details',style: TextStyle(fontWeight: FontWeight.w600)),
+        title: const Text('Client Details', style: TextStyle(fontWeight: FontWeight.w600)),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
-        elevation: 0.5),
-        backgroundColor: Colors.white,
-      
-      
+        elevation: 0.5,
+      ),
+      backgroundColor: Colors.white,
       body: Padding(
         padding: EdgeInsets.all(16.w),
         child: SingleChildScrollView(
@@ -92,15 +95,54 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
               Apptextfield.primary(labelText: 'Landmark', hintText: 'Enter Landmark', label: '', controller: _landmarkController),
               SizedBox(height: 16.h),
               _buildServiceDateCard(),
-              if (selectedDay != null && selectedTime != null)
-                Padding(
-                  padding: EdgeInsets.only(top: 12.h),
-                  child: Text("Selected: $selectedDay, $selectedTime", style: const TextStyle(fontWeight: FontWeight.bold)),
+           
+
+               if (selectedDate != null && selectedTime != null) ...[
+      Padding(
+        padding: EdgeInsets.only(top: 12.h),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Text(
+               "Selected Date: ${DateFormat('EEEE, dd-MM-yyyy').format(DateTime.parse(selectedDate!))}, $selectedTime",
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            if (_getNextRecurringDate().isNotEmpty)
+            SizedBox(height: 10.h,),
+              Center(
+                child: Text(
+                  "Next will be on: $nextRecurringDate",
+                  style: TextStyle(color: Colors.green, fontWeight: FontWeight.w600),
                 ),
-              SizedBox(height: 20.h),
-              Apptextfield.primary(labelText: "Estimate Price", hintText: "Current Price", label: '', controller: _amountController),
-              SizedBox(height: 20.h),
-              AppButton(text: "Book", onPressed: _bookService),
+              ),
+          ],
+        ),
+      ),
+    ],
+    
+    SizedBox(height: 20.h),
+    
+    Apptextfield.primary(
+      labelText: "Estimate Price",
+      hintText: "Current Price",
+      label: '',
+      controller: _amountController,
+    ),
+    
+    SizedBox(height: 20.h),
+    
+    AppButton(
+      text: "Book",
+      onPressed: _bookService,
+    ),
+    
+    if (_isSubmitting)
+      Padding(
+        padding: EdgeInsets.only(top: 12.h),
+        child: const CircularProgressIndicator(color: Color(0xff19A4C6)),
+      ),
             ],
           ),
         ),
@@ -126,7 +168,7 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text("Service Date", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
+                const Text("Choose Day 1", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
                 Text("Tap to choose day & time", style: TextStyle(color: Colors.grey.shade600)),
               ],
             ),
@@ -137,108 +179,169 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
   }
 
   void _showDaySelectionSheet() {
-    String? tempSelectedDay;
+  DateTime now = DateTime.now();
+  DateTime firstDate = now.add(const Duration(days: 1));
+  DateTime lastDate = now.add(const Duration(days: 22));
+  DateTime initialDate = firstDate;
+  DateTime tempPickedDate = initialDate;
+
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (context) {
+      return Padding(
+        padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 32.h),
+        child: StatefulBuilder(
+          builder: (context, setModalState) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: 15.h),
+                Text(
+                  "Select Service Day 1",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                ),
+                SizedBox(height: 15.h),
+                const Text(
+                  "* This selected date determines the fixed day of the week for recurring plans.",
+                  style: TextStyle(color: Colors.red, fontSize: 16),
+                ),
+                SizedBox(height: 16.h),
+                Theme(
+                  data: Theme.of(context).copyWith(
+                    colorScheme: ColorScheme.light(
+                      primary:  Color(0xff19A4C6),
+                      onPrimary: Colors.white, 
+                      surface: Colors.white,
+                      onSurface: Colors.black,
+                    ),
+                  ),
+                  child: CalendarDatePicker(
+                    initialDate: tempPickedDate,
+                    firstDate: firstDate,
+                    lastDate: lastDate,
+                    onDateChanged: (picked) {
+                      setModalState(() {
+                        tempPickedDate = picked;
+                      });
+                    },
+                  ),
+                ),
+                SizedBox(height: 20.h),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:  Color(0xff19A4C6),
+                        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 10.h),
+                      ),
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text("Cancel", style: TextStyle(color: Colors.white)),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xff19A4C6),
+                        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 10.h),
+                      ),
+                      onPressed: () async {
+                        final weekday = tempPickedDate.weekday % 7;
+
+                        setState(() {
+  pickedDate = tempPickedDate;
+  selectedDate = DateFormat('yyyy-MM-dd').format(tempPickedDate);
+  selectedTime = null;
+  timeSlots = [];
+});
+
+                        final slots = await AppController().fetchTimeSlots(
+                          dayOfWeek: weekday,
+                          totalDuration: widget.totalDuration,
+                          recurringTypeId: widget.recurringTypeId,
+                        );
+
+                        setState(() {
+                          timeSlots = slots;
+                        });
+
+                        Navigator.pop(context);
+                        _showTimeSelectionSheet(tempPickedDate);
+                      },
+                      child: const Text("OK", style: TextStyle(color: Colors.white)),
+                    ),
+                  ],
+                )
+              ],
+            );
+          },
+        ),
+      );
+    },
+  );
+}
+
+
+  void _showTimeSelectionSheet(DateTime pickedDate) {
     String? tempSelectedTime;
-    bool showTimeSlots = false;
 
     showModalBottomSheet(
       context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (_) {
         return StatefulBuilder(
           builder: (context, setModalState) {
             return Padding(
-               padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 24.h),
+              padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 24.h),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Container(width: 50, height: 5, decoration: BoxDecoration(color: Colors.grey[400], borderRadius: BorderRadius.circular(10))),
-                  SizedBox(height: 16.h),
-                  const Text("Choose a day", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                    SizedBox(height: 16.h),
-                  Wrap(
-                    spacing: 10.w,
-                    children: days.map((day) {
-                      final isSelected = day == tempSelectedDay;
-                      return ChoiceChip(
-                        label: Text(day),
-                        selected: isSelected,
-                        onSelected: (_) {
-                          setModalState(() {
-                            tempSelectedDay = day;
-                            showTimeSlots = true;
-                            tempSelectedTime = null;
-                            isLoading = true;
-                            
-                          });
-
-                          AppController()
-                              .fetchTimeSlots(
-                                dayOfWeek: days.indexOf(day),
-                                durationInMinutes: widget.totalDuration,
-                              )
-                              .then((slots) {
+                  const Text("Choose Time", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                  SizedBox(height: 20.h),
+                  if (timeSlots.isEmpty)
+                    const Text("No time slots available", style: TextStyle(color: Colors.red))
+                  else
+                    Wrap(
+                      spacing: 10.w,
+                      children: timeSlots.map((slot) {
+                        final isSelected = slot["time"] == tempSelectedTime;
+                        return ChoiceChip(
+                          label: Text(slot["time"]),
+                          selected: isSelected,
+                          onSelected: (_) {
                             setModalState(() {
-                              timeSlots = slots;
-                              isLoading = false;
+                              tempSelectedTime = slot["time"];
                             });
-                          }).catchError((e) {
-                            setModalState(() {
-                              timeSlots = [];
-                              isLoading = false;
-                            });
-                          });
-                        },
-                        selectedColor: const Color(0xff19A4C6),
-                        labelStyle: TextStyle(color: isSelected ? Colors.white : Colors.black),
-                      );
-                    }).toList(),
-                  ),
-                  if (showTimeSlots)
-                   SizedBox(height: 24.h),
-                    const Text("Choose a time",
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold)),
-                    SizedBox(height: 16.h),
-                  if (isLoading)
-                      const Center(child: CircularProgressIndicator())
-                    else if (timeSlots.isEmpty)
-                      const Text("No time slots available",
-                          style: TextStyle(color: Colors.red))
-                    else
-                        Wrap(
-                            spacing: 10.w,
-                            children: timeSlots.map((slot) {
-                              final isSelected = slot["time"] == tempSelectedTime;
-                              return ChoiceChip(
-                                label: Text(slot["time"]),
-                                selected: isSelected,
-                                onSelected: (_) {
-                                  setModalState(() {
-                                    tempSelectedTime = slot["time"];
-                                  });
-                                },
-                                selectedColor: const Color(0xff19A4C6),
-                                labelStyle: TextStyle(color: isSelected ? Colors.white : Colors.black),
-                              );
-                            }).toList(),
+                          },
+                          selectedColor: const Color(0xff19A4C6),
+                          labelStyle: TextStyle(
+                            color: isSelected ? Colors.white : Colors.black,
                           ),
+                        );
+                      }).toList(),
+                    ),
                   SizedBox(height: 24.h),
-                  ElevatedButton(
-                    onPressed: tempSelectedDay != null && (timeSlots.isEmpty || tempSelectedTime != null)
-                        ? () {
-                            setState(() {
-                              selectedDay = tempSelectedDay;
-                              selectedTime = tempSelectedTime;
-                            });
-                            Navigator.pop(context);
-                          }
-                        : null,
-                    style: ElevatedButton.styleFrom(backgroundColor: const Color(0xff19A4C6),padding: EdgeInsets.symmetric(
-                          horizontal: 32.w, vertical: 12.h),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
+                  ElevatedButton(onPressed: tempSelectedTime != null
+    ? () {
+        setState(() {
+          selectedTime = tempSelectedTime;
+        });
+        Future.delayed(const Duration(milliseconds: 100), () {
+          Navigator.pop(context);
+        });
+      }
+    : null,
+
+                    
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xff19A4C6),
+                      padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 12.h),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     ),
                     child: const Text("Confirm", style: TextStyle(color: Colors.white)),
                   ),
@@ -252,10 +355,14 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
   }
 
   void _bookService() async {
-    if (selectedDay == null || selectedTime == null) {
-      Fluttertoast.showToast(msg: "Please select a day and time");
+    if (selectedDate == null || selectedTime == null) {
+      Fluttertoast.showToast(msg: "Please select a date and time");
       return;
     }
+
+    setState(() {
+      _isSubmitting = true;
+    });
 
     final bookingData = {
       "serviceId": widget.Serviceid,
@@ -282,10 +389,8 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
       "name": _nameController.text,
       "email": _emailController.text,
       "phone": _phoneController.text,
-      "schedule": {
-        "dayOfWeek": days.indexOf(selectedDay!),
-        "time": selectedTime,
-      }
+      "date": selectedDate!,
+      "time": selectedTime,
     };
 
     try {
@@ -297,23 +402,71 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
 
       if (response.statusCode == 201) {
         Fluttertoast.showToast(msg: "Booking successful!");
-
-        print("Booking Payload: ${jsonEncode(bookingData)}");
         await Future.delayed(const Duration(seconds: 1));
-
-        Navigator.of(context).pop();
-        Navigator.of(context).pop();
-        Navigator.of(context).pop();
-        BookingsController ctrl = Get.find();
-        ctrl.fetchBookings("booked", "recurring");
+        Navigator.of(context).popUntil((route) => route.isFirst);
+        Get.find<BookingsController>().fetchBookings("booked", "recurring");
+      } else if (response.statusCode == 409) {
+        final error = jsonDecode(response.body);
+        Fluttertoast.showToast(msg: "Conflict: ${error['message'] ?? 'Slot already booked'}");
       } else {
-        print("Booking Failed - Status Code: ${response.statusCode}");
-        print("Booking Failed - Response Body: ${response.body}");
         Fluttertoast.showToast(msg: "Failed to book: ${response.statusCode}");
       }
     } catch (e) {
-      print("Booking Error: $e");
       Fluttertoast.showToast(msg: "Error: $e");
+    } finally {
+      setState(() {
+        _isSubmitting = false;
+      });
     }
   }
+
+ String _getNextRecurringDate() {
+  DateTime? baseDate;
+
+  // Determine the base date either from pickedDate or selectedDate
+  if (pickedDate != null) {
+    baseDate = pickedDate;
+  } else if (selectedDate != null) {
+    try {
+      baseDate = DateFormat('yyyy-MM-dd').parse(selectedDate!);
+    } catch (e) {
+      print("Date parsing error: $e");
+    }
+  }
+
+  // If baseDate still null, return empty
+  if (baseDate == null) {
+    print("baseDate is null: pickedDate=$pickedDate, selectedDate=$selectedDate");
+    return "";
+  }
+
+  // Normalize recurringType and map to interval days
+  String type = widget.recurringType.toLowerCase();
+  int intervalDays;
+
+  switch (type) {
+    case "weekly":
+    case "recurring": // Treat "recurring" as weekly
+      intervalDays = 7;
+      break;
+    case "biweekly":
+      intervalDays = 14;
+      break;
+    default:
+      intervalDays = 0;
+  }
+
+  print("Recurring Type: ${widget.recurringType}, Interval Days: $intervalDays");
+
+  // If invalid type, skip
+  if (intervalDays == 0) return "";
+
+  // Calculate and return next date
+  final nextDate = baseDate.add(Duration(days: intervalDays));
+  final formattedNextDate = DateFormat('EEEE, dd-MM-yyyy').format(nextDate);
+
+  print(">>> NextRecurringDate: $formattedNextDate");
+  return formattedNextDate;
+}
+
 }
