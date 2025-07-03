@@ -116,6 +116,7 @@ class HomeController extends GetxController {
       if (earnings is int) {
         totalEarnings = earnings.toDouble();
       } else if (earnings is double) {
+        
         totalEarnings = earnings;
       } else {
         totalEarnings = 0.0;
