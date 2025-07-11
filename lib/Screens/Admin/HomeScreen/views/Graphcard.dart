@@ -1,104 +1,78 @@
-import 'dart:convert';
 import 'package:cleanby_maria/Screens/Admin/HomeScreen/Services/homeController.dart';
-import 'package:cleanby_maria/main.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/route_manager.dart';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LineChartWidget extends StatelessWidget {
-  LineChartWidget({
-    super.key,
-  });
+  LineChartWidget({super.key});
 
-  // List<String> months = [
-  //   'Jan',
-  //   'Feb',
-  //   'Mar',
-  //   'Apr',
-  //   'May',
-  //   'Jun',
-  //   'Jul',
-  //   'Aug',
-  //   'Sep',
-  //   'Oct',
-  //   'Nov',
-  //   'Dec'
-  // ];
+  final HomeController hctrl = Get.put(HomeController());
 
-  HomeController hctrl = Get.put(HomeController());
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 211.h,
-      //width: 360.w,
-      child: hctrl.isChartLoader
-          ? const Center(child: CircularProgressIndicator())
-          : LineChart(
-              LineChartData(
-                titlesData: FlTitlesData(
-                  leftTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 40,
+    return Obx(() => SizedBox(
+          height: 211.h,
+          child: hctrl.isChartLoader.value
+              ? const Center(child: CircularProgressIndicator())
+              : LineChart(
+                  LineChartData(
+                    titlesData: FlTitlesData(
+                      leftTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          reservedSize: 40,
+                        ),
+                      ),
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          reservedSize: 20,
+                          getTitlesWidget: (value, meta) {
+                            int index = value.toInt();
+                            if (index >= 0 && index < hctrl.GraphData.length) {
+                              return Text(
+                                hctrl.GraphData[index].month!,
+                                style: TextStyle(fontSize: 10.sp),
+                              );
+                            }
+                            return const Text('');
+                          },
+                        ),
+                      ),
+                      topTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                      rightTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
                     ),
-                  ),
-                  bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 20,
-                      getTitlesWidget: (value, meta) {
-                        int index = value.toInt();
-                        if (index >= 0 && index < hctrl.GraphData.length) {
-                          return Text(
-                            hctrl.GraphData[index].month!,
-                            style: TextStyle(fontSize: 10.sp),
-                          );
-                        }
-                        return const Text('');
-                      },
-                    ),
-                  ),
-                  topTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: false)),
-                  rightTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: false)),
-                ),
-                borderData: FlBorderData(show: false),
-                minX: 0,
-                maxX: 12,
-                minY: 0,
-                maxY: 30,
-                // maxY: chartSpots.isEmpty
-                //     ? 10
-                //     : chartSpots
-                //             .map((e) => e.y)
-                //             .reduce((a, b) => a > b ? a : b) +
-                //         1,
-                lineBarsData: [
-                  LineChartBarData(
-                    spots: [
-                      for (int i = 0; i < hctrl.GraphData.length; i++)
-                        FlSpot(
-                          i.toDouble(),
-                          hctrl.GraphData[i].value!.toDouble(),
-                        )
+                    borderData: FlBorderData(show: false),
+                    minX: 0,
+                    maxX: 12,
+                    minY: 0,
+                    maxY: 30,
+                    lineBarsData: [
+                      LineChartBarData(
+                        spots: [
+                          for (int i = 0; i < hctrl.GraphData.length; i++)
+                            FlSpot(
+                              i.toDouble(),
+                              hctrl.GraphData[i].value!.toDouble(),
+                            )
+                        ],
+                        isCurved: true,
+                        color: Colors.blue,
+                        dotData: const FlDotData(show: false),
+                        barWidth: 1,
+                        belowBarData: BarAreaData(
+                          show: true,
+                          color: Colors.blue.withOpacity(0.2),
+                        ),
+                      ),
                     ],
-                    isCurved: true,
-                    color: Colors.blue,
-                    dotData: const FlDotData(show: false),
-                    barWidth: 1,
-                    belowBarData: BarAreaData(
-                      show: true,
-                      color: Colors.blue.withOpacity(0.2),
-                    ),
                   ),
-                ],
-              ),
-            ),
-    );
+                ),
+        ));
   }
 }

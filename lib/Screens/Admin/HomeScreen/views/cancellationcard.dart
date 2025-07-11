@@ -8,29 +8,41 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:intl/intl.dart';
-
 class Cancellationcard extends StatelessWidget {
   Cancellationcard({super.key});
 
-  HomeController hctlr = Get.put(HomeController());
+  final HomeController hctlr = Get.put(HomeController());
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            for (var data in hctlr.history)
-              InkWell(
-                onTap: () {
-                  Get.to(() => BookingDetailsScreen(bookingId: data.id!));
-                },
-                child: BStatusCard(
-                  booking: data,
+      child: Obx(() {
+        final history = hctlr.history;
+        
+        if (history == null) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (history.isEmpty) {
+          return const Center(child: Text("No cancellations found"));
+        }
+
+        return SingleChildScrollView(
+          child: Column(
+            children: [
+              for (var data in history)
+                InkWell(
+                  onTap: () {
+                    if (data.id != null) {
+                      Get.to(() => BookingDetailsScreen(bookingId: data.id!));
+                    } else {
+                      Get.snackbar("Error", "Booking ID is missing");
+                    }
+                  },
+                  child: BStatusCard(booking: data),
                 ),
-              )
-          ],
-        ),
-      ),
+            ],
+          ),
+        );
+      }),
     );
   }
 }

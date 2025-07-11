@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cleanby_maria/main.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -51,7 +52,7 @@ class AuthenticationController extends GetxController {
   }
 
   Future<Map<String, dynamic>> login(String email, String password) async {
-    String loginUrl = "https://app.cleanmaria.com/api/auth/login";
+    String loginUrl = "$baseUrl/auth/login";
 
     try {
       final response = await http.post(

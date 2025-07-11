@@ -1,8 +1,6 @@
 import 'dart:convert';
-import 'package:cleanby_maria/Screens/Admin/ClientScreen/Models/BookingDetailModel.dart';
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/Models/bookingModel.dart';
 import 'package:cleanby_maria/Screens/AuthenticationScreen/AutheticationScreen.dart';
-import 'package:cleanby_maria/Screens/Admin/HistoryScreen/Models/HistoryModel.dart';
 import 'package:cleanby_maria/Screens/Admin/HomeScreen/Model/PerformanceOverTimeModel.dart';
 import 'package:cleanby_maria/main.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +12,7 @@ import 'package:http/http.dart' as http;
 
 class HomeController extends GetxController {
   TextEditingController fromDateController = TextEditingController(
-      text: DateFormat('yyyy/MM/dd')
-          .format(DateTime.now().subtract(Duration(days: 7))));
+      text: DateFormat('yyyy/MM/dd').format(DateTime.now().subtract(Duration(days: 7))));
   TextEditingController toDateController = TextEditingController(
       text: DateFormat('yyyy/MM/dd').format(DateTime.now()));
   String filterRange = "Last Week";
@@ -28,24 +25,22 @@ class HomeController extends GetxController {
   int totalCancel = 0;
 
   int totalClients = 0;
-  double totalEarnings = 0.0; // ✅ updated
+  double totalEarnings = 0.0;
   int totalStaff = 0;
 
+  var isChartLoader = false.obs;
   List<PerformanceOverTimeModel> GraphData = [];
-  List<BookingModel> history = [];
 
-  fetchCancelBooking() async {
-    history = [];
+  var history = <BookingModel>[].obs;
+
+  Future<void> fetchCancelBooking() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString("access_token");
 
-    if (token == null || token.isEmpty) {
-      print("Missing token, skipping API call.");
-      return;
-    }
+    if (token == null || token.isEmpty) return;
 
     final response = await http.get(
-      Uri.parse(baseUrl + "/bookings?status=canceled"),
+      Uri.parse("$baseUrl/bookings?status=canceled"),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -53,22 +48,15 @@ class HomeController extends GetxController {
     );
 
     if (response.statusCode == 200) {
-      var data = json.decode(response.body);
-      for (var booking in data["data"]) {
-        BookingModel model = BookingModel.fromJson(booking);
-        print(model.toJson());
-        history.add(model);
-      }
-    } else {
-      print("Failed to fetch canceled bookings: ${response.statusCode}");
+      final data = json.decode(response.body);
+      history.value = data["data"]
+          .map<BookingModel>((booking) => BookingModel.fromJson(booking))
+          .toList();
     }
-
-    update();
   }
 
   reload() {
     history.clear();
-    update();
     fetchCancelBooking();
   }
 
@@ -76,72 +64,50 @@ class HomeController extends GetxController {
     switch (status) {
       case "scheduled":
         return Color(0xFFE89F18);
-        break;
       case "missed":
         return Color(0xFFAE1D03);
       case "completed":
         return Color(0xFF03AE9D);
       case "refunded":
         return Colors.blue;
+      default:
+        return Color(0xFFE89F18);
     }
-    return Color(0xFFE89F18);
   }
 
   Future<void> fetchBusinessSummary(String startDate, String endDate) async {
-  final prefs = await SharedPreferences.getInstance();
-  final token = prefs.getString("access_token");
-  try {
-    final String apiUrl =
-        "$baseUrl/analytics/summary?endDate=$startDate&startDate=$endDate";
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString("access_token");
 
-    final response = await http.get(
-      Uri.parse(apiUrl),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-    );
+    try {
+      final String apiUrl = "$baseUrl/analytics/summary?endDate=$startDate&startDate=$endDate";
 
-    print("➡️ API URL: $apiUrl");
-    print("➡️ Response status: ${response.statusCode}");
-    print("📦 Response body: ${response.body}");
+      final response = await http.get(
+        Uri.parse(apiUrl),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
 
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final summaryData = data['data'] ?? {};
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final summaryData = data['data'] ?? {};
 
-      totalClients = summaryData['totalClients'] ?? 0;
-
-      final earnings = summaryData['totalEarnings'];
-      if (earnings is int) {
-        totalEarnings = earnings.toDouble();
-      } else if (earnings is double) {
-        
-        totalEarnings = earnings;
-      } else {
-        totalEarnings = 0.0;
+        totalClients = summaryData['totalClients'] ?? 0;
+        totalEarnings = (summaryData['totalEarnings'] ?? 0).toDouble();
+        totalStaff = summaryData['totalStaff'] ?? 0;
+      } else if (response.statusCode == 401) {
+        Fluttertoast.showToast(msg: "Logout Successful");
+        prefs.setString("LOGIN", "OUT");
+        Get.offAll(() => AuthenticationScreen(), transition: Transition.rightToLeft);
       }
-
-      totalStaff = summaryData['totalStaff'] ?? 0;
-
-      print("✅ totalClients: $totalClients");
-      print("✅ totalEarnings: $totalEarnings");
-      print("✅ totalStaff: $totalStaff");
-    } else if (response.statusCode == 401) {
-      Fluttertoast.showToast(msg: "Logout Successful");
-      prefs.setString("LOGIN", "OUT");
-      Get.offAll(() => AuthenticationScreen(),
-          transition: Transition.rightToLeft);
-    } else {
-      print("❌ Error response [${response.statusCode}]: ${response.body}");
+    } catch (e) {
+      print("❗ Exception: $e");
     }
-  } catch (e) {
-    print("❗ Exception: $e");
+    update();
   }
-  update();
-}
 
-  // Fetch performance data based on selected date range
   Future<void> fetchPerformanceData() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString("access_token");
@@ -157,23 +123,17 @@ class HomeController extends GetxController {
     );
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-
       if (data["data"] != null) {
         totalBookings = data["data"]["avgBookingPerDay"];
         avgStaff = data["data"]["avgStaffPerBooking"];
         totalCancel = data["data"]["canceledBookings"];
       }
-    } else {
-      print("Error fetching performance data: ${response.body}");
     }
-
     update();
   }
 
-  // Set date range based on selected option
   void setDateRangeFromDropdown(String selectedOption) {
     DateTime today = DateTime.now();
-
     DateTime toDate = today;
 
     if (selectedOption == "Last Week") {
@@ -186,13 +146,11 @@ class HomeController extends GetxController {
 
     String startDate = DateFormat('yyyy-MM-dd').format(toDate);
     String endDate = DateFormat('yyyy-MM-dd').format(today);
-    print(endDate);
-    print(startDate);
     fetchBusinessSummary(endDate, startDate);
+    fetchChartData();
     update();
   }
 
-  // Open a date picker and set the selected date to the controller
   Future<void> selectDate(
       BuildContext context, TextEditingController controller) async {
     DateTime? pickedDate = await showDatePicker(
@@ -207,16 +165,16 @@ class HomeController extends GetxController {
     }
 
     fetchPerformanceData();
-    //fetchChartData();
+    fetchChartData();
     update();
   }
 
-  bool isChartLoader = false;
   Future<void> fetchChartData() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString("access_token");
-    isChartLoader = true;
-    update();
+
+    isChartLoader.value = true;
+
     final url = Uri.parse(
       '$baseUrl/analytics/bookings-over-time?startDate=${fromDateController.text}&endDate=${toDateController.text}',
     );
@@ -228,32 +186,24 @@ class HomeController extends GetxController {
         'Authorization': 'Bearer $token',
       },
     );
-    print(response.body);
-    print(response.statusCode);
+
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
-
-      for (var data in jsonData["data"]) {
-        GraphData.add(PerformanceOverTimeModel.fromJson(data));
-      }
-
-      update();
+      GraphData = jsonData["data"]
+          .map<PerformanceOverTimeModel>((d) => PerformanceOverTimeModel.fromJson(d))
+          .toList();
     }
-    isChartLoader = false;
+
+    isChartLoader.value = false;
     update();
   }
 
-  // Set today's date to the date fields
   void setTodayDate() {
-    String today = DateFormat('yyyy-MM/-dd').format(DateTime.now());
+    String today = DateFormat('yyyy/MM/dd').format(DateTime.now());
     fromDateController.text = today;
     toDateController.text = today;
     update();
   }
-
-  // Dispose controllers and notifiers when no longer needed
-
-
 
   loadUser() async {
     final prefs = await SharedPreferences.getInstance();
@@ -265,10 +215,7 @@ class HomeController extends GetxController {
 
   @override
   void onInit() {
-    // TODO: implement onInit
     super.onInit();
-
-    print("init");
     loadUser();
     fetchPerformanceData();
     fetchChartData();
