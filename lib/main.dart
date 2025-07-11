@@ -7,7 +7,7 @@ import 'Screens/AuthenticationScreen/AutheticationScreen.dart';
 import 'Screens/Admin/HomeScreen/HomeScreen.dart';
 import 'Screens/staff/DashBoardScreen.dart';
 
-String baseUrl = "https://staging.cleanmaria.com/api";
+String baseUrl = "https://api.cleanmaria.com/api";
 
 String login = "";
 String? userType = "";

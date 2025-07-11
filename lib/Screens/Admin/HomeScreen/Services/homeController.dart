@@ -12,7 +12,7 @@ import 'package:http/http.dart' as http;
 
 class HomeController extends GetxController {
   TextEditingController fromDateController = TextEditingController(
-      text: DateFormat('yyyy/MM/dd').format(DateTime.now().subtract(Duration(days: 7))));
+      text: DateFormat('yyyy/MM/dd').format(DateTime.now().subtract(const Duration(days: 7))));
   TextEditingController toDateController = TextEditingController(
       text: DateFormat('yyyy/MM/dd').format(DateTime.now()));
   String filterRange = "Last Week";
@@ -33,45 +33,54 @@ class HomeController extends GetxController {
 
   var history = <BookingModel>[].obs;
 
+  /// ✅ Fetch canceled bookings with error handling
   Future<void> fetchCancelBooking() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString("access_token");
 
     if (token == null || token.isEmpty) return;
 
-    final response = await http.get(
-      Uri.parse("$baseUrl/bookings?status=canceled"),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-    );
+    try {
+      final response = await http.get(
+        Uri.parse("$baseUrl/bookings?status=canceled"),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
 
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      history.value = data["data"]
-          .map<BookingModel>((booking) => BookingModel.fromJson(booking))
-          .toList();
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        history.value = List<BookingModel>.from(
+          (data["data"] as List).map((booking) => BookingModel.fromJson(booking)),
+        );
+      }
+    } catch (e) {
+      print("❗ Error fetching canceled bookings: $e");
     }
+
+    update(); // 🔄 Ensure UI reflects changes
   }
 
-  reload() {
+  /// ✅ Fixed: Awaited reload
+  Future<void> reload() async {
     history.clear();
-    fetchCancelBooking();
+    await fetchCancelBooking(); // ✅ Await fetch
+    update(); // 🔄 Refresh UI
   }
 
   Color getStatusColor(String status) {
     switch (status) {
       case "scheduled":
-        return Color(0xFFE89F18);
+        return const Color(0xFFE89F18);
       case "missed":
-        return Color(0xFFAE1D03);
+        return const Color(0xFFAE1D03);
       case "completed":
-        return Color(0xFF03AE9D);
+        return const Color(0xFF03AE9D);
       case "refunded":
         return Colors.blue;
       default:
-        return Color(0xFFE89F18);
+        return const Color(0xFFE89F18);
     }
   }
 
@@ -103,32 +112,73 @@ class HomeController extends GetxController {
         Get.offAll(() => AuthenticationScreen(), transition: Transition.rightToLeft);
       }
     } catch (e) {
-      print("❗ Exception: $e");
+      print("❗ Exception in fetchBusinessSummary: $e");
     }
+
     update();
   }
 
   Future<void> fetchPerformanceData() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString("access_token");
+
     final String apiUrl =
         "$baseUrl/analytics/performance?startDate=${fromDateController.text}&endDate=${toDateController.text}";
 
-    final response = await http.get(
-      Uri.parse(apiUrl),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-    );
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      if (data["data"] != null) {
-        totalBookings = data["data"]["avgBookingPerDay"];
-        avgStaff = data["data"]["avgStaffPerBooking"];
-        totalCancel = data["data"]["canceledBookings"];
+    try {
+      final response = await http.get(
+        Uri.parse(apiUrl),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data["data"] != null) {
+          totalBookings = data["data"]["avgBookingPerDay"];
+          avgStaff = data["data"]["avgStaffPerBooking"];
+          totalCancel = data["data"]["canceledBookings"];
+        }
       }
+    } catch (e) {
+      print("❗ Error in fetchPerformanceData: $e");
     }
+
+    update();
+  }
+
+  Future<void> fetchChartData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString("access_token");
+
+    isChartLoader.value = true;
+
+    try {
+      final url = Uri.parse(
+        '$baseUrl/analytics/bookings-over-time?startDate=${fromDateController.text}&endDate=${toDateController.text}',
+      );
+
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        GraphData = List<PerformanceOverTimeModel>.from(
+          (jsonData["data"] as List).map((d) => PerformanceOverTimeModel.fromJson(d)),
+        );
+      }
+    } catch (e) {
+      print("❗ Error in fetchChartData: $e");
+    }
+
+    isChartLoader.value = false;
     update();
   }
 
@@ -137,22 +187,22 @@ class HomeController extends GetxController {
     DateTime toDate = today;
 
     if (selectedOption == "Last Week") {
-      toDate = today.subtract(Duration(days: 7));
+      toDate = today.subtract(const Duration(days: 7));
     } else if (selectedOption == "Last Month") {
-      toDate = today.subtract(Duration(days: 30));
+      toDate = today.subtract(const Duration(days: 30));
     } else if (selectedOption == "Last Year") {
-      toDate = today.subtract(Duration(days: 365));
+      toDate = today.subtract(const Duration(days: 365));
     }
 
     String startDate = DateFormat('yyyy-MM-dd').format(toDate);
     String endDate = DateFormat('yyyy-MM-dd').format(today);
+
     fetchBusinessSummary(endDate, startDate);
     fetchChartData();
     update();
   }
 
-  Future<void> selectDate(
-      BuildContext context, TextEditingController controller) async {
+  Future<void> selectDate(BuildContext context, TextEditingController controller) async {
     DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -169,35 +219,6 @@ class HomeController extends GetxController {
     update();
   }
 
-  Future<void> fetchChartData() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString("access_token");
-
-    isChartLoader.value = true;
-
-    final url = Uri.parse(
-      '$baseUrl/analytics/bookings-over-time?startDate=${fromDateController.text}&endDate=${toDateController.text}',
-    );
-
-    final response = await http.get(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final jsonData = json.decode(response.body);
-      GraphData = jsonData["data"]
-          .map<PerformanceOverTimeModel>((d) => PerformanceOverTimeModel.fromJson(d))
-          .toList();
-    }
-
-    isChartLoader.value = false;
-    update();
-  }
-
   void setTodayDate() {
     String today = DateFormat('yyyy/MM/dd').format(DateTime.now());
     fromDateController.text = today;
@@ -205,7 +226,7 @@ class HomeController extends GetxController {
     update();
   }
 
-  loadUser() async {
+  Future<void> loadUser() async {
     final prefs = await SharedPreferences.getInstance();
     userName = prefs.getString("user_name") ?? "name";
     userEmail = prefs.getString("email") ?? "email";
