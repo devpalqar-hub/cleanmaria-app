@@ -1,10 +1,8 @@
 import 'dart:convert';
-
 import 'package:cleanby_maria/Screens/Admin/HistoryScreen/Models/HistoryModel.dart';
 import 'package:cleanby_maria/main.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
@@ -18,97 +16,122 @@ class HistoryController extends GetxController {
 
   RefreshController refreshController = RefreshController(initialRefresh: true);
 
-  reload() {
-    history.clear();
-    update();
+  /// Reload entire list
+  void reload() {
     page = 1;
-    fetchShedules();
+    history.clear();
     refreshController.resetNoData();
+    fetchSchedules(clear: true);
+    update();
   }
 
-  fetchShedules() async {
-    history.clear();
-    update();
+  /// Fetch initial schedules
+  Future<void> fetchSchedules({bool clear = true}) async {
+    if (clear) {
+      page = 1;
+      history.clear();
+      update();
+    }
+
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString("access_token");
     String parms = "";
-    page = 1;
+
     if (startDate != null && endDate != null) {
       parms =
           "&startDate=${DateFormat("yyyy/MM/dd").format(startDate!)}&endDate=${DateFormat("yyyy/MM/dd").format(endDate!)}";
     }
-    print(parms);
-    final Response = await get(
-      Uri.parse(
-        baseUrl + "/scheduler/schedules?page=1&limit=10$parms",
-      ),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-    );
-    print(Response.body);
-    print(Response.statusCode);
-    refreshController.refreshCompleted();
-    if (Response.statusCode == 200) {
-      var data = json.decode(Response.body);
-      for (var his in data["data"]["data"]) {
-        HistoryModel model = HistoryModel.fromJson(his);
-        history.add(model);
-      }
 
-      if (data["data"]["data"].isEmpty) {
-        refreshController.loadNoData();
+    final url = "$baseUrl/scheduler/schedules?page=$page&limit=10$parms";
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+
+    try {
+      final response = await get(Uri.parse(url), headers: headers);
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final items = data["data"]["data"] as List;
+
+        for (var his in items) {
+          HistoryModel model = HistoryModel.fromJson(his);
+          if (!history.any((h) => h.id == model.id)) {
+            history.add(model);
+          }
+        }
+
+        if (items.isEmpty) {
+          refreshController.loadNoData();
+        } else {
+          page += 1;
+          refreshController.refreshCompleted();
+        }
       } else {
-        page = page + 1;
+        refreshController.loadNoData();
       }
-    } else {
+    } catch (e) {
+      print("❌ Error fetching schedules: $e");
       refreshController.loadNoData();
     }
 
     update();
   }
 
-  fetchNextShedules() async {
+  /// Fetch next page
+  Future<void> fetchNextSchedules() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString("access_token");
     String parms = "";
+
     if (startDate != null && endDate != null) {
       parms =
           "&startDate=${DateFormat("yyyy/MM/dd").format(startDate!)}&endDate=${DateFormat("yyyy/MM/dd").format(endDate!)}";
     }
 
-    print(page);
-    final Response = await get(
-      Uri.parse(
-        baseUrl + "/scheduler/schedules?page=$page&limit=10$parms",
-      ),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-    );
-    refreshController.loadComplete();
-    if (Response.statusCode == 200) {
-      var data = json.decode(Response.body);
-      for (var his in data["data"]["data"]) {
-        HistoryModel model = HistoryModel.fromJson(his);
-        history.add(model);
-      }
-      if (data["data"]["data"].isEmpty) {
-        refreshController.loadNoData();
+    try {
+      final response = await get(
+        Uri.parse("$baseUrl/scheduler/schedules?page=$page&limit=10$parms"),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final items = data["data"]["data"] as List;
+
+        for (var his in items) {
+          HistoryModel model = HistoryModel.fromJson(his);
+          if (!history.any((h) => h.id == model.id)) {
+            history.add(model);
+          }
+        }
+
+        if (items.isEmpty) {
+          refreshController.loadNoData();
+        } else {
+          page += 1;
+          refreshController.loadComplete();
+        }
       } else {
-        page = page + 1;
+        refreshController.loadNoData();
       }
+    } catch (e) {
+      print("❌ Error fetching next schedules: $e");
+      refreshController.loadNoData();
     }
+
     update();
   }
 
+  /// Get color by status
   Color getStatusColor(String status) {
     switch (status) {
       case "scheduled":
         return Color(0xFFE89F18);
-        break;
       case "missed":
         return Color(0xFFAE1D03);
       case "completed":
@@ -117,14 +140,14 @@ class HistoryController extends GetxController {
         return Colors.blue;
       case "inprogress":
         return Colors.orange;
-      case"payment_failed":
+      case "payment_failed":
         return Colors.deepOrange;
       case "rescheduled":
         return Colors.blueGrey;
       case "payment_success":
-        return  Colors.green;
-
+        return Colors.green;
+      default:
+        return Color(0xFFE89F18);
     }
-    return Color(0xFFE89F18);
   }
 }

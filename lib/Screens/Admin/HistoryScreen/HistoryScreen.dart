@@ -1,13 +1,11 @@
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/BookingDetailsScreen.dart';
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/Views/StatusCard.dart';
-import 'package:cleanby_maria/Screens/Admin/ClientScreen/Service/BookingController.dart';
 import 'package:cleanby_maria/Screens/Admin/HistoryScreen/Controller/HistoryController.dart';
-import 'package:get/get.dart';
 import 'package:cleanby_maria/Src/appText.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
@@ -20,14 +18,13 @@ class BookingsaScreen extends StatefulWidget {
 }
 
 class _BookingsaScreenState extends State<BookingsaScreen> {
-  HistoryController hisCtrl = Get.put(HistoryController());
+  final HistoryController hisCtrl = Get.put(HistoryController());
+
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
     setState(() {
       if (args.value is PickerDateRange) {
         hisCtrl.startDate = args.value.startDate;
         hisCtrl.endDate = args.value.endDate;
-
-        print("working");
       }
     });
   }
@@ -68,13 +65,12 @@ class _BookingsaScreenState extends State<BookingsaScreen> {
               ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  setState(() {});
-                  hisCtrl.fetchShedules();
+                  hisCtrl.fetchSchedules(); // Apply filter
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF19A4C6),
                 ),
-                child: Text(
+                child: const Text(
                   "Apply",
                   style: TextStyle(color: Colors.white),
                 ),
@@ -95,22 +91,15 @@ class _BookingsaScreenState extends State<BookingsaScreen> {
           padding: EdgeInsets.symmetric(horizontal: 15.w),
           child: SmartRefresher(
             controller: hisCtrl.refreshController,
-            onRefresh: () {
-              hisCtrl.refreshController.resetNoData();
-              hisCtrl.fetchShedules();
-            },
-            onLoading: () {
-              hisCtrl.fetchNextShedules();
-            },
+            onRefresh: hisCtrl.reload,
+            onLoading: hisCtrl.fetchNextSchedules,
             enablePullUp: true,
             enablePullDown: true,
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    height: 20.h,
-                  ),
+                  SizedBox(height: 20.h),
                   Container(
                     height: 50.h,
                     width: 360.w,
@@ -135,7 +124,7 @@ class _BookingsaScreenState extends State<BookingsaScreen> {
                             padding: EdgeInsets.symmetric(
                                 horizontal: 10.w, vertical: 5.h),
                           ),
-                          onPressed: _showDatePicker, // Open the filter modal
+                          onPressed: _showDatePicker,
                           icon: Icon(Icons.filter_list,
                               color: const Color(0xFF77838F), size: 18.sp),
                           label: Text('Filter',
@@ -146,28 +135,45 @@ class _BookingsaScreenState extends State<BookingsaScreen> {
                     ),
                   ),
                   SizedBox(height: 15.h),
+
+                  /// Schedule list
                   for (var data in hisCtrl.history)
-                   if (data.booking != null && data.booking!.customer != null && data.staff != null) 
-                    StatusCard(
+                    if (data.booking != null &&
+                        data.booking!.customer != null &&
+                        data.staff != null)
+                      StatusCard(
                         status: data.status ?? "Unknown",
                         color: hisCtrl.getStatusColor(data.status!),
                         customerName: data.booking!.customer!.name!,
                         onTap: () {
-                          Get.to(
-                              () => BookingDetailsScreen(
-                                   bookingId: data.booking!.id!,
-                                    staff: data.staff!.name,
-                                    pCtrl: hisCtrl,
-                                    status: data.status ?? "Unknown",
-                                    scheduleId: data.id,
-                                    date:
-                                        "${DateFormat("MMM dd,yyyy | hh:mm a").format(DateTime.parse(data.startTime!))} - ${DateFormat("hh:mm a").format(DateTime.parse(data.endTime!))}",
-                                  ),
-                              transition: Transition.rightToLeft);
+                          Get.to(() => BookingDetailsScreen(
+                                bookingId: data.booking!.id!,
+                                staff: data.staff!.name,
+                                pCtrl: hisCtrl,
+                                status: data.status ?? "Unknown",
+                                scheduleId: data.id,
+                                date:
+                                    "${DateFormat("MMM dd,yyyy | hh:mm a").format(DateTime.parse(data.startTime!))} - ${DateFormat("hh:mm a").format(DateTime.parse(data.endTime!))}",
+                              ))?.then((value) {
+                            hisCtrl.reload(); // Refresh after return
+                          });
                         },
                         time:
                             "${DateFormat("MMM dd,yyyy | hh:mm a").format(DateTime.parse(data.startTime!))} - ${DateFormat("hh:mm a").format(DateTime.parse(data.endTime!))}",
-                        location: "Cleaned By : ${data.staff!.name}"),
+                        location: "Cleaned By : ${data.staff!.name}",
+                      ),
+
+                  if (hisCtrl.history.isEmpty)
+                    Padding(
+                      padding: EdgeInsets.only(top: 100.h),
+                      child: Center(
+                        child: Text(
+                          "No schedules found.",
+                          style: GoogleFonts.poppins(
+                              fontSize: 14.sp, color: Colors.grey),
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),

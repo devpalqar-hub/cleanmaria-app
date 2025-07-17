@@ -21,6 +21,12 @@ class HomeContent extends StatefulWidget {
 
 class _HomeContentState extends State<HomeContent> {
   HomeController hCtrl = Get.put(HomeController());
+@override
+void didChangeDependencies() {
+  super.didChangeDependencies();
+  
+  hCtrl.fetchCancelBooking();
+}
 
  @override
 Widget build(BuildContext context) {

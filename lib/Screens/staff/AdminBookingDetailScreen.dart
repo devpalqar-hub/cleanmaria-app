@@ -57,7 +57,8 @@ class _AdminBookingDetailsScreenState extends State<AdminBookingDetailsScreen> {
     super.initState();
     Future.delayed(Duration.zero, () {
       controller.fetchBookingDetails(widget.bookingId);
-      hiscontroller.fetchShedules();
+      hiscontroller.fetchSchedules();
+
     });
   }
 
@@ -178,7 +179,8 @@ class _AdminBookingDetailsScreenState extends State<AdminBookingDetailsScreen> {
     );
 
     if (response.statusCode == 200) {
-      await hiscontroller.fetchShedules(); // refresh history
+      hiscontroller.fetchSchedules();
+
       return true;
     }
 

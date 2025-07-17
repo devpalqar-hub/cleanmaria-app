@@ -196,38 +196,53 @@ Future<bool> cancelBooking({
   
 
 
+Future<void> fetchBookings(String st, String type) async {
+  status = st;
+  isLoading = true;
+  update();
 
-  Future<void> fetchBookings(String st, String type) async {
-    status = st;
-    isLoading = true;
-    update();
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString("access_token");
-    if (token == null || token.isEmpty) {
-      errorMessage = 'Access token is missing';
-      isLoading = false;
-      return;
-    }
-    final response = await http.get(
-      Uri.parse('$baseUrl/bookings?status=$status&type=$type'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-    );
-    if (response.statusCode == 200) {
-      final responseBody = json.decode(response.body);
-      final List<dynamic> data = responseBody["data"];
-      bookings.value =
-          data.map((booking) => BookingModel.fromJson(booking)).toList();
-    } else {
-      errorMessage = 'Failed to load bookings (${response.statusCode})';
-      print("Body: ${response.body}");
-    }
+  final prefs = await SharedPreferences.getInstance();
+  final token = prefs.getString("access_token");
 
+  if (token == null || token.isEmpty) {
+    errorMessage = 'Access token is missing';
     isLoading = false;
     update();
+    print("[fetchBookings] ERROR: Token missing");
+    return;
   }
+
+  final url = '$baseUrl/bookings?status=$status&type=$type';
+
+  print("[fetchBookings] URL: $url");
+  print("[fetchBookings] Headers: ${{
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer $token',
+  }}");
+
+  final response = await http.get(
+    Uri.parse(url),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+  );
+
+  print("[fetchBookings] Status Code: ${response.statusCode}");
+  print("[fetchBookings] Response Body: ${response.body}");
+
+  if (response.statusCode == 200) {
+    final responseBody = json.decode(response.body);
+    final List<dynamic> data = responseBody["data"];
+    bookings.value =
+        data.map((booking) => BookingModel.fromJson(booking)).toList();
+  } else {
+    errorMessage = 'Failed to load bookings (${response.statusCode})';
+  }
+
+  isLoading = false;
+  update();
+}
 
 
 Future<void> fetchBookingDetails(String bookingId) async {

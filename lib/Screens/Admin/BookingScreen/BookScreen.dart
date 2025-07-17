@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
+
 class ClientDetailsScreen extends StatefulWidget {
   const ClientDetailsScreen({
     super.key,
@@ -69,7 +70,7 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     print('>>> BaseDate: $pickedDate, SelectedDate: $selectedDate');
-print('>>> NextRecurringDate: ${_getNextRecurringDate()}');
+    print('>>> NextRecurringDate: ${_getNextRecurringDate()}');
 
     final nextRecurringDate = _getNextRecurringDate();
     return Scaffold(
@@ -95,54 +96,47 @@ print('>>> NextRecurringDate: ${_getNextRecurringDate()}');
               Apptextfield.primary(labelText: 'Landmark', hintText: 'Enter Landmark', label: '', controller: _landmarkController),
               SizedBox(height: 16.h),
               _buildServiceDateCard(),
-           
-
-               if (selectedDate != null && selectedTime != null) ...[
-      Padding(
-        padding: EdgeInsets.only(top: 12.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Text(
-               "Selected Date: ${DateFormat('EEEE, dd-MM-yyyy').format(DateTime.parse(selectedDate!))}, $selectedTime",
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-            if (_getNextRecurringDate().isNotEmpty)
-            SizedBox(height: 10.h,),
-              Center(
-                child: Text(
-                  "Next will be on: $nextRecurringDate",
-                  style: TextStyle(color: Colors.green, fontWeight: FontWeight.w600),
+              if (selectedDate != null && selectedTime != null) ...[
+                Padding(
+                  padding: EdgeInsets.only(top: 12.h),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: Text(
+                          "Selected Date: ${DateFormat('EEEE, dd-MM-yyyy').format(DateTime.parse(selectedDate!))}, $selectedTime",
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      if (_getNextRecurringDate().isNotEmpty)
+                        SizedBox(height: 10.h),
+                      Center(
+                        child: Text(
+                          "Next will be on: $nextRecurringDate",
+                          style: TextStyle(color: Colors.green, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
+              ],
+              SizedBox(height: 20.h),
+              Apptextfield.primary(
+                labelText: "Estimate Price",
+                hintText: "Current Price",
+                label: '',
+                controller: _amountController,
               ),
-          ],
-        ),
-      ),
-    ],
-    
-    SizedBox(height: 20.h),
-    
-    Apptextfield.primary(
-      labelText: "Estimate Price",
-      hintText: "Current Price",
-      label: '',
-      controller: _amountController,
-    ),
-    
-    SizedBox(height: 20.h),
-    
-    AppButton(
-      text: "Book",
-      onPressed: _bookService,
-    ),
-    
-    if (_isSubmitting)
-      Padding(
-        padding: EdgeInsets.only(top: 12.h),
-        child: const CircularProgressIndicator(color: Color(0xff19A4C6)),
-      ),
+              SizedBox(height: 20.h),
+              AppButton(
+                text: "Book",
+                onPressed: _bookService,
+              ),
+              if (_isSubmitting)
+                Padding(
+                  padding: EdgeInsets.only(top: 12.h),
+                  child: const CircularProgressIndicator(color: Color(0xff19A4C6)),
+                ),
             ],
           ),
         ),
@@ -179,109 +173,109 @@ print('>>> NextRecurringDate: ${_getNextRecurringDate()}');
   }
 
   void _showDaySelectionSheet() {
-  DateTime now = DateTime.now();
-  DateTime firstDate = now.add(const Duration(days: 1));
-  DateTime lastDate = now.add(const Duration(days: 22));
-  DateTime initialDate = firstDate;
-  DateTime tempPickedDate = initialDate;
+    DateTime now = DateTime.now();
+    DateTime firstDate = now.add(const Duration(days: 1));
+    DateTime lastDate = now.add(const Duration(days: 22));
+    DateTime initialDate = firstDate;
+    DateTime tempPickedDate = initialDate;
 
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-    ),
-    builder: (context) {
-      return Padding(
-        padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 32.h),
-        child: StatefulBuilder(
-          builder: (context, setModalState) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(height: 15.h),
-                Text(
-                  "Select Service Day 1",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                ),
-                SizedBox(height: 15.h),
-                const Text(
-                  "* This selected date determines the fixed day of the week for recurring plans.",
-                  style: TextStyle(color: Colors.red, fontSize: 16),
-                ),
-                SizedBox(height: 16.h),
-                Theme(
-                  data: Theme.of(context).copyWith(
-                    colorScheme: ColorScheme.light(
-                      primary:  Color(0xff19A4C6),
-                      onPrimary: Colors.white, 
-                      surface: Colors.white,
-                      onSurface: Colors.black,
-                    ),
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 32.h),
+          child: StatefulBuilder(
+            builder: (context, setModalState) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(height: 15.h),
+                  Text(
+                    "Select Service Day 1",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
-                  child: CalendarDatePicker(
-                    initialDate: tempPickedDate,
-                    firstDate: firstDate,
-                    lastDate: lastDate,
-                    onDateChanged: (picked) {
-                      setModalState(() {
-                        tempPickedDate = picked;
-                      });
-                    },
+                  SizedBox(height: 15.h),
+                  const Text(
+                    "* This selected date determines the fixed day of the week for recurring plans.",
+                    style: TextStyle(color: Colors.red, fontSize: 16),
                   ),
-                ),
-                SizedBox(height: 20.h),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:  Color(0xff19A4C6),
-                        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 10.h),
+                  SizedBox(height: 16.h),
+                  Theme(
+                    data: Theme.of(context).copyWith(
+                      colorScheme: ColorScheme.light(
+                        primary: Color(0xff19A4C6),
+                        onPrimary: Colors.white,
+                        surface: Colors.white,
+                        onSurface: Colors.black,
                       ),
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text("Cancel", style: TextStyle(color: Colors.white)),
                     ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xff19A4C6),
-                        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 10.h),
-                      ),
-                      onPressed: () async {
-                        final weekday = tempPickedDate.weekday % 7;
-
-                        setState(() {
-  pickedDate = tempPickedDate;
-  selectedDate = DateFormat('yyyy-MM-dd').format(tempPickedDate);
-  selectedTime = null;
-  timeSlots = [];
-});
-
-                        final slots = await AppController().fetchTimeSlots(
-                          dayOfWeek: weekday,
-                          totalDuration: widget.totalDuration,
-                          recurringTypeId: widget.recurringTypeId,
-                        );
-
-                        setState(() {
-                          timeSlots = slots;
+                    child: CalendarDatePicker(
+                      initialDate: tempPickedDate,
+                      firstDate: firstDate,
+                      lastDate: lastDate,
+                      onDateChanged: (picked) {
+                        setModalState(() {
+                          tempPickedDate = picked;
                         });
-
-                        Navigator.pop(context);
-                        _showTimeSelectionSheet(tempPickedDate);
                       },
-                      child: const Text("OK", style: TextStyle(color: Colors.white)),
                     ),
-                  ],
-                )
-              ],
-            );
-          },
-        ),
-      );
-    },
-  );
-}
+                  ),
+                  SizedBox(height: 20.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xff19A4C6),
+                          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 10.h),
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text("Cancel", style: TextStyle(color: Colors.white)),
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xff19A4C6),
+                          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 10.h),
+                        ),
+                        onPressed: () async {
+                          setState(() {
+                            pickedDate = tempPickedDate;
+                            selectedDate = DateFormat('yyyy-MM-dd').format(tempPickedDate);
+                            selectedTime = null;
+                            timeSlots = [];
+                          });
+
+                          final slots = await AppController().fetchTimeSlots(
+                            date: tempPickedDate,
+                            totalDuration: widget.totalDuration,
+                            recurringTypeId: widget.recurringTypeId,
+                          );
+
+                          setState(() {
+                            timeSlots = slots;
+                          });
+
+                          Navigator.pop(context);
+                          _showTimeSelectionSheet(tempPickedDate);
+                        },
+                        child: const Text("OK", style: TextStyle(color: Colors.white)),
+                      ),
+                    ],
+                  )
+                ],
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  
 
 
   void _showTimeSelectionSheet(DateTime pickedDate) {

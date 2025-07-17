@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:cleanby_maria/main.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class AppController {
   static final AppController _instance = AppController._internal();
@@ -78,15 +79,16 @@ class AppController {
   }
 }
 
-
-  Future<List<Map<String, dynamic>>> fetchTimeSlots({
-  required int dayOfWeek,
+Future<List<Map<String, dynamic>>> fetchTimeSlots({
+  required DateTime date,
   required int totalDuration,
   required String recurringTypeId,
 }) async {
+  final formattedDate = DateFormat('yyyy-MM-dd').format(date);
   final uri = Uri.parse(
-    '$baseUrl/scheduler/time-slots?dayOfWeek=$dayOfWeek&durationMins=$totalDuration&planid=$recurringTypeId'
-);
+    '$baseUrl/scheduler/time-slots?date=$formattedDate&planId=$recurringTypeId&durationMins=$totalDuration',
+  );
+
   print("📤 [Request] Fetching time slots...");
   print("🔗 Full URL: $uri");
 
@@ -125,4 +127,6 @@ class AppController {
     rethrow;
   }
 }
+
+ 
 }

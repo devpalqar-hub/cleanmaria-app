@@ -32,8 +32,7 @@ class HomeController extends GetxController {
   List<PerformanceOverTimeModel> GraphData = [];
 
   var history = <BookingModel>[].obs;
-
-  /// ✅ Fetch canceled bookings with error handling
+ /// ✅ Fetch canceled bookings with error handling
   Future<void> fetchCancelBooking() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString("access_token");
