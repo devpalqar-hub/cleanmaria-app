@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 class OverViewCard extends StatelessWidget {
   OverViewCard({super.key});
 
-  final HomeController _controller = Get.find<HomeController>(); // ✅ Use existing controller
+  final HomeController _controller = Get.find<HomeController>(); 
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class OverViewCard extends StatelessWidget {
             ),
             SizedBox(width: 7.w),
             _overview(
-              count: "₹${controller.totalEarnings.toStringAsFixed(2)}", // ✅ Format safely
+              count: "₹${controller.totalEarnings.toStringAsFixed(2)}", 
               imagePath: "assets/earnings.png",
               color: const Color(0xffFDFDE5),
               subtitle: "Total Revenue",

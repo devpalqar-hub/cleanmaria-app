@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:cleanby_maria/Screens/Admin/BookingScreen/Controller/EstimateController.dart';
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/Service/BookingController.dart';
+import 'package:cleanby_maria/Screens/Admin/HomeScreen/Services/homeController.dart';
 import 'package:cleanby_maria/Src/appButton.dart';
 import 'package:cleanby_maria/Src/appTextField.dart';
 import 'package:cleanby_maria/main.dart';
@@ -397,6 +398,10 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
       if (response.statusCode == 201) {
         Fluttertoast.showToast(msg: "Booking successful!");
         await Future.delayed(const Duration(seconds: 1));
+         await Get.find<HomeController>().fetchBusinessSummary(
+    DateFormat('yyyy-MM-dd').format(DateTime.now()),
+    DateFormat('yyyy-MM-dd').format(DateTime.now().subtract(Duration(days: 7))),
+  );
         Navigator.of(context).popUntil((route) => route.isFirst);
         Get.find<BookingsController>().fetchBookings("booked", "recurring");
       } else if (response.statusCode == 409) {
