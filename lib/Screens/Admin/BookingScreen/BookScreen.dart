@@ -11,13 +11,14 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class ClientDetailsScreen extends StatefulWidget {
   const ClientDetailsScreen({
     super.key,
     required this.Serviceid,
     required this.noofrooms,
+    required this.recurringDuration,
     required this.noofbathrooms,
     required this.sizeofhome,
     required this.propertytype,
@@ -32,6 +33,7 @@ class ClientDetailsScreen extends StatefulWidget {
   final String Serviceid;
   final int noofrooms;
   final int noofbathrooms;
+  final int recurringDuration;
   final int sizeofhome;
   final String propertytype;
   final bool isMaterialprovided;
@@ -68,77 +70,148 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
     _amountController.text = widget.price;
   }
 
+  bool validateFields() {
+    // List of all the controllers
+    final fields = {
+      'Name': _nameController,
+      'Email': _emailController,
+      'Phone': _phoneController,
+      'Address': _addressController,
+      'Address Line 2': _address2Controller,
+      'City': _cityController,
+      'Zip Code': _zipCodeController,
+      'Landmark': _landmarkController,
+      'Amount': _amountController,
+    };
+
+    for (final entry in fields.entries) {
+      if (entry.value.text.trim().isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${entry.key} cannot be empty')),
+        );
+        return false; // Stop on first empty field
+      }
+    }
+
+    return true; // All fields are non-empty
+  }
+
   @override
   Widget build(BuildContext context) {
     print('>>> BaseDate: $pickedDate, SelectedDate: $selectedDate');
     print('>>> NextRecurringDate: ${_getNextRecurringDate()}');
 
     final nextRecurringDate = _getNextRecurringDate();
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Client Details', style: TextStyle(fontWeight: FontWeight.w600)),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Client Details',
+              style: TextStyle(fontWeight: FontWeight.w600)),
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          elevation: 0.5,
+        ),
         backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        elevation: 0.5,
-      ),
-      backgroundColor: Colors.white,
-      body: Padding(
-        padding: EdgeInsets.all(16.w),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Apptextfield.primary(labelText: 'First Name', hintText: 'Enter Name', label: '', controller: _nameController),
-              Apptextfield.primary(labelText: 'Email', hintText: 'Enter Email', label: '', controller: _emailController),
-              Apptextfield.primary(labelText: 'Phone', hintText: 'Enter Phone', label: '', controller: _phoneController),
-              Apptextfield.primary(labelText: 'Address', hintText: 'Enter Address', label: '', controller: _addressController),
-              Apptextfield.primary(labelText: 'Address 2', hintText: 'Enter Address Line 2', label: '', controller: _address2Controller),
-              Apptextfield.primary(labelText: 'City', hintText: 'Enter City', label: '', controller: _cityController),
-              Apptextfield.primary(labelText: 'Zip Code', hintText: 'Enter Zip Code', label: '', controller: _zipCodeController),
-              Apptextfield.primary(labelText: 'Landmark', hintText: 'Enter Landmark', label: '', controller: _landmarkController),
-              SizedBox(height: 16.h),
-              _buildServiceDateCard(),
-              if (selectedDate != null && selectedTime != null) ...[
-                Padding(
-                  padding: EdgeInsets.only(top: 12.h),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Center(
-                        child: Text(
-                          "Selected Date: ${DateFormat('EEEE, dd-MM-yyyy').format(DateTime.parse(selectedDate!))}, $selectedTime",
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+        body: Padding(
+          padding: EdgeInsets.all(16.w),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Apptextfield.primary(
+                    labelText: 'First Name',
+                    hintText: 'Enter Name',
+                    label: '',
+                    controller: _nameController),
+                Apptextfield.primary(
+                    labelText: 'Email',
+                    hintText: 'Enter Email',
+                    label: '',
+                    controller: _emailController),
+                Apptextfield.primary(
+                    labelText: 'Phone',
+                    hintText: 'Enter Phone',
+                    label: '',
+                    controller: _phoneController),
+                Apptextfield.primary(
+                    labelText: 'Address',
+                    hintText: 'Enter Address',
+                    label: '',
+                    controller: _addressController),
+                Apptextfield.primary(
+                    labelText: 'Address 2',
+                    hintText: 'Enter Address Line 2',
+                    label: '',
+                    controller: _address2Controller),
+                Apptextfield.primary(
+                    labelText: 'City',
+                    hintText: 'Enter City',
+                    label: '',
+                    controller: _cityController),
+                Apptextfield.primary(
+                    labelText: 'Zip Code',
+                    hintText: 'Enter Zip Code',
+                    label: '',
+                    controller: _zipCodeController),
+                Apptextfield.primary(
+                    labelText: 'Landmark',
+                    hintText: 'Enter Landmark',
+                    label: '',
+                    controller: _landmarkController),
+                SizedBox(height: 16.h),
+                _buildServiceDateCard(),
+                if (selectedDate != null && selectedTime != null) ...[
+                  Padding(
+                    padding: EdgeInsets.only(top: 12.h),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Center(
+                          child: Text(
+                            "Selected Date: ${DateFormat('EEEE, MM-dd-yyyy').format(DateTime.parse(selectedDate!))}, $selectedTime",
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
                         ),
-                      ),
-                      if (_getNextRecurringDate().isNotEmpty)
-                        SizedBox(height: 10.h),
-                      Center(
-                        child: Text(
-                          "Next will be on: $nextRecurringDate",
-                          style: TextStyle(color: Colors.green, fontWeight: FontWeight.w600),
+                        if (_getNextRecurringDate().isNotEmpty)
+                          SizedBox(height: 10.h),
+                        Center(
+                          child: Text(
+                            "Next will be on: $nextRecurringDate",
+                            style: TextStyle(
+                                color: Colors.green,
+                                fontWeight: FontWeight.w600),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
+                ],
+                SizedBox(height: 20.h),
+                Apptextfield.primary(
+                  labelText: "Estimate Price",
+                  hintText: "Current Price",
+                  label: '',
+                  controller: _amountController,
                 ),
+                SizedBox(height: 20.h),
+                AppButton(
+                  text: "Book",
+                  isLoading: isLoading,
+                  onPressed: () {
+                    if (!validateFields()) {
+                      return;
+                    } else {
+                      _bookService();
+                    }
+                  },
+                ),
+                if (_isSubmitting)
+                  Padding(
+                    padding: EdgeInsets.only(top: 12.h),
+                    child: const CircularProgressIndicator(
+                        color: Color(0xff19A4C6)),
+                  ),
               ],
-              SizedBox(height: 20.h),
-              Apptextfield.primary(
-                labelText: "Estimate Price",
-                hintText: "Current Price",
-                label: '',
-                controller: _amountController,
-              ),
-              SizedBox(height: 20.h),
-              AppButton(
-                text: "Book",
-                onPressed: _bookService,
-              ),
-              if (_isSubmitting)
-                Padding(
-                  padding: EdgeInsets.only(top: 12.h),
-                  child: const CircularProgressIndicator(color: Color(0xff19A4C6)),
-                ),
-            ],
+            ),
           ),
         ),
       ),
@@ -158,13 +231,17 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.calendar_month, size: 35, color: Color(0xff19A4C6)),
+            const Icon(Icons.calendar_month,
+                size: 35, color: Color(0xff19A4C6)),
             SizedBox(width: 30.w),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text("Choose Day 1", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
-                Text("Tap to choose day & time", style: TextStyle(color: Colors.grey.shade600)),
+                const Text("Choose Day 1",
+                    style:
+                        TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
+                Text("Tap to choose day & time",
+                    style: TextStyle(color: Colors.grey.shade600)),
               ],
             ),
           ],
@@ -196,7 +273,7 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
                 children: [
                   SizedBox(height: 15.h),
                   Text(
-                    "Select Service Day 1",
+                    "Select Service Day",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                   SizedBox(height: 15.h),
@@ -232,20 +309,24 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xff19A4C6),
-                          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 10.h),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 24.w, vertical: 10.h),
                         ),
                         onPressed: () => Navigator.pop(context),
-                        child: const Text("Cancel", style: TextStyle(color: Colors.white)),
+                        child: const Text("Cancel",
+                            style: TextStyle(color: Colors.white)),
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xff19A4C6),
-                          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 10.h),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 24.w, vertical: 10.h),
                         ),
                         onPressed: () async {
                           setState(() {
                             pickedDate = tempPickedDate;
-                            selectedDate = DateFormat('yyyy-MM-dd').format(tempPickedDate);
+                            selectedDate =
+                                DateFormat('yyyy-MM-dd').format(tempPickedDate);
                             selectedTime = null;
                             timeSlots = [];
                           });
@@ -263,7 +344,8 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
                           Navigator.pop(context);
                           _showTimeSelectionSheet(tempPickedDate);
                         },
-                        child: const Text("OK", style: TextStyle(color: Colors.white)),
+                        child: const Text("OK",
+                            style: TextStyle(color: Colors.white)),
                       ),
                     ],
                   )
@@ -275,9 +357,6 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
       },
     );
   }
-
-  
-
 
   void _showTimeSelectionSheet(DateTime pickedDate) {
     String? tempSelectedTime;
@@ -296,10 +375,13 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text("Choose Time", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                  const Text("Choose Time",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                   SizedBox(height: 20.h),
                   if (timeSlots.isEmpty)
-                    const Text("No time slots available", style: TextStyle(color: Colors.red))
+                    const Text("No time slots available",
+                        style: TextStyle(color: Colors.red))
                   else
                     Wrap(
                       spacing: 10.w,
@@ -321,24 +403,27 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
                       }).toList(),
                     ),
                   SizedBox(height: 24.h),
-                  ElevatedButton(onPressed: tempSelectedTime != null
-    ? () {
-        setState(() {
-          selectedTime = tempSelectedTime;
-        });
-        Future.delayed(const Duration(milliseconds: 100), () {
-          Navigator.pop(context);
-        });
-      }
-    : null,
-
-                    
+                  ElevatedButton(
+                    onPressed: tempSelectedTime != null
+                        ? () {
+                            setState(() {
+                              selectedTime = tempSelectedTime;
+                            });
+                            Future.delayed(const Duration(milliseconds: 100),
+                                () {
+                              Navigator.pop(context);
+                            });
+                          }
+                        : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xff19A4C6),
-                      padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 12.h),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 32.w, vertical: 12.h),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
                     ),
-                    child: const Text("Confirm", style: TextStyle(color: Colors.white)),
+                    child: const Text("Confirm",
+                        style: TextStyle(color: Colors.white)),
                   ),
                 ],
               ),
@@ -348,6 +433,8 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
       },
     );
   }
+
+  bool isLoading = false;
 
   void _bookService() async {
     if (selectedDate == null || selectedTime == null) {
@@ -388,6 +475,10 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
       "time": selectedTime,
     };
 
+    setState(() {
+      isLoading = true;
+    });
+
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/bookings?status=&type'),
@@ -398,15 +489,17 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
       if (response.statusCode == 201) {
         Fluttertoast.showToast(msg: "Booking successful!");
         await Future.delayed(const Duration(seconds: 1));
-         await Get.find<HomeController>().fetchBusinessSummary(
-    DateFormat('yyyy-MM-dd').format(DateTime.now()),
-    DateFormat('yyyy-MM-dd').format(DateTime.now().subtract(Duration(days: 7))),
-  );
+        await Get.find<HomeController>().fetchBusinessSummary(
+          DateFormat('yyyy-MM-dd').format(DateTime.now()),
+          DateFormat('yyyy-MM-dd')
+              .format(DateTime.now().subtract(Duration(days: 7))),
+        );
         Navigator.of(context).popUntil((route) => route.isFirst);
         Get.find<BookingsController>().fetchBookings("booked", "recurring");
       } else if (response.statusCode == 409) {
         final error = jsonDecode(response.body);
-        Fluttertoast.showToast(msg: "Conflict: ${error['message'] ?? 'Slot already booked'}");
+        Fluttertoast.showToast(
+            msg: "Conflict: ${error['message'] ?? 'Slot already booked'}");
       } else {
         Fluttertoast.showToast(msg: "Failed to book: ${response.statusCode}");
       }
@@ -417,55 +510,60 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
         _isSubmitting = false;
       });
     }
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
- String _getNextRecurringDate() {
-  DateTime? baseDate;
+  String _getNextRecurringDate() {
+    DateTime? baseDate;
 
-  // Determine the base date either from pickedDate or selectedDate
-  if (pickedDate != null) {
-    baseDate = pickedDate;
-  } else if (selectedDate != null) {
-    try {
-      baseDate = DateFormat('yyyy-MM-dd').parse(selectedDate!);
-    } catch (e) {
-      print("Date parsing error: $e");
+    // Determine the base date either from pickedDate or selectedDate
+    if (pickedDate != null) {
+      baseDate = pickedDate;
+    } else if (selectedDate != null) {
+      try {
+        baseDate = DateFormat('MM-dd-yyyy').parse(selectedDate!);
+      } catch (e) {
+        print("Date parsing error: $e");
+      }
     }
+
+    // If baseDate still null, return empty
+    if (baseDate == null) {
+      print(
+          "baseDate is null: pickedDate=$pickedDate, selectedDate=$selectedDate");
+      return "";
+    }
+
+    // Normalize recurringType and map to interval days
+    //String type = widget.recurringType.toLowerCase();
+    int intervalDays = widget.recurringDuration;
+
+    // switch (widget.recurringDuration) {
+    //   case 7:
+    //   case "recurring": // Treat "recurring" as weekly
+    //     intervalDays = 7;
+    //     break;
+    //   case "biweekly":
+    //     intervalDays = 14;
+    //     break;
+    //   default:
+    //     intervalDays = 0;
+    // }
+
+    print(
+        "Recurring Type: ${widget.recurringType}, Interval Days: $intervalDays");
+
+    // If invalid type, skip
+    if (intervalDays == 0) return "";
+
+    // Calculate and return next date
+    final nextDate = baseDate.add(Duration(days: intervalDays));
+    final formattedNextDate = DateFormat('EEEE, MM-dd-yyyy').format(nextDate);
+
+    print(">>> NextRecurringDate: $formattedNextDate");
+    return formattedNextDate;
   }
-
-  // If baseDate still null, return empty
-  if (baseDate == null) {
-    print("baseDate is null: pickedDate=$pickedDate, selectedDate=$selectedDate");
-    return "";
-  }
-
-  // Normalize recurringType and map to interval days
-  String type = widget.recurringType.toLowerCase();
-  int intervalDays;
-
-  switch (type) {
-    case "weekly":
-    case "recurring": // Treat "recurring" as weekly
-      intervalDays = 7;
-      break;
-    case "biweekly":
-      intervalDays = 14;
-      break;
-    default:
-      intervalDays = 0;
-  }
-
-  print("Recurring Type: ${widget.recurringType}, Interval Days: $intervalDays");
-
-  // If invalid type, skip
-  if (intervalDays == 0) return "";
-
-  // Calculate and return next date
-  final nextDate = baseDate.add(Duration(days: intervalDays));
-  final formattedNextDate = DateFormat('EEEE, dd-MM-yyyy').format(nextDate);
-
-  print(">>> NextRecurringDate: $formattedNextDate");
-  return formattedNextDate;
-}
-
 }

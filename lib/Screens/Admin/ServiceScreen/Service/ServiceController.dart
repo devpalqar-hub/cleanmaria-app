@@ -13,7 +13,8 @@ class ServiceController extends GetxController {
   final TextEditingController basePriceController = TextEditingController();
   final TextEditingController bathroomRateController = TextEditingController();
   final TextEditingController roomRateController = TextEditingController();
-  final TextEditingController squareFootPriceController = TextEditingController();
+  final TextEditingController squareFootPriceController =
+      TextEditingController();
 
   Map<String, String> authHeader = {};
   List<ServiceModel> services = [];
@@ -93,11 +94,11 @@ class ServiceController extends GetxController {
 
     final payload = {
       "name": nameController.text.trim(),
-      "durationMinutes": int.parse(durationController.text.trim()),
-      "base_price": int.parse(basePriceController.text.trim()),
-      "bathroom_rate": int.parse(bathroomRateController.text.trim()),
-      "room_rate": int.parse(roomRateController.text.trim()),
-      "square_foot_price": int.parse(squareFootPriceController.text.trim()),
+      "durationMinutes": double.parse(durationController.text.trim()),
+      "base_price": double.parse(basePriceController.text.trim()),
+      "bathroom_rate": double.parse(bathroomRateController.text.trim()),
+      "room_rate": double.parse(roomRateController.text.trim()),
+      "square_foot_price": double.parse(squareFootPriceController.text.trim()),
     };
 
     print("createService(): Preparing to POST");
@@ -118,7 +119,7 @@ class ServiceController extends GetxController {
       print("Response status: ${response.statusCode}");
       print("Response body: ${response.body}");
 
-      if ( response.statusCode == 201) {
+      if (response.statusCode == 201) {
         Fluttertoast.showToast(msg: "Service created successfully");
         Navigator.of(context).pop();
         clearText();

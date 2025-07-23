@@ -7,7 +7,9 @@ import 'Screens/AuthenticationScreen/AutheticationScreen.dart';
 import 'Screens/Admin/HomeScreen/HomeScreen.dart';
 import 'Screens/staff/DashBoardScreen.dart';
 
-String baseUrl = "https://staging.cleanmaria.com/api";
+String baseUrl = (true)
+    ? "https://app.cleanmaria.com/api"
+    : "https://staging.cleanmaria.com/api"; // true for production and false for staging
 
 String login = "";
 String? userType = "";
@@ -46,7 +48,7 @@ class SplashScreen extends StatelessWidget {
       return AuthenticationScreen();
     }
   }
- 
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Widget>(
