@@ -293,25 +293,31 @@ class _EstimateScreenState extends State<EstimateScreen> {
                 ),
                 SizedBox(height: 24.h),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _buildCircularCheckbox(
-                      label: "Material Provided",
-                      value: isMaterialProvided,
-                      onChanged: (val) =>
-                          setState(() => isMaterialProvided = val ?? false),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(30.0),
-                      child: _buildCircularCheckbox(
-                        label: "Is Eco",
-                        value: isEco,
-                        onChanged: (val) =>
-                            setState(() => isEco = val ?? false),
-                      ),
-                    ),
-                  ],
-                ),
+  //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  children: [
+    _buildCircularCheckbox(
+      label: "Material Provided",
+      value: isMaterialProvided,
+      onChanged: (val) {
+        setState(() {
+          isMaterialProvided = val ?? false;
+          if (isMaterialProvided) isEco = false;
+        });
+      },
+    ),SizedBox(width: 30,),
+    _buildCircularCheckbox(
+      label: "Is Eco",
+      value: isEco,
+      onChanged: (val) {
+        setState(() {
+          isEco = val ?? false;
+          if (isEco) isMaterialProvided = false;
+        });
+      },
+    ),
+  ],
+),
+
                 SizedBox(height: 60.h),
                 Center(
                   child: AppButton(
