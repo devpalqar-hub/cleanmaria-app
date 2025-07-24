@@ -60,6 +60,20 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
       hiscontroller.fetchSchedules();
     });
   }
+void _toggleEcoOrMaterial({required bool eco}) async {
+    final booking = controller.bookingDetail!;
+    final success = await controller.updateBookingDetails(
+      booking.id!,
+      {
+        "isEco": eco,
+        "materialProvided": !eco,
+      },
+    );
+    if (success) {
+      await controller.fetchBookingDetails(booking.id!);
+      setState(() {});
+    }
+  }
 
   bool isLoading = false;
 
@@ -467,50 +481,58 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                 SizedBox(height: 20.h),
 
                 // Service Plan and ECO Tag
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: _infoText(
-                        title: "Service plan",
-                        value: service!.name ?? "",
-                      ),
-                    ),
-                    if (detail.isEco ?? false)
-                      Container(
-                        width: 65.w,
-                        height: 19.h,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.r),
-                          color: const Color(0xFF1C9F0B),
-                        ),
-                        child: Center(
-                          child: appText.primaryText(
-                            text: "ECO SERVICE",
-                            fontSize: 8.sp,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-                SizedBox(height: 10.h),
+             Row(
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  children: [
+    Expanded(
+      child: _infoText(
+        title: "Service plan",
+        value: service?.name ?? "",
+      ),
+    ),
+    GestureDetector(
+      onTap: () {
+        final isEco = detail.isEco ?? false;
+        _toggleEcoOrMaterial(eco: !isEco);
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.r),
+          color: const Color(0xFF1C9F0B),
+        ),
+        child: Center(
+          child: appText.primaryText(
+            text: (detail.isEco ?? false)
+                ? "ECO SERVICE"
+                : (detail.materialProvided ?? false)
+                    ? "Cleaning items given"
+                    : "Tap to select",
+            fontSize: 8.sp,
+            fontWeight: FontWeight.w500,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    ),
+  ],
+),
 
+                SizedBox(height: 10.h),
                 if (detail.materialProvided ?? false)
-                  appText.primaryText(
-                    text: "Cleaning items given",
-                    color: const Color(0xFF1C9F0B),
-                    fontSize: 12.sp,
+                  GestureDetector(
+                    onTap: () => _toggleEcoOrMaterial(eco: true),
+                    child: appText.primaryText(
+                      text: "Cleaning items given",
+                      color: const Color(0xFF1C9F0B),
+                      fontSize: 12.sp,
+                    ),
                   ),
 
                 if (widget.date == null) ...[
                   SizedBox(height: 30.h),
                   GestureDetector(
-                    onTap: () => Get.to(
-                      () => CleaningHistory(bookingId: booking.id!),
-                      transition: Transition.rightToLeft,
-                    ),
+                    onTap: () => Get.to(() => CleaningHistory(bookingId: booking.id!)),
                     child: Center(
                       child: appText.primaryText(
                         text: "View Cleaning History",
