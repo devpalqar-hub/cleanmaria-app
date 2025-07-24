@@ -1,6 +1,7 @@
 import 'package:cleanby_maria/Src/appText.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_utils/src/extensions/export.dart';
 
 class StatusCard extends StatelessWidget {
   final String status;
@@ -73,7 +74,7 @@ class StatusCard extends StatelessWidget {
                                   SizedBox(width: 5.w),
                                   appText.primaryText(
                                     text: time,
-                                    fontSize: 11.sp,
+                                    fontSize: 10.sp,
                                     fontWeight: FontWeight.w500,
                                     color: const Color(0xFF19A4C6),
                                   ),
@@ -97,16 +98,22 @@ class StatusCard extends StatelessWidget {
               Container(
                 height: 26.h,
                 width: 100.w,
+                alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: color,
                   borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: Center(
                   child: Text(
-                    status,
+                    status
+                            .toString()
+                            .replaceAll("_", " ")
+                            .toString()
+                            .capitalize ??
+                        "",
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 11.sp,
+                      fontSize: 10.sp,
                       fontWeight: FontWeight.w400,
                     ),
                   ),

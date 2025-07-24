@@ -58,7 +58,7 @@ class _BookingStatusBottomSheetState extends State<BookingStatusBottomSheet> {
         'color': Colors.red,
       },
       {
-        'status': 'cancel',
+        'status': 'canceled',
         'icon': Icons.cancel,
         'color': Colors.red,
       },
@@ -180,12 +180,15 @@ class _BookingStatusBottomSheetState extends State<BookingStatusBottomSheet> {
   }
 
   Widget _buildStatusOption(String status, IconData icon, Color color) {
-    final isSelected = selectedStatus == status;
+    final isSelected =
+        (selectedStatus == status.toLowerCase().replaceAll(" ", "_") ||
+            selectedStatus == status);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: InkWell(
         onTap: () {
+          print(selectedStatus);
           setState(() {
             selectedStatus = status;
           });

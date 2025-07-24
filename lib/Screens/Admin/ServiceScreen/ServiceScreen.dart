@@ -14,10 +14,10 @@ class ServiceScreen extends StatefulWidget {
 }
 
 class _ServiceScreenState extends State<ServiceScreen> {
-   bool isLoading = true;
-ServiceController sRCtrl = Get.put(ServiceController());
+  bool isLoading = true;
+  ServiceController sRCtrl = Get.put(ServiceController());
   final TextEditingController searchController = TextEditingController();
-   @override
+  @override
   void dispose() {
     searchController.dispose();
     super.dispose();
@@ -25,64 +25,69 @@ ServiceController sRCtrl = Get.put(ServiceController());
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
+    return SafeArea(
+      child: Scaffold(
         backgroundColor: Colors.white,
-        title: Text(
-          "Services",
-          style: GoogleFonts.poppins(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w600,
-            color: Colors.black,
-          ),
-        ),
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 20.w),
-            child: InkWell(
-              onTap: () {
-                showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-                  ),
-                  builder: (context) => const CreateService(),
-                );
-              },
-              child: const Icon(Icons.add_box_rounded, color: Colors.blue, size: 30),
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          title: Text(
+            "Services",
+            style: GoogleFonts.poppins(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
             ),
           ),
-        ],
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 15.w),
-          child: GetBuilder<ServiceController>(builder: (_) {
-            return Column(
-              children: [
-                SizedBox(height: 15.h),
-                Expanded(
-                  child: _.isLoading
-                      ? const Center(child: CircularProgressIndicator())
-                      : _.services.isEmpty
-                          ? const Center(child: Text("No services available"))
-                          : ListView.builder(
-                              itemCount: sRCtrl.services.length,
-                              itemBuilder: (context, index) {
-                                final service = sRCtrl.services[index];
-                                return   (searchController.text.isEmpty ||
-                                        service.name
-                                            .toLowerCase()
-                                            .contains(searchController.text))
-                                    ? ServiceCard(service: service):SizedBox.shrink();
-                              },
-                            ),
-                ),
-              ],
-            );
-          }),
+          actions: [
+            Padding(
+              padding: EdgeInsets.only(right: 20.w),
+              child: InkWell(
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(20.r)),
+                    ),
+                    builder: (context) => const CreateService(),
+                  );
+                },
+                child: const Icon(Icons.add_box_rounded,
+                    color: Colors.blue, size: 30),
+              ),
+            ),
+          ],
+        ),
+        body: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15.w),
+            child: GetBuilder<ServiceController>(builder: (_) {
+              return Column(
+                children: [
+                  SizedBox(height: 15.h),
+                  Expanded(
+                    child: _.isLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : _.services.isEmpty
+                            ? const Center(child: Text("No services available"))
+                            : ListView.builder(
+                                itemCount: sRCtrl.services.length,
+                                itemBuilder: (context, index) {
+                                  final service = sRCtrl.services[index];
+                                  return (searchController.text.isEmpty ||
+                                          service.name
+                                              .toLowerCase()
+                                              .contains(searchController.text))
+                                      ? ServiceCard(service: service)
+                                      : SizedBox.shrink();
+                                },
+                              ),
+                  ),
+                ],
+              );
+            }),
+          ),
         ),
       ),
     );

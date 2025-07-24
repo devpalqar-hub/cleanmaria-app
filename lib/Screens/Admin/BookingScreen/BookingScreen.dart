@@ -57,63 +57,68 @@ class _EstimateScreenState extends State<EstimateScreen> {
     }
   }
 
+  bool isLoading = false;
+
   void _calculateEstimate() async {
     if (selectedServiceId == null ||
         selectedNoOfRooms == null ||
         selectedNoOfBathRooms == null ||
         selectedTypeOfProperty == null ||
         selectedSizeOfHome == null) {
-   
       Fluttertoast.showToast(msg: "Please fill all fields");
       return;
     }
 
+    setState(() {
+      isLoading = true;
+    });
     final squareFeet = int.parse(selectedSizeOfHome!.split('-')[1]);
     final noOfRooms = int.parse(selectedNoOfRooms!);
     final noOfBathrooms = int.parse(selectedNoOfBathRooms!);
 
-   try {
-  final estimates = await _controller.calculateEstimate(
-    serviceId: selectedServiceId!,
-    noOfRooms: noOfRooms,
-    noOfBathrooms: noOfBathrooms,
-    squareFeet: squareFeet,
-    isEcoCleaning: isEco,
-    materialsProvidedByClient: isMaterialProvided,
-  );
+    try {
+      final estimates = await _controller.calculateEstimate(
+        serviceId: selectedServiceId!,
+        noOfRooms: noOfRooms,
+        noOfBathrooms: noOfBathrooms,
+        squareFeet: squareFeet,
+        isEcoCleaning: isEco,
+        materialsProvidedByClient: isMaterialProvided,
+      );
 
-  final plans = estimates['estimates'];
-  final totalDuration = estimates['totalDuration']; // ✅ extract here
+      final plans = estimates['estimates'];
+      final totalDuration = estimates['totalDuration']; // ✅ extract here
 
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => SelectPlanScreen(
-        plans: plans,
-        noofbathrooms: noOfBathrooms,
-        noofrooms: noOfRooms,
-        sizeofhome: squareFeet,
-        Serviceid: selectedServiceId!,
-        isMaterialprovided: isMaterialProvided,
-        iseEo: isEco,
-        propertytype: selectedTypeOfProperty!,
-        totalDuration: totalDuration, // ✅ pass here
-      ),
-    ),
-  );
-
-} catch (e) {
-     print(e);
-Fluttertoast.showToast(
-  msg: "Failed to fetch estimate",
-  toastLength: Toast.LENGTH_SHORT,
-  gravity: ToastGravity.BOTTOM,
-  backgroundColor: Colors.black,
-  textColor: Colors.white,
-  fontSize: 16.0,
-);
-
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SelectPlanScreen(
+            plans: plans,
+            noofbathrooms: noOfBathrooms,
+            noofrooms: noOfRooms,
+            sizeofhome: squareFeet,
+            Serviceid: selectedServiceId!,
+            isMaterialprovided: isMaterialProvided,
+            iseEo: isEco,
+            propertytype: selectedTypeOfProperty!,
+            totalDuration: totalDuration, // ✅ pass here
+          ),
+        ),
+      );
+    } catch (e) {
+      print(e);
+      Fluttertoast.showToast(
+        msg: "Failed to fetch estimate",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.black,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
     }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   Widget _buildDropdownContainer({required Widget child}) {
@@ -129,181 +134,196 @@ Fluttertoast.showToast(
     );
   }
 
- Widget _buildCircularCheckbox({
-  required String label,
-  required bool value,
-  required Function(bool?) onChanged,
-}) {
-  return Row(
-    children: [
-      Padding(
-        padding:  EdgeInsets.fromLTRB(8,0,8,0),
-        child: Checkbox(
-          value: value,
-          onChanged: onChanged,
-          shape: CircleBorder(),
-          side: BorderSide(color: Colors.grey), 
-          activeColor: Colors.blue, 
-          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+  Widget _buildCircularCheckbox({
+    required String label,
+    required bool value,
+    required Function(bool?) onChanged,
+  }) {
+    return Row(
+      children: [
+        Padding(
+          padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
+          child: Checkbox(
+            value: value,
+            onChanged: onChanged,
+            shape: CircleBorder(),
+            side: BorderSide(color: Colors.grey),
+            activeColor: Colors.blue,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
         ),
-      ),
-      SizedBox(width:2),
-      Text(label, style: TextStyle(fontSize: 14.sp)),
-    ],
-  );
-}
-
+        SizedBox(width: 2),
+        Text(label, style: TextStyle(fontSize: 14.sp)),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-       backgroundColor: Colors.white,
-      appBar: AppBar(
+    return SafeArea(
+      child: Scaffold(
         backgroundColor: Colors.white,
-        title: Text(
-          "Estimate",
-          style: GoogleFonts.poppins(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w600,
-            color: Colors.black,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          title: Text(
+            "Estimate",
+            style: GoogleFonts.poppins(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+            ),
           ),
         ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("Size of Home", style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500)),
-              _buildDropdownContainer(
-                child: DropdownButtonFormField<String>(
-                  value: selectedSizeOfHome,
-                  decoration: InputDecoration(border: InputBorder.none),
-                  hint: Text('Select Size of Home'),
-                  items: sizeOfHomeOptions.map((size) {
-                    return DropdownMenuItem<String>(
-                      value: size,
-                      child: Text(size),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedSizeOfHome = value;
-                    });
-                  },
+        body: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Size of Home",
+                    style: TextStyle(
+                        fontSize: 14.sp, fontWeight: FontWeight.w500)),
+                _buildDropdownContainer(
+                  child: DropdownButtonFormField<String>(
+                    value: selectedSizeOfHome,
+                    decoration: InputDecoration(border: InputBorder.none),
+                    hint: Text('Select Size of Home'),
+                    items: sizeOfHomeOptions.map((size) {
+                      return DropdownMenuItem<String>(
+                        value: size,
+                        child: Text(size),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedSizeOfHome = value;
+                      });
+                    },
+                  ),
                 ),
-              ),
-              SizedBox(height: 12.h),
-              Text("Type of Cleaning", style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500)),
-              _buildDropdownContainer(
-                child: DropdownButtonFormField<String>(
-                  value: selectedServiceName,
-                  decoration: InputDecoration(border: InputBorder.none),
-                  hint: Text('Select Service'),
-                  items: services.map((service) {
-                    return DropdownMenuItem<String>(
-                      value: service['name'],
-                      child: Text(service['name']),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedServiceName = value;
-                      selectedServiceId = services.firstWhere((service) => service['name'] == value)['id'];
-                    });
-                  },
+                SizedBox(height: 12.h),
+                Text("Type of Cleaning",
+                    style: TextStyle(
+                        fontSize: 14.sp, fontWeight: FontWeight.w500)),
+                _buildDropdownContainer(
+                  child: DropdownButtonFormField<String>(
+                    value: selectedServiceName,
+                    decoration: InputDecoration(border: InputBorder.none),
+                    hint: Text('Select Service'),
+                    items: services.map((service) {
+                      return DropdownMenuItem<String>(
+                        value: service['name'],
+                        child: Text(service['name']),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedServiceName = value;
+                        selectedServiceId = services.firstWhere(
+                            (service) => service['name'] == value)['id'];
+                      });
+                    },
+                  ),
                 ),
-              ),
-              SizedBox(height: 12.h),
-              Text("Type of Property", style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500)),
-              _buildDropdownContainer(
-                child: DropdownButtonFormField<String>(
-                  value: selectedTypeOfProperty,
-                  decoration: InputDecoration(border: InputBorder.none),
-                  hint: Text('Select Type of Property'),
-                  items: typeOptions.map((type) {
-                    return DropdownMenuItem<String>(
-                      value: type,
-                      child: Text(type),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedTypeOfProperty = value;
-                    });
-                  },
+                SizedBox(height: 12.h),
+                Text("Type of Property",
+                    style: TextStyle(
+                        fontSize: 14.sp, fontWeight: FontWeight.w500)),
+                _buildDropdownContainer(
+                  child: DropdownButtonFormField<String>(
+                    value: selectedTypeOfProperty,
+                    decoration: InputDecoration(border: InputBorder.none),
+                    hint: Text('Select Type of Property'),
+                    items: typeOptions.map((type) {
+                      return DropdownMenuItem<String>(
+                        value: type,
+                        child: Text(type),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedTypeOfProperty = value;
+                      });
+                    },
+                  ),
                 ),
-              ),
-              SizedBox(height: 12.h),
-              Text("Select Number of Rooms", style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500)),
-              _buildDropdownContainer(
-                child: DropdownButtonFormField<String>(
-                  value: selectedNoOfRooms,
-                  decoration: InputDecoration(border: InputBorder.none),
-                  hint: Text('Select Number of Rooms'),
-                  items: roomCountOptions.map((room) {
-                    return DropdownMenuItem<String>(
-                      value: room,
-                      child: Text(room),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedNoOfRooms = value;
-                    });
-                  },
+                SizedBox(height: 12.h),
+                Text("Select Number of Rooms",
+                    style: TextStyle(
+                        fontSize: 14.sp, fontWeight: FontWeight.w500)),
+                _buildDropdownContainer(
+                  child: DropdownButtonFormField<String>(
+                    value: selectedNoOfRooms,
+                    decoration: InputDecoration(border: InputBorder.none),
+                    hint: Text('Select Number of Rooms'),
+                    items: roomCountOptions.map((room) {
+                      return DropdownMenuItem<String>(
+                        value: room,
+                        child: Text(room),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedNoOfRooms = value;
+                      });
+                    },
+                  ),
                 ),
-              ),
-              SizedBox(height: 12.h),
-              Text("Select Number of Bathrooms", style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500)),
-              _buildDropdownContainer(
-                child: DropdownButtonFormField<String>(
-                  value: selectedNoOfBathRooms,
-                  decoration: InputDecoration(border: InputBorder.none),
-                  hint: Text('Select Number of Bathrooms'),
-                  items: bathRoomCountOptions.map((bathroom) {
-                    return DropdownMenuItem<String>(
-                      value: bathroom,
-                      child: Text(bathroom),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedNoOfBathRooms = value;
-                    });
-                  },
+                SizedBox(height: 12.h),
+                Text("Select Number of Bathrooms",
+                    style: TextStyle(
+                        fontSize: 14.sp, fontWeight: FontWeight.w500)),
+                _buildDropdownContainer(
+                  child: DropdownButtonFormField<String>(
+                    value: selectedNoOfBathRooms,
+                    decoration: InputDecoration(border: InputBorder.none),
+                    hint: Text('Select Number of Bathrooms'),
+                    items: bathRoomCountOptions.map((bathroom) {
+                      return DropdownMenuItem<String>(
+                        value: bathroom,
+                        child: Text(bathroom),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedNoOfBathRooms = value;
+                      });
+                    },
+                  ),
                 ),
-              ),
-              SizedBox(height: 24.h),
-              Row(
-  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  children: [
-    _buildCircularCheckbox(
-      label: "Material Provided",
-      value: isMaterialProvided,
-      onChanged: (val) => setState(() => isMaterialProvided = val ?? false),
-    ),
-    Padding(
-      padding: const EdgeInsets.all(30.0),
-      child: _buildCircularCheckbox(
-        label: "Is Eco",
-        value: isEco,
-        onChanged: (val) => setState(() => isEco = val ?? false),
-      ),
-    ),
-  ],
-),    
-              SizedBox(height: 60.h),
-              Center(
-                child: AppButton(
-                  text: "Calculate",
-                  onPressed: _calculateEstimate,
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
+                SizedBox(height: 24.h),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _buildCircularCheckbox(
+                      label: "Material Provided",
+                      value: isMaterialProvided,
+                      onChanged: (val) =>
+                          setState(() => isMaterialProvided = val ?? false),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(30.0),
+                      child: _buildCircularCheckbox(
+                        label: "Is Eco",
+                        value: isEco,
+                        onChanged: (val) =>
+                            setState(() => isEco = val ?? false),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
+                SizedBox(height: 60.h),
+                Center(
+                  child: AppButton(
+                    text: "Calculate",
+                    isLoading: isLoading,
+                    onPressed: _calculateEstimate,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

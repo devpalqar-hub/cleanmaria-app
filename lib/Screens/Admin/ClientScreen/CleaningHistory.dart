@@ -32,78 +32,80 @@ class _CleaningHistoryState extends State<CleaningHistory> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-         backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_outlined,
-              color: Colors.black),
-          onPressed: () => Navigator.pop(context),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+           backgroundColor: Colors.white,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_new_outlined,
+                color: Colors.black),
+            onPressed: () => Navigator.pop(context),
+          ),
+          title: appText.primaryText(
+              text: "Cleaning History",
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w600),
         ),
-        title: appText.primaryText(
-            text: "Cleaning History",
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w600),
-      ),
-     
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 20.h,
-          ),
-          // Container(
-          //   width: 345.w,
-          //   height: 50.h,
-          //   margin: EdgeInsets.symmetric(horizontal: 20.w),
-          //   decoration: BoxDecoration(
-          //       borderRadius: BorderRadius.circular(10.w),
-          //       color: Colors.grey.shade200),
-          //   child: Padding(
-          //     padding: const EdgeInsets.all(10.0),
-          //     child: Row(
-          //       children: [
-          //         Icon(Icons.search),
-          //         SizedBox(
-          //           width: 15.w,
-          //         ),
-          //         appText.primaryText(text: "Search for booking"),
-          //       ],
-          //     ),
-          //   ),
-          // ),
-          // SizedBox(
-          //   height: 20.h,
-          // ),
-          Expanded(
-            child: GetBuilder<BookingsController>(builder: (_) {
-              return SmartRefresher(
-                controller: ctrl.refreshCtrl,
-                enablePullUp: true,
-                enablePullDown: false,
-                onLoading: () {
-                  ctrl.fetchShedules(widget.bookingId);
-                },
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      for (var data in ctrl.history)
-                        StatusCard(
-                            status: data.status ?? "Unknown",
-                            color: ctrl.getStatusColor(data.status!),
-                            customerName: data.booking!.customer!.name!,
-                            time:
-                                "${DateFormat("MMM dd,yyyy | hh:mm a").format(DateTime.parse(data.startTime!))} - ${DateFormat("hh:mm a").format(DateTime.parse(data.endTime!))}",
-                            location: "Cleaned By : ${data.staff!.name}"),
-                      SizedBox(height: 10.h),
-                    ],
+       
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: 20.h,
+            ),
+            // Container(
+            //   width: 345.w,
+            //   height: 50.h,
+            //   margin: EdgeInsets.symmetric(horizontal: 20.w),
+            //   decoration: BoxDecoration(
+            //       borderRadius: BorderRadius.circular(10.w),
+            //       color: Colors.grey.shade200),
+            //   child: Padding(
+            //     padding: const EdgeInsets.all(10.0),
+            //     child: Row(
+            //       children: [
+            //         Icon(Icons.search),
+            //         SizedBox(
+            //           width: 15.w,
+            //         ),
+            //         appText.primaryText(text: "Search for booking"),
+            //       ],
+            //     ),
+            //   ),
+            // ),
+            // SizedBox(
+            //   height: 20.h,
+            // ),
+            Expanded(
+              child: GetBuilder<BookingsController>(builder: (_) {
+                return SmartRefresher(
+                  controller: ctrl.refreshCtrl,
+                  enablePullUp: true,
+                  enablePullDown: false,
+                  onLoading: () {
+                    ctrl.fetchShedules(widget.bookingId);
+                  },
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        for (var data in ctrl.history)
+                          StatusCard(
+                              status: data.status ?? "Unknown",
+                              color: ctrl.getStatusColor(data.status!),
+                              customerName: data.booking!.customer!.name!,
+                              time:
+                                  "${DateFormat("MMM dd,yyyy | hh:mm a").format(DateTime.parse(data.startTime!))} - ${DateFormat("hh:mm a").format(DateTime.parse(data.endTime!))}",
+                              location: "Cleaned By : ${data.staff!.name}"),
+                        SizedBox(height: 10.h),
+                      ],
+                    ),
                   ),
-                ),
-              );
-            }),
-          ),
-        ],
+                );
+              }),
+            ),
+          ],
+        ),
       ),
     );
   }

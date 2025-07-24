@@ -84,102 +84,104 @@ class _BookingsaScreenState extends State<BookingsaScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: GetBuilder<HistoryController>(builder: (_) {
-        return Padding(
-          padding: EdgeInsets.symmetric(horizontal: 15.w),
-          child: SmartRefresher(
-            controller: hisCtrl.refreshController,
-            onRefresh: hisCtrl.reload,
-            onLoading: hisCtrl.fetchNextSchedules,
-            enablePullUp: true,
-            enablePullDown: true,
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 20.h),
-                  Container(
-                    height: 50.h,
-                    width: 360.w,
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF7F6F5),
-                      borderRadius: BorderRadius.circular(14.r),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        appText.primaryText(
-                          text: 'Schedules',
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            elevation: 0,
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 10.w, vertical: 5.h),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: GetBuilder<HistoryController>(builder: (_) {
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15.w),
+            child: SmartRefresher(
+              controller: hisCtrl.refreshController,
+              onRefresh: hisCtrl.reload,
+              onLoading: hisCtrl.fetchNextSchedules,
+              enablePullUp: true,
+              enablePullDown: true,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 20.h),
+                    Container(
+                      height: 50.h,
+                      width: 360.w,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF7F6F5),
+                        borderRadius: BorderRadius.circular(14.r),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          appText.primaryText(
+                            text: 'Schedules',
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w500,
                           ),
-                          onPressed: _showDatePicker,
-                          icon: Icon(Icons.filter_list,
-                              color: const Color(0xFF77838F), size: 18.sp),
-                          label: Text('Filter',
-                              style: GoogleFonts.poppins(
-                                  fontSize: 12.sp, color: Colors.black)),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 15.h),
-
-                  /// Schedule list
-                  for (var data in hisCtrl.history)
-                    if (data.booking != null &&
-                        data.booking!.customer != null &&
-                        data.staff != null)
-                      StatusCard(
-                        status: data.status ?? "Unknown",
-                        color: hisCtrl.getStatusColor(data.status!),
-                        customerName: data.booking!.customer!.name!,
-                        onTap: () {
-                          Get.to(() => BookingDetailsScreen(
-                                bookingId: data.booking!.id!,
-                                staff: data.staff!.name,
-                                pCtrl: hisCtrl,
-                                status: data.status ?? "Unknown",
-                                scheduleId: data.id,
-                                date:
-                                    "${DateFormat("MMM dd,yyyy | hh:mm a").format(DateTime.parse(data.startTime!))} - ${DateFormat("hh:mm a").format(DateTime.parse(data.endTime!))}",
-                              ))?.then((value) {
-                            hisCtrl.reload(); // Refresh after return
-                          });
-                        },
-                        time:
-                            "${DateFormat("MMM dd,yyyy | hh:mm a").format(DateTime.parse(data.startTime!))} - ${DateFormat("hh:mm a").format(DateTime.parse(data.endTime!))}",
-                        location: "Cleaned By : ${data.staff!.name}",
-                      ),
-
-                  if (hisCtrl.history.isEmpty)
-                    Padding(
-                      padding: EdgeInsets.only(top: 100.h),
-                      child: Center(
-                        child: Text(
-                          "No schedules found.",
-                          style: GoogleFonts.poppins(
-                              fontSize: 14.sp, color: Colors.grey),
-                        ),
+                          ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              elevation: 0,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10.w, vertical: 5.h),
+                            ),
+                            onPressed: _showDatePicker,
+                            icon: Icon(Icons.filter_list,
+                                color: const Color(0xFF77838F), size: 18.sp),
+                            label: Text('Filter',
+                                style: GoogleFonts.poppins(
+                                    fontSize: 12.sp, color: Colors.black)),
+                          ),
+                        ],
                       ),
                     ),
-                ],
+                    SizedBox(height: 15.h),
+      
+                    /// Schedule list
+                    for (var data in hisCtrl.history)
+                      if (data.booking != null &&
+                          data.booking!.customer != null &&
+                          data.staff != null)
+                        StatusCard(
+                          status: data.status ?? "Unknown",
+                          color: hisCtrl.getStatusColor(data.status!),
+                          customerName: data.booking!.customer!.name!,
+                          onTap: () {
+                            Get.to(() => BookingDetailsScreen(
+                                  bookingId: data.booking!.id!,
+                                  staff: data.staff!.name,
+                                  pCtrl: hisCtrl,
+                                  status: data.status ?? "Unknown",
+                                  scheduleId: data.id,
+                                  date:
+                                      "${DateFormat("MMM dd,yyyy | hh:mm a").format(DateTime.parse(data.startTime!))} - ${DateFormat("hh:mm a").format(DateTime.parse(data.endTime!))}",
+                                ))?.then((value) {
+                              hisCtrl.reload(); // Refresh after return
+                            });
+                          },
+                          time:
+                              "${DateFormat("MMM dd,yyyy | hh:mm a").format(DateTime.parse(data.startTime!))} - ${DateFormat("hh:mm a").format(DateTime.parse(data.endTime!))}",
+                          location: "Cleaned By : ${data.staff!.name}",
+                        ),
+      
+                    if (hisCtrl.history.isEmpty)
+                      Padding(
+                        padding: EdgeInsets.only(top: 100.h),
+                        child: Center(
+                          child: Text(
+                            "No schedules found.",
+                            style: GoogleFonts.poppins(
+                                fontSize: 14.sp, color: Colors.grey),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ),
             ),
-          ),
-        );
-      }),
+          );
+        }),
+      ),
     );
   }
 }

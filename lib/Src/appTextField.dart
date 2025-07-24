@@ -10,9 +10,7 @@ Widget tBox(
         TextInputType? keyType}) =>
     Container(
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-      decoration: BoxDecoration(
-        
-          borderRadius: BorderRadius.circular(12.r)),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12.r)),
       child: TextField(
         controller: controller,
         style: GoogleFonts.poppins(
@@ -22,13 +20,13 @@ Widget tBox(
         textAlign: TextAlign.start,
         enabled: isEnable,
         decoration: InputDecoration(
-          fillColor: Colors.grey[100],
+            fillColor: Colors.grey[100],
             prefixText: prefixText,
             hintStyle: GoogleFonts.poppins(
-                fontWeight: FontWeight.w400,
-                fontSize: 16.sp,
-               // color: Color(0xFF838383)
-               ),
+              fontWeight: FontWeight.w400,
+              fontSize: 16.sp,
+              // color: Color(0xFF838383)
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.r),
               borderSide: BorderSide.none,
@@ -47,7 +45,8 @@ class Apptextfield {
     TextInputType keyType = TextInputType.text,
     TextEditingController? controller,
     Widget? suffixIcon,
-    Function(String)? onChanged, required String label,
+    Function(String)? onChanged,
+    required String label,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,8 +54,8 @@ class Apptextfield {
         SizedBox(height: 5.h),
         Text(
           labelText,
-          style: GoogleFonts.poppins(
-              fontSize: 14.sp, fontWeight: FontWeight.w700),
+          style:
+              GoogleFonts.poppins(fontSize: 14.sp, fontWeight: FontWeight.w700),
         ),
         SizedBox(height: 7.h),
         Container(
@@ -70,7 +69,7 @@ class Apptextfield {
             controller: controller,
             obscureText: obscureText,
             enabled: isEnable,
-            keyboardType: TextInputType.name,
+            keyboardType: keyType,
             decoration: InputDecoration(
               border: InputBorder.none,
               contentPadding: EdgeInsets.symmetric(horizontal: 18.w),
@@ -101,20 +100,19 @@ class Apptextfield {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 5.h),
-           Text(
-          labelText,
-          style: GoogleFonts.poppins(
-              fontSize: 14.sp, fontWeight: FontWeight.w700),
-        ),
+            Text(
+              labelText,
+              style: GoogleFonts.poppins(
+                  fontSize: 14.sp, fontWeight: FontWeight.w700),
+            ),
             SizedBox(height: 7.h),
             Container(
               height: 50.h,
               width: 345.w,
-               decoration: BoxDecoration(
-            color: Colors.grey[200],
-            borderRadius: BorderRadius.circular(12.r),
-          ),
-              
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(12.r),
+              ),
               child: TextField(
                 controller: controller,
                 obscureText: obscureText,
