@@ -445,10 +445,9 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
     setState(() {
       _isSubmitting = true;
     });
-
     final bookingData = {
       "serviceId": widget.Serviceid,
-      "type": widget.recurringType,
+      "type": "recurring",
       "paymentMethod": "offline",
       "recurringTypeId": widget.recurringTypeId,
       "no_of_rooms": widget.noofrooms,
@@ -516,49 +515,49 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
     });
   }
 
- String _getNextRecurringDate() {
-  DateTime? baseDate;
+  String _getNextRecurringDate() {
+    DateTime? baseDate;
 
-  // Determine the base date either from pickedDate or selectedDate
-  if (pickedDate != null) {
-    baseDate = pickedDate;
-  } else if (selectedDate != null) {
-    try {
-      baseDate = DateFormat('yyyy-MM-dd').parse(selectedDate!);
-    } catch (e) {
-      print("Date parsing error: $e");
+    // Determine the base date either from pickedDate or selectedDate
+    if (pickedDate != null) {
+      baseDate = pickedDate;
+    } else if (selectedDate != null) {
+      try {
+        baseDate = DateFormat('yyyy-MM-dd').parse(selectedDate!);
+      } catch (e) {
+        print("Date parsing error: $e");
+      }
     }
+
+    // If baseDate still null, return empty
+    if (baseDate == null) {
+      print(
+          "baseDate is null: pickedDate=$pickedDate, selectedDate=$selectedDate");
+      return "";
+    }
+
+    // Determine intervalDays using recurringType
+    final recurringType = widget.recurringType.trim().toLowerCase();
+    int intervalDays;
+
+    // FIX: Reverse logic as you intended
+    if (recurringType == 'recurring') {
+      intervalDays = 14; // Treat 'recurring' as biweekly
+    } else if (recurringType == 'biweekly') {
+      intervalDays = 7; // Treat 'biweekly' as weekly
+    } else {
+      intervalDays = widget.recurringDuration;
+    }
+
+    print(">>> Raw recurringType: '$recurringType'");
+    print(">>> Interval Days set to: $intervalDays");
+
+    if (intervalDays == 0) return "";
+
+    final nextDate = baseDate.add(Duration(days: intervalDays));
+    final formattedNextDate = DateFormat('EEEE, MM-dd-yyyy').format(nextDate);
+
+    print(">>> NextRecurringDate: $formattedNextDate");
+    return formattedNextDate;
   }
-
-  // If baseDate still null, return empty
-  if (baseDate == null) {
-    print("baseDate is null: pickedDate=$pickedDate, selectedDate=$selectedDate");
-    return "";
-  }
-
-  // Determine intervalDays using recurringType
-  final recurringType = widget.recurringType.trim().toLowerCase();
-  int intervalDays;
-
-  // FIX: Reverse logic as you intended
-  if (recurringType == 'recurring') {
-    intervalDays = 14; // Treat 'recurring' as biweekly
-  } else if (recurringType == 'biweekly') {
-    intervalDays = 7; // Treat 'biweekly' as weekly
-  } else {
-    intervalDays = widget.recurringDuration;
-  }
-
-  print(">>> Raw recurringType: '$recurringType'");
-  print(">>> Interval Days set to: $intervalDays");
-
-  if (intervalDays == 0) return "";
-
-  final nextDate = baseDate.add(Duration(days: intervalDays));
-  final formattedNextDate = DateFormat('EEEE, MM-dd-yyyy').format(nextDate);
-
-  print(">>> NextRecurringDate: $formattedNextDate");
-  return formattedNextDate;
-}
-
 }
