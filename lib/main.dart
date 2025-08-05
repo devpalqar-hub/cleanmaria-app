@@ -7,9 +7,11 @@ import 'Screens/AuthenticationScreen/AutheticationScreen.dart';
 import 'Screens/Admin/HomeScreen/HomeScreen.dart';
 import 'Screens/staff/DashBoardScreen.dart';
 
-String baseUrl = (true)
-    ? "https://app.cleanmaria.com/api"
-    : "https://staging.cleanmaria.com/api"; // true for production and false for staging
+String baseUrl = 
+//(true)
+  //  ? "https://app.cleanmaria.com/api"
+   // :
+     "https://staging.cleanmaria.com/api"; // true for production and false for staging
 
 String login = "";
 String? userType = "";

@@ -97,7 +97,7 @@ class StatusCard extends StatelessWidget {
               ),
               Container(
                 height: 26.h,
-                width: 100.w,
+                width: 90.w,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: color,

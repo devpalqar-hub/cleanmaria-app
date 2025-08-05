@@ -77,10 +77,10 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
       'Email': _emailController,
       'Phone': _phoneController,
       'Address': _addressController,
-      'Address Line 2': _address2Controller,
+     // 'Address Line 2': _address2Controller,
       'City': _cityController,
       'Zip Code': _zipCodeController,
-      'Landmark': _landmarkController,
+     // 'Landmark': _landmarkController,
       'Amount': _amountController,
     };
 
@@ -139,7 +139,7 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
                     controller: _addressController),
                 Apptextfield.primary(
                     labelText: 'Address 2',
-                    hintText: 'Enter Address Line 2',
+                    hintText: 'Enter Address Line 2 (optional)',
                     label: '',
                     controller: _address2Controller),
                 Apptextfield.primary(
@@ -154,7 +154,7 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
                     controller: _zipCodeController),
                 Apptextfield.primary(
                     labelText: 'Landmark',
-                    hintText: 'Enter Landmark',
+                    hintText: 'Enter Landmark (optional)',
                     label: '',
                     controller: _landmarkController),
                 SizedBox(height: 16.h),

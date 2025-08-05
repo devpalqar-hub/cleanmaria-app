@@ -142,27 +142,29 @@ class _BookingsaScreenState extends State<BookingsaScreen> {
                       if (data.booking != null &&
                           data.booking!.customer != null &&
                           data.staff != null)
-                        StatusCard(
-                          status: data.status ?? "Unknown",
-                          color: hisCtrl.getStatusColor(data.status!),
-                          customerName: data.booking!.customer!.name!,
-                          onTap: () {
-                            Get.to(() => BookingDetailsScreen(
-                                  bookingId: data.booking!.id!,
-                                  staff: data.staff!.name,
-                                  pCtrl: hisCtrl,
-                                  status: data.status ?? "Unknown",
-                                  scheduleId: data.id,
-                                  date:
-                                      "${DateFormat("MMM dd,yyyy | hh:mm a").format(DateTime.parse(data.startTime!))} - ${DateFormat("hh:mm a").format(DateTime.parse(data.endTime!))}",
-                                ))?.then((value) {
-                              hisCtrl.reload(); // Refresh after return
-                            });
-                          },
-                          time:
-                              "${DateFormat("MMM dd,yyyy | hh:mm a").format(DateTime.parse(data.startTime!))} - ${DateFormat("hh:mm a").format(DateTime.parse(data.endTime!))}",
-                          location: "Cleaned By : ${data.staff!.name}",
-                        ),
+                    StatusCard(
+  status: data.status ?? "Unknown",
+  color: hisCtrl.getStatusColor(data.status!),
+  customerName: data.booking!.customer!.name!,
+  onTap: () {
+    Get.to(() => BookingDetailsScreen(
+          bookingId: data.booking!.id!,
+          staff: data.staff!.name,
+          pCtrl: hisCtrl,
+          status: data.status ?? "Unknown",
+          scheduleId: data.id,
+          date:
+              "${DateFormat("EEE, MMM dd, yyyy | hh:mm a").format(DateTime.parse(data.startTime!))} - ${DateFormat("hh:mm a").format(DateTime.parse(data.endTime!))}",
+        ))?.then((value) {
+      hisCtrl.reload(); // Refresh after return
+    });
+  },
+  time:
+      "${DateFormat("EEE, MMM dd, yyyy | hh:mm a").format(DateTime.parse(data.startTime!))} - ${DateFormat("hh:mm a").format(DateTime.parse(data.endTime!))}",
+  location: "Cleaned By : ${data.staff!.name}",
+),
+
+
       
                     if (hisCtrl.history.isEmpty)
                       Padding(
