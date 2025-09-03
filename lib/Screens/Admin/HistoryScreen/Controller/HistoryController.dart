@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cleanby_maria/Screens/Admin/HistoryScreen/Models/HeatMapModel.dart';
 import 'package:cleanby_maria/Screens/Admin/HistoryScreen/Models/HistoryModel.dart';
 import 'package:cleanby_maria/main.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,8 @@ class HistoryController extends GetxController {
   List<HistoryModel> history = [];
 
   RefreshController refreshController = RefreshController(initialRefresh: true);
-
+   HeatmapData? heatmapData;
+  bool isLoadingHeatmap = false;
   /// Reload entire list
   void reload() {
     page = 1;
@@ -72,7 +74,7 @@ class HistoryController extends GetxController {
         refreshController.loadNoData();
       }
     } catch (e) {
-      print("❌ Error fetching schedules: $e");
+      print(" Error fetching schedules: $e");
       refreshController.loadNoData();
     }
 
@@ -120,13 +122,43 @@ class HistoryController extends GetxController {
         refreshController.loadNoData();
       }
     } catch (e) {
-      print("❌ Error fetching next schedules: $e");
+      print(" Error fetching next schedules: $e");
       refreshController.loadNoData();
     }
 
     update();
   }
+ Future<void> fetchHeatmap({required int year, required int month}) async {
+    isLoadingHeatmap = true;
+    update();
 
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString("access_token");
+
+      final url = "$baseUrl/bookings/heatmap/calendar?year=$year&month=$month";
+      final headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      };
+
+      final response = await get(Uri.parse(url), headers: headers);
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        heatmapData = HeatmapData.fromJson(data["data"]);
+      } else {
+        print(" Failed to fetch heatmap: ${response.body}");
+        heatmapData = null;
+      }
+    } catch (e) {
+      print(" Error fetching heatmap: $e");
+      heatmapData = null;
+    }
+
+    isLoadingHeatmap = false;
+    update();
+  }
   /// Get color by status
   Color getStatusColor(String status) {
     switch (status) {

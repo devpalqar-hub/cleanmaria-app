@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:cleanby_maria/Screens/AuthenticationScreen/AutheticationScreen.dart';
 import 'package:cleanby_maria/Screens/Admin/HistoryScreen/Controller/HistoryController.dart';
 import 'package:cleanby_maria/Screens/Admin/HistoryScreen/Models/HistoryModel.dart';
+import 'package:cleanby_maria/Screens/staff/Models/StaffHeatMap.dart';
 import 'package:cleanby_maria/main.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart' show Fluttertoast;
@@ -32,6 +33,9 @@ class StaffHomeController extends GetxController {
 
   int completeTask = 0;
   int total = 0;
+
+  StaffHeatmapData? staffHeatmap;
+  bool isLoadingHeatmap = false;
 
   reload() {
     history.clear();
@@ -141,7 +145,43 @@ class StaffHomeController extends GetxController {
 
     update();
   }
+ Future<void> fetchStaffHeatmap(
+      {required int year,
+      required int month,
+      required String staffId}) async {
+    isLoadingHeatmap = true;
+    update();
 
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString("access_token");
+
+      final url =
+          "$baseUrl/analytics/booking-heatmap?year=$year&month=$month&staffId=$staffId";
+
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        staffHeatmap = StaffHeatmapData.fromJson(data["data"]);
+      } else {
+        staffHeatmap = null;
+        print("❌ Failed to fetch staff heatmap: ${response.body}");
+      }
+    } catch (e) {
+      staffHeatmap = null;
+      print("❌ Error fetching staff heatmap: $e");
+    }
+
+    isLoadingHeatmap = false;
+    update();
+  }
   Color getStatusColor(String status) {
     switch (status) {
       case "scheduled":
