@@ -1,5 +1,7 @@
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/BookingDetailsScreen.dart';
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/Views/StatusCard.dart';
+import 'package:cleanby_maria/Screens/Admin/HistoryScreen/CalendarBookingScreen.dart';
+import 'package:cleanby_maria/Screens/Admin/HistoryScreen/Controller/HistoryController.dart';
 import 'package:cleanby_maria/Screens/staff/AdminBookingDetailScreen.dart';
 
 import 'package:cleanby_maria/Screens/staff/Controller/SHomeController.dart';
@@ -11,8 +13,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class DashBoardScreen extends StatefulWidget {
   const DashBoardScreen({super.key});
@@ -22,6 +26,70 @@ class DashBoardScreen extends StatefulWidget {
 }
 
 class _DashBoardScreenState extends State<DashBoardScreen> {
+    final HistoryController hisCtrl = Get.put(HistoryController());
+
+    void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
+    setState(() {
+      if (args.value is PickerDateRange) {
+        hisCtrl.startDate = args.value.startDate;
+        hisCtrl.endDate = args.value.endDate;
+      }
+    });
+  }
+
+  void _showDatePicker() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.all(20.w),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "Select Booking Dates",
+                style: GoogleFonts.poppins(
+                    fontSize: 16.sp, fontWeight: FontWeight.w600),
+              ),
+              SizedBox(height: 10.h),
+              SfDateRangePicker(
+                selectionMode: DateRangePickerSelectionMode.range,
+                onSelectionChanged: _onSelectionChanged,
+                startRangeSelectionColor: Colors.blue,
+                endRangeSelectionColor: Colors.blue,
+                rangeSelectionColor: Colors.blue.withOpacity(0.2),
+                todayHighlightColor: Colors.blue,
+                backgroundColor: Colors.white,
+                initialSelectedRange: PickerDateRange(
+                  hisCtrl.startDate ?? DateTime.now(),
+                  hisCtrl.endDate ?? DateTime.now().add(Duration(days: 7)),
+                ),
+              ),
+              SizedBox(height: 10.h),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  hisCtrl.fetchSchedules(); // Apply filter
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF19A4C6),
+                ),
+                child: const Text(
+                  "Apply",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   String _selectedDutyStatus = "All Duty";
   final List<String> _dutyOptions = [
     "All Duty",
@@ -127,44 +195,57 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                       ),
                       if (sHCtrl.todayHistory.isNotEmpty)
                         SizedBox(height: 17.h),
-                      Row(
-                        children: [
-                          appText.primaryText(
-                            text: "Duty List",
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black,
-                          ),
-                          Spacer(),
-                          DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              value: _selectedDutyStatus,
-                              icon: Icon(Icons.arrow_drop_down,
-                                  color: Colors.black),
-                              style: const TextStyle(color: Colors.black),
-                              dropdownColor: Colors.white,
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  _selectedDutyStatus = newValue!;
-                                  sHCtrl.selectedFilter = newValue;
-                                  sHCtrl.refreshCtrl.requestRefresh();
-                                });
-                              },
-                              items: _dutyOptions.map<DropdownMenuItem<String>>(
-                                  (String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value.toString().capitalize!,
-                                      style: TextStyle(
-                                          fontSize: 11.sp,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black)),
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                        ],
-                      ),
+                     Row(
+  children: [
+    appText.primaryText(
+      text: "Duty List",
+      fontSize: 18.sp,
+      fontWeight: FontWeight.w500,
+      color: Colors.black,
+    ),
+    Spacer(),
+    // Duty Dropdown
+    DropdownButtonHideUnderline(
+      child: DropdownButton<String>(
+        value: _selectedDutyStatus,
+        icon: const Icon(Icons.arrow_drop_down, color: Colors.black),
+        style: const TextStyle(color: Colors.black),
+        dropdownColor: Colors.white,
+        onChanged: (String? newValue) {
+          setState(() {
+            _selectedDutyStatus = newValue!;
+            sHCtrl.selectedFilter = newValue;
+            sHCtrl.refreshCtrl.requestRefresh();
+          });
+        },
+        items: _dutyOptions.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(
+              value.toString().capitalize!,
+              style: TextStyle(
+                fontSize: 11.sp,
+                fontWeight: FontWeight.w400,
+                color: Colors.black,
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    ),
+    SizedBox(width: 10.w),
+
+    // 🔹 Replaced Filter Button with Calendar Icon
+    IconButton(
+      icon: Icon(Icons.calendar_today, color: Colors.black, size: 20.sp),
+      onPressed: () {
+        // Navigate to your target screen
+        Get.to(() => CalendarBookingScreen());
+      },
+    ),
+  ],
+),
+
                       SizedBox(height: 17.h),
                       if (sHCtrl.history.isEmpty)
                         Image.asset("assets/nojob.png"),

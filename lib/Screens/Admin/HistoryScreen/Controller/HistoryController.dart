@@ -132,46 +132,50 @@ class HistoryController extends GetxController {
   }
 
   Future<void> fetchHeatmap(
-      {required int year, required int month, String staffId = "-1"}) async {
-    isLoadingHeatmap = true;
-    update();
+    {required int year, required int month, String staffId = "-1"}) async {
+  isLoadingHeatmap = true;
+  update();
 
-    print(year);
-    print(month);
-    print(staffId);
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString("access_token");
+  print("Fetching heatmap → year=$year, month=$month, staffId=$staffId");
 
-      String parms = "";
-      if (staffId != "-1") {
-        "&staffId=${staffId}";
-      }
-      final url =
-          "$baseUrl/bookings/heatmap/calendar?year=$year&month=$month$parms";
-      final headers = {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      };
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString("access_token");
 
-      final response = await get(Uri.parse(url), headers: headers);
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        heatmapData = HeatmapData.fromJson(data["data"]);
-        total = heatmapData!.totalBookings ?? 0;
-      } else {
-        print(" Failed to fetch heatmap: ${response.body}");
-        heatmapData = null;
-      }
-    } catch (e) {
-      print(" Error fetching heatmap: $e");
-      heatmapData = null;
+    String parms = "";
+    if (staffId != "-1") {
+      parms = "&staffId=$staffId";   
     }
 
-    isLoadingHeatmap = false;
-    update();
+    final url =
+        "$baseUrl/bookings/heatmap/calendar?year=$year&month=$month$parms";
+
+    print("Final Heatmap URL → $url"); 
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+
+    final response = await get(Uri.parse(url), headers: headers);
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      heatmapData = HeatmapData.fromJson(data["data"]);
+      total = heatmapData!.totalBookings ?? 0;
+    } else {
+      print(" Failed to fetch heatmap: ${response.body}");
+      heatmapData = null;
+    }
+  } catch (e) {
+    print("Error fetching heatmap: $e");
+    heatmapData = null;
   }
+
+  isLoadingHeatmap = false;
+  update();
+}
+
 
   Color getHeatMapColor(int count, int total) {
     // Clamp values
