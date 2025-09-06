@@ -7,14 +7,15 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 import 'package:cleanby_maria/Screens/Admin/StaffScreen/Models/StaffModel.dart';
+
 class CalendarBookingScreen extends StatefulWidget {
-  final bool isStaff;      
-  final String? staffId;   
+  final bool isStaff;
+  final String staffId;
 
   const CalendarBookingScreen({
     super.key,
-    this.isStaff = false,   // default → admin
-    this.staffId,
+    this.isStaff = false, // default → admin
+    this.staffId = "-1",
   });
 
   @override
@@ -31,26 +32,16 @@ class _CalendarBookingScreenState extends State<CalendarBookingScreen> {
   DateTime _currentMonth = DateTime.now();
   String selectedStaff = "-1"; // always non-null
 
-
   @override
+  @override
+  void initState() {
+    super.initState();
+    _pickerController.displayDate =
+        DateTime(_currentMonth.year, _currentMonth.month, 1);
 
-@override
-void initState() {
-  super.initState();
-  _pickerController.displayDate =
-      DateTime(_currentMonth.year, _currentMonth.month, 1);
-
-  if (widget.isStaff && widget.staffId != null) {
-    historyController.fetchHeatmap(
-      year: _currentMonth.year,
-      month: _currentMonth.month,
-      staffId: widget.staffId!,   
-    );
-  } else {
+    selectedStaff = widget.staffId;
     loadSchedules();
   }
-}
-
 
   loadSchedules() async {
     await staffController.fetchStaffList();
@@ -101,73 +92,69 @@ void initState() {
             color: Colors.black,
           ),
         ),
-       actions: [
-  // 👇 Only show dropdown if admin
-  if (!widget.isStaff)
-    GetBuilder<StaffController>(
-      builder: (controller) {
-        if (controller.isLoading) {
-          return const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: CircularProgressIndicator(),
-          );
-        }
+        actions: [
+          // 👇 Only show dropdown if admin
+          if (!widget.isStaff)
+            GetBuilder<StaffController>(
+              builder: (controller) {
+                if (controller.isLoading) {
+                  return const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: CircularProgressIndicator(),
+                  );
+                }
 
-        if (controller.staffList.isEmpty) {
-          // 👈 instead of showing "No staff", hide it completely
-          return const SizedBox.shrink();
-        }
+                if (controller.staffList.isEmpty) {
+                  // 👈 instead of showing "No staff", hide it completely
+                  return const SizedBox.shrink();
+                }
 
-        return Container(
-          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
-          width: 120.w,
-          decoration: BoxDecoration(
-            color: const Color(0xFFF5F7F8),
-            borderRadius: BorderRadius.circular(8.r),
-          ),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              isExpanded: true,
-              value: selectedStaff,
-              items: [
-                Staff(
-                  id: "-1",
-                  name: "All",
-                  email: "",
-                  phone: "",
-                  status: "",
-                  priority: 1,
-                ),
-                ...controller.staffList
-              ]
-                  .map((s) => DropdownMenuItem(
-                        value: s.id,
-                        child: Text(
-                          s.name ?? "",
-                          style: GoogleFonts.poppins(fontSize: 14.sp),
+                return Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
+                  width: 120.w,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF5F7F8),
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      isExpanded: true,
+                      value: selectedStaff,
+                      items: [
+                        Staff(
+                          id: "-1",
+                          name: "All",
+                          email: "",
+                          phone: "",
+                          status: "",
+                          priority: 1,
                         ),
-                      ))
-                  .toList(),
-              onChanged: (v) {
-                if (v == null) return;
-                setState(() => selectedStaff = v);
-                historyController.fetchHeatmap(
-                  year: _currentMonth.year,
-                  month: _currentMonth.month,
-                  staffId: selectedStaff,
+                        ...controller.staffList
+                      ]
+                          .map((s) => DropdownMenuItem(
+                                value: s.id,
+                                child: Text(
+                                  s.name ?? "",
+                                  style: GoogleFonts.poppins(fontSize: 14.sp),
+                                ),
+                              ))
+                          .toList(),
+                      onChanged: (v) {
+                        if (v == null) return;
+                        setState(() => selectedStaff = v);
+                        historyController.fetchHeatmap(
+                          year: _currentMonth.year,
+                          month: _currentMonth.month,
+                          staffId: selectedStaff,
+                        );
+                      },
+                    ),
+                  ),
                 );
               },
             ),
-          ),
-        );
-      },
-    ),
-  SizedBox(width: 20.w),
-],
-
-
-
-
+          SizedBox(width: 20.w),
+        ],
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 12.h),
