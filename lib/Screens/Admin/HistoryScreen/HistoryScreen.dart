@@ -1,7 +1,7 @@
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/BookingDetailsScreen.dart';
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/Views/StatusCard.dart';
 import 'package:cleanby_maria/Screens/Admin/HistoryScreen/Controller/HistoryController.dart';
-import 'package:cleanby_maria/Screens/Admin/HistoryScreen/SchedulesScreen.dart';
+import 'package:cleanby_maria/Screens/Admin/HistoryScreen/CalendarBookingScreen.dart';
 import 'package:cleanby_maria/Src/appText.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

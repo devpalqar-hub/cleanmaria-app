@@ -14,10 +14,12 @@ class HistoryController extends GetxController {
   DateTime? startDate;
   DateTime? endDate;
   List<HistoryModel> history = [];
+  int total = 0;
 
   RefreshController refreshController = RefreshController(initialRefresh: true);
-   HeatmapData? heatmapData;
+  HeatmapData? heatmapData;
   bool isLoadingHeatmap = false;
+
   /// Reload entire list
   void reload() {
     page = 1;
@@ -128,15 +130,25 @@ class HistoryController extends GetxController {
 
     update();
   }
- Future<void> fetchHeatmap({required int year, required int month}) async {
+
+  Future<void> fetchHeatmap(
+      {required int year, required int month, String staffId = "-1"}) async {
     isLoadingHeatmap = true;
     update();
 
+    print(year);
+    print(month);
+    print(staffId);
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString("access_token");
 
-      final url = "$baseUrl/bookings/heatmap/calendar?year=$year&month=$month";
+      String parms = "";
+      if (staffId != "-1") {
+        "&staffId=${staffId}";
+      }
+      final url =
+          "$baseUrl/bookings/heatmap/calendar?year=$year&month=$month$parms";
       final headers = {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -147,6 +159,7 @@ class HistoryController extends GetxController {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         heatmapData = HeatmapData.fromJson(data["data"]);
+        total = heatmapData!.totalBookings ?? 0;
       } else {
         print(" Failed to fetch heatmap: ${response.body}");
         heatmapData = null;
@@ -159,6 +172,42 @@ class HistoryController extends GetxController {
     isLoadingHeatmap = false;
     update();
   }
+
+  Color getHeatMapColor(int count, int total) {
+    // Clamp values
+    if (total <= 0) total = 1;
+    if (count < 0) count = 0;
+    if (count > total) count = total;
+
+    // Base color (low intensity)
+    final Color lowColor = Color(0xFFEBF7F9); // light blue
+    // High intensity color
+    final Color highColor = Color(0xFF086989); // dark blue
+
+    // Normalized value from 0 to 1
+    double t = count / total;
+
+    // Linear interpolation between the two colors
+    int r = (lowColor.red + (highColor.red - lowColor.red) * t).round();
+    int g = (lowColor.green + (highColor.green - lowColor.green) * t).round();
+    int b = (lowColor.blue + (highColor.blue - lowColor.blue) * t).round();
+
+    return Color.fromARGB(255, r, g, b);
+  }
+
+  int fetchCountFromDate(DateTime date) {
+    int count = 0;
+    if (heatmapData != null) {
+      for (HeatmapDay dt in heatmapData!.heatmapDays ?? []) {
+        if (dt.date.day == date.day) {
+          count = dt.bookingCount;
+          return count;
+        }
+      }
+    }
+    return count;
+  }
+
   /// Get color by status
   Color getStatusColor(String status) {
     switch (status) {
