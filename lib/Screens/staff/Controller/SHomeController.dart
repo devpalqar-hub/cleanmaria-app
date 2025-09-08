@@ -50,7 +50,7 @@ class StaffHomeController extends GetxController {
     fetchShdedule();
   }
 
-  fetchShdedule() async {
+  fetchShdedule({String? userId}) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString("access_token");
     String parms =
@@ -92,7 +92,7 @@ class StaffHomeController extends GetxController {
     update();
   }
 
-  fetchTodayShedule() async {
+  fetchTodayShedule({String? userId}) async {
     todayHistory = [];
     completeTask = 0;
     total = 0;

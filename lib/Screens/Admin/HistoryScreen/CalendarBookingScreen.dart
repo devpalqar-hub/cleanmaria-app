@@ -7,10 +7,11 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 import 'package:cleanby_maria/Screens/Admin/StaffScreen/Models/StaffModel.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CalendarBookingScreen extends StatefulWidget {
   final bool isStaff;
-  final String staffId;
+  final String staffId; // still needed for admin case
 
   const CalendarBookingScreen({
     super.key,
@@ -33,42 +34,58 @@ class _CalendarBookingScreenState extends State<CalendarBookingScreen> {
   String selectedStaff = "-1"; // always non-null
 
   @override
-  @override
   void initState() {
     super.initState();
     _pickerController.displayDate =
         DateTime(_currentMonth.year, _currentMonth.month, 1);
 
+    // Admin: keep staffId, Staff: will be loaded from SharedPreferences in loadSchedules
     selectedStaff = widget.staffId;
     loadSchedules();
   }
 
   loadSchedules() async {
     await staffController.fetchStaffList();
+
+    String staffIdToUse;
+    if (widget.isStaff) {
+      // ✅ Always fetch logged-in userId from SharedPreferences for staff
+      final prefs = await SharedPreferences.getInstance();
+      staffIdToUse = prefs.getString("user_id") ?? "-1";
+    } else {
+      // Admin flow
+      staffIdToUse = selectedStaff;
+    }
+
     await historyController.fetchHeatmap(
       year: _currentMonth.year,
       month: _currentMonth.month,
-      staffId: selectedStaff,
+      staffId: staffIdToUse,
     );
   }
 
-  void _onViewChanged(DateRangePickerViewChangedArgs args) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+  void _onViewChanged(DateRangePickerViewChangedArgs args) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!mounted) return;
       final newMonth = args.visibleDateRange.startDate;
 
       if (newMonth != null && newMonth.month != _currentMonth.month) {
-        setState(() {
-          _currentMonth = newMonth;
+        setState(() => _currentMonth = newMonth);
 
-          historyController.fetchHeatmap(
-            year: _currentMonth.year,
-            month: _currentMonth.month,
-            staffId: widget.isStaff
-                ? (widget.staffId ?? "-1") // 👈 if staff, always use staffId
-                : selectedStaff,
-          );
-        });
+        String staffIdToUse;
+        if (widget.isStaff) {
+          // ✅ For staff, again fetch userId from SharedPreferences
+          final prefs = await SharedPreferences.getInstance();
+          staffIdToUse = prefs.getString("user_id") ?? "-1";
+        } else {
+          staffIdToUse = selectedStaff;
+        }
+
+        historyController.fetchHeatmap(
+          year: _currentMonth.year,
+          month: _currentMonth.month,
+          staffId: staffIdToUse,
+        );
       }
     });
   }
@@ -105,7 +122,6 @@ class _CalendarBookingScreenState extends State<CalendarBookingScreen> {
                 }
 
                 if (controller.staffList.isEmpty) {
-                  // 👈 instead of showing "No staff", hide it completely
                   return const SizedBox.shrink();
                 }
 
