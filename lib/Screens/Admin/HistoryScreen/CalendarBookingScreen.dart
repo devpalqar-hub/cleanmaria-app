@@ -67,21 +67,32 @@ class _CalendarBookingScreenState extends State<CalendarBookingScreen> {
   void _onViewChanged(DateRangePickerViewChangedArgs args) async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!mounted) return;
-      final newMonth = args.visibleDateRange.startDate;
 
-      if (newMonth != null && newMonth.month != _currentMonth.month) {
+      // Use visibleDateRange (startDate & endDate) and compute a midpoint
+      final visibleRange = args.visibleDateRange;
+      if (visibleRange == null || visibleRange.startDate == null) return;
+
+      final start = visibleRange.startDate!;
+      final end = visibleRange.endDate ?? start;
+      final int daysBetween = end.difference(start).inDays;
+      final DateTime midDate = start.add(Duration(days: (daysBetween ~/ 2)));
+
+      final newMonth = DateTime(midDate.year, midDate.month, 1);
+
+      // Only update when the month/year actually changes
+      if (newMonth.month != _currentMonth.month ||
+          newMonth.year != _currentMonth.year) {
         setState(() => _currentMonth = newMonth);
 
         String staffIdToUse;
         if (widget.isStaff) {
-          // ✅ For staff, again fetch userId from SharedPreferences
           final prefs = await SharedPreferences.getInstance();
           staffIdToUse = prefs.getString("user_id") ?? "-1";
         } else {
           staffIdToUse = selectedStaff;
         }
 
-        historyController.fetchHeatmap(
+        await historyController.fetchHeatmap(
           year: _currentMonth.year,
           month: _currentMonth.month,
           staffId: staffIdToUse,
@@ -193,8 +204,7 @@ class _CalendarBookingScreenState extends State<CalendarBookingScreen> {
                     backgroundColor: Colors.white,
                     onViewChanged: _onViewChanged,
                     cellBuilder: (context, DateRangePickerCellDetails data) =>
-                        (data.date.month ==
-                                _pickerController.displayDate!.month)
+                        (data.date.month == _currentMonth.month)
                             ? Container(
                                 height: 40.h,
                                 margin: EdgeInsets.all(2.h),
