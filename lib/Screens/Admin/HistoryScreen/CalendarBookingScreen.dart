@@ -11,11 +11,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class CalendarBookingScreen extends StatefulWidget {
   final bool isStaff;
-  final String staffId; // still needed for admin case
+  final String staffId;
 
   const CalendarBookingScreen({
     super.key,
-    this.isStaff = false, // default → admin
+    this.isStaff = false,
     this.staffId = "-1",
   });
 
@@ -24,22 +24,18 @@ class CalendarBookingScreen extends StatefulWidget {
 }
 
 class _CalendarBookingScreenState extends State<CalendarBookingScreen> {
-  final DateRangePickerController _pickerController =
-      DateRangePickerController();
-
+  final DateRangePickerController _pickerController = DateRangePickerController();
   final StaffController staffController = Get.put(StaffController());
   final HistoryController historyController = Get.put(HistoryController());
 
   DateTime _currentMonth = DateTime.now();
-  String selectedStaff = "-1"; // always non-null
+  DateTime? _selectedDate;
+  String selectedStaff = "-1";
 
   @override
   void initState() {
     super.initState();
-    _pickerController.displayDate =
-        DateTime(_currentMonth.year, _currentMonth.month, 1);
-
-    // Admin: keep staffId, Staff: will be loaded from SharedPreferences in loadSchedules
+    _pickerController.displayDate = DateTime(_currentMonth.year, _currentMonth.month, 1);
     selectedStaff = widget.staffId;
     loadSchedules();
   }
@@ -49,11 +45,9 @@ class _CalendarBookingScreenState extends State<CalendarBookingScreen> {
 
     String staffIdToUse;
     if (widget.isStaff) {
-      // ✅ Always fetch logged-in userId from SharedPreferences for staff
       final prefs = await SharedPreferences.getInstance();
       staffIdToUse = prefs.getString("user_id") ?? "-1";
     } else {
-      // Admin flow
       staffIdToUse = selectedStaff;
     }
 
@@ -62,47 +56,88 @@ class _CalendarBookingScreenState extends State<CalendarBookingScreen> {
       month: _currentMonth.month,
       staffId: staffIdToUse,
     );
+
+    if (_selectedDate != null) {
+      historyController.history.clear();
+      historyController.update();
+      await Future.delayed(const Duration(milliseconds: 300));
+      await historyController.fetchSchedulesForDate(_selectedDate!, staffId: staffIdToUse);
+    }
   }
 
-  void _onViewChanged(DateRangePickerViewChangedArgs args) async {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (!mounted) return;
+ void _onViewChanged(DateRangePickerViewChangedArgs args) async {
+  WidgetsBinding.instance.addPostFrameCallback((_) async {
+    if (!mounted) return;
 
-      // Use visibleDateRange (startDate & endDate) and compute a midpoint
-      final visibleRange = args.visibleDateRange;
-      if (visibleRange == null || visibleRange.startDate == null) return;
+    final visibleRange = args.visibleDateRange;
+    if (visibleRange == null || visibleRange.startDate == null) return;
 
-      final start = visibleRange.startDate!;
-      final end = visibleRange.endDate ?? start;
-      final int daysBetween = end.difference(start).inDays;
-      final DateTime midDate = start.add(Duration(days: (daysBetween ~/ 2)));
+    final start = visibleRange.startDate!;
+    final end = visibleRange.endDate ?? start;
+    final int daysBetween = end.difference(start).inDays;
+    final DateTime midDate = start.add(Duration(days: (daysBetween ~/ 2)));
 
-      final newMonth = DateTime(midDate.year, midDate.month, 1);
+    final newMonth = DateTime(midDate.year, midDate.month, 1);
 
-      // Only update when the month/year actually changes
-      if (newMonth.month != _currentMonth.month ||
-          newMonth.year != _currentMonth.year) {
-        setState(() => _currentMonth = newMonth);
+    if (newMonth.month != _currentMonth.month || newMonth.year != _currentMonth.year) {
+      setState(() {
+        _currentMonth = newMonth;
+        _selectedDate = null; // Clear the previously selected date
+      });
 
-        String staffIdToUse;
-        if (widget.isStaff) {
-          final prefs = await SharedPreferences.getInstance();
-          staffIdToUse = prefs.getString("user_id") ?? "-1";
-        } else {
-          staffIdToUse = selectedStaff;
-        }
-
-        await historyController.fetchHeatmap(
-          year: _currentMonth.year,
-          month: _currentMonth.month,
-          staffId: staffIdToUse,
-        );
+      String staffIdToUse;
+      if (widget.isStaff) {
+        final prefs = await SharedPreferences.getInstance();
+        staffIdToUse = prefs.getString("user_id") ?? "-1";
+      } else {
+        staffIdToUse = selectedStaff;
       }
-    });
+
+      // Clear old history
+      historyController.history.clear();
+      historyController.update();
+
+      await historyController.fetchHeatmap(
+        year: _currentMonth.year,
+        month: _currentMonth.month,
+        staffId: staffIdToUse,
+      );
+    }
+  });
+}
+
+
+  void _onDateSelected(DateRangePickerSelectionChangedArgs args) async {
+    if (args.value is DateTime) {
+      final selected = args.value as DateTime;
+
+      // Skip if same date is selected again
+      if (_selectedDate != null && _selectedDate == selected) return;
+
+      setState(() => _selectedDate = selected);
+
+      String staffIdToUse;
+      if (widget.isStaff) {
+        final prefs = await SharedPreferences.getInstance();
+        staffIdToUse = prefs.getString("user_id") ?? "-1";
+      } else {
+        staffIdToUse = selectedStaff;
+      }
+
+      historyController.history.clear();
+      historyController.update();
+
+      await Future.delayed(const Duration(milliseconds: 300));
+
+      await historyController.fetchSchedulesForDate(selected, staffId: staffIdToUse);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final firstDayOfMonth = DateTime(_currentMonth.year, _currentMonth.month, 1);
+    final lastDayOfMonth = DateTime(_currentMonth.year, _currentMonth.month + 1, 0);
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -121,7 +156,6 @@ class _CalendarBookingScreenState extends State<CalendarBookingScreen> {
           ),
         ),
         actions: [
-          // 👇 Only show dropdown if admin
           if (!widget.isStaff)
             GetBuilder<StaffController>(
               builder: (controller) {
@@ -148,32 +182,42 @@ class _CalendarBookingScreenState extends State<CalendarBookingScreen> {
                       isExpanded: true,
                       value: selectedStaff,
                       items: [
-                        Staff(
-                          id: "-1",
-                          name: "All",
-                          email: "",
-                          phone: "",
-                          status: "",
-                          priority: 1,
-                        ),
+                        Staff(id: "-1", name: "All", email: "", phone: "", status: "", priority: 1),
                         ...controller.staffList
-                      ]
-                          .map((s) => DropdownMenuItem(
-                                value: s.id,
-                                child: Text(
-                                  s.name ?? "",
-                                  style: GoogleFonts.poppins(fontSize: 14.sp),
-                                ),
-                              ))
-                          .toList(),
-                      onChanged: (v) {
+                      ].map((s) => DropdownMenuItem(
+                            value: s.id,
+                            child: Text(
+                              s.name ?? "",
+                              style: GoogleFonts.poppins(fontSize: 14.sp),
+                            ),
+                          )).toList(),
+                      onChanged: (v) async {
                         if (v == null) return;
                         setState(() => selectedStaff = v);
-                        historyController.fetchHeatmap(
+
+                        String staffIdToUse;
+                        if (widget.isStaff) {
+                          final prefs = await SharedPreferences.getInstance();
+                          staffIdToUse = prefs.getString("user_id") ?? "-1";
+                        } else {
+                          staffIdToUse = selectedStaff;
+                        }
+
+                        await historyController.fetchHeatmap(
                           year: _currentMonth.year,
                           month: _currentMonth.month,
-                          staffId: selectedStaff,
+                          staffId: staffIdToUse,
                         );
+
+                        if (_selectedDate != null) {
+                          historyController.history.clear();
+                          historyController.update();
+                          await Future.delayed(const Duration(milliseconds: 300));
+                          await historyController.fetchSchedulesForDate(_selectedDate!, staffId: staffIdToUse);
+                        } else {
+                          historyController.history.clear();
+                          historyController.update();
+                        }
                       },
                     ),
                   ),
@@ -188,11 +232,13 @@ class _CalendarBookingScreenState extends State<CalendarBookingScreen> {
         child: Column(
           children: [
             Expanded(
+              flex: 2,
               child: GetBuilder<HistoryController>(
                 builder: (_) {
                   if (_.isLoadingHeatmap) {
                     return const Center(child: CircularProgressIndicator());
                   }
+
                   return SfDateRangePicker(
                     controller: _pickerController,
                     view: DateRangePickerView.month,
@@ -200,46 +246,162 @@ class _CalendarBookingScreenState extends State<CalendarBookingScreen> {
                     headerHeight: 40,
                     showNavigationArrow: true,
                     toggleDaySelection: true,
-                    enablePastDates: false,
+                    enablePastDates: true,
+                
                     backgroundColor: Colors.white,
                     onViewChanged: _onViewChanged,
-                    cellBuilder: (context, DateRangePickerCellDetails data) =>
-                        (data.date.month == _currentMonth.month)
-                            ? Container(
-                                height: 40.h,
-                                margin: EdgeInsets.all(2.h),
-                                decoration: BoxDecoration(
-                                  color: historyController.getHeatMapColor(
-                                    historyController
-                                        .fetchCountFromDate(data.date),
-                                    historyController.total,
-                                  ),
-                                  borderRadius: BorderRadius.circular(5.r),
+                    onSelectionChanged: _onDateSelected,
+                    cellBuilder: (context, DateRangePickerCellDetails data) {
+                      if (data.date.isBefore(firstDayOfMonth) || data.date.isAfter(lastDayOfMonth)) {
+                        return Container(); // Hide days from other months
+                      }
+
+                      int scheduleCount = historyController.fetchCountFromDate(data.date);
+
+                      return GestureDetector(
+                        onTap: () {
+                          _onDateSelected(DateRangePickerSelectionChangedArgs(data.date));
+                        },
+                        child: Container(
+                          height: 40.h,
+                          margin: EdgeInsets.all(2.h),
+                          decoration: BoxDecoration(
+                            color: historyController.getHeatMapColor(scheduleCount, historyController.total),
+                            borderRadius: BorderRadius.circular(5.r),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "$scheduleCount bk",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 11.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
                                 ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "${historyController.fetchCountFromDate(data.date)} bk",
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                    Text(
-                                      DateFormat("dd").format(data.date),
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
+                              ),
+                              Text(
+                                DateFormat("dd").format(data.date),
+                                style: GoogleFonts.poppins(
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black,
                                 ),
-                              )
-                            : Container(),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
                     monthViewSettings: const DateRangePickerMonthViewSettings(
-                      showTrailingAndLeadingDates: true,
+                      showTrailingAndLeadingDates: false,
                     ),
+                  );
+                },
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: GetBuilder<HistoryController>(
+                builder: (_) {
+                  if (_.isLoadingHeatmap) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                 if (_selectedDate == null) {
+  // No date selected, show nothing
+  return const SizedBox.shrink();
+}
+
+if (_.history.isEmpty) {
+  // Date selected but no schedules
+  return Center(
+    child: Text(
+      "No schedules for this date",
+      style: GoogleFonts.poppins(fontSize: 14.sp),
+    ),
+  );
+}
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        DateFormat("d MMMM, EEEE").format(_selectedDate!),
+                        style: GoogleFonts.poppins(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(height: 8.h),
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: _.history.length,
+                          itemBuilder: (context, index) {
+                            final item = _.history[index];
+
+                            String start = item.startTime != null
+                                ? DateFormat("hh:mm a").format(DateTime.parse(item.startTime!))
+                                : "-";
+                            String end = item.endTime != null
+                                ? DateFormat("hh:mm a").format(DateTime.parse(item.endTime!))
+                                : "-";
+
+                            return Padding(
+  padding: EdgeInsets.all(10.h),
+  child: Row(
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+      CircleAvatar(
+        radius: 20.sp,
+        backgroundColor: Color(0xff17A5C6),
+        child: Text(
+          (item.booking?.customer?.name ?? "U").substring(0, 1).toUpperCase(),
+          style: GoogleFonts.poppins(
+            color: Colors.white,
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+      SizedBox(width: 12.w),
+      Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              item.booking?.customer?.name ?? "Unknown Customer",
+              style: GoogleFonts.poppins(
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            SizedBox(height: 4.h),
+            Text(
+              "Time: $start - $end",
+              style: GoogleFonts.poppins(
+                fontSize: 14.sp,
+                color: Colors.grey[600],
+              ),
+            ),
+            SizedBox(height: 2.h),
+            Text(
+              "Staff: ${item.staff?.name ?? "N/A"}",
+              style: GoogleFonts.poppins(
+                fontSize: 14.sp,
+                color: Colors.grey[600],
+              ),
+            ),
+          ],
+        ),
+      ),
+    ],
+  ),
+);
+
+                          },
+                        ),
+                      ),
+                    ],
                   );
                 },
               ),

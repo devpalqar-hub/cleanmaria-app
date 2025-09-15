@@ -97,6 +97,8 @@ class HistoryController extends GetxController {
     try {
       final response = await get(
         Uri.parse("$baseUrl/scheduler/schedules?page=$page&limit=10$parms"),
+
+         
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
@@ -105,7 +107,10 @@ class HistoryController extends GetxController {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
+        debugPrint("Schedules API raw response: ${response.body}");
         final items = data["data"]["data"] as List;
+        debugPrint("Fetched ${items.length} schedules on page $page");
+
 
         for (var his in items) {
           HistoryModel model = HistoryModel.fromJson(his);
@@ -130,6 +135,52 @@ class HistoryController extends GetxController {
 
     update();
   }
+Future<void> fetchSchedulesForDate(DateTime date, {String staffId = "-1"}) async {
+  isLoadingHeatmap = true;
+  update();
+
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString("access_token");
+
+    String start = DateFormat("yyyy/MM/dd").format(date);
+    String end = DateFormat("yyyy/MM/dd").format(date);
+
+    String parms = "&startDate=$start&endDate=$end";
+    if (staffId != "-1") {
+      parms += "&staffId=$staffId";
+    }
+
+    final url = "$baseUrl/scheduler/schedules?page=1&limit=50$parms";
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+
+    final response = await get(Uri.parse(url), headers: headers);
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final items = data["data"]["data"] as List;
+
+      history.clear();
+      for (var his in items) {
+        history.add(HistoryModel.fromJson(his));
+      }
+
+      debugPrint("✅ ${history.length} schedules found for $start");
+    } else {
+      debugPrint("❌ Failed fetch for date $start → ${response.body}");
+      history.clear();
+    }
+  } catch (e) {
+    debugPrint("⚠️ Error fetching date schedules: $e");
+    history.clear();
+  }
+
+  isLoadingHeatmap = false;
+  update();
+}
 
   Future<void> fetchHeatmap(
     {required int year, required int month, String staffId = "-1"}) async {
