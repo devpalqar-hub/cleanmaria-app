@@ -14,7 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart' show Get;
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -30,8 +29,8 @@ class BookingDetailsScreen extends StatefulWidget {
   final String? date;
   final String? subscriptionId;
   var pCtrl;
-
   bool isStaff;
+
   BookingDetailsScreen(
       {required this.bookingId,
       this.date,
@@ -52,6 +51,8 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
   final BookingsController controller = Get.put(BookingsController());
   final HistoryController hiscontroller = Get.put(HistoryController());
 
+  DateTime? selectedRescheduleDate;
+
   @override
   void initState() {
     super.initState();
@@ -60,22 +61,6 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
       hiscontroller.fetchSchedules();
     });
   }
-void _toggleEcoOrMaterial({required bool eco}) async {
-    final booking = controller.bookingDetail!;
-    final success = await controller.updateBookingDetails(
-      booking.id!,
-      {
-        "isEco": eco,
-        "materialProvided": !eco,
-      },
-    );
-    if (success) {
-      await controller.fetchBookingDetails(booking.id!);
-      setState(() {});
-    }
-  }
-
-  bool isLoading = false;
 
   Widget _editableField({
     required String title,
@@ -121,14 +106,14 @@ void _toggleEcoOrMaterial({required bool eco}) async {
     required String initialValue,
     required Function(String newValue) onSave,
   }) {
-    TextEditingController controller =
+    TextEditingController controllerText =
         TextEditingController(text: initialValue);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text("Edit $fieldName"),
         content: TextField(
-          controller: controller,
+          controller: controllerText,
           decoration: InputDecoration(hintText: "Enter new $fieldName"),
         ),
         actions: [
@@ -137,7 +122,7 @@ void _toggleEcoOrMaterial({required bool eco}) async {
           TextButton(
               onPressed: () {
                 Navigator.pop(context);
-                onSave(controller.text.trim());
+                onSave(controllerText.text.trim());
               },
               child: Text("Save")),
         ],
@@ -177,26 +162,6 @@ void _toggleEcoOrMaterial({required bool eco}) async {
     } else {
       return booking.status ?? 'N/A';
     }
-  }
-
-  Future<bool> updateScheduleStatus(String scheduleId, String newStatus) async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString("access_token");
-    final response = await http.patch(
-      Uri.parse('$baseUrl/scheduler/schedules/$scheduleId'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-      body: jsonEncode({"status": newStatus}),
-    );
-
-    if (response.statusCode == 200) {
-      await hiscontroller.fetchSchedules(); // refresh history
-      return true;
-    }
-
-    return false;
   }
 
   void _showCancelDialog(BuildContext context) {
@@ -266,6 +231,158 @@ void _toggleEcoOrMaterial({required bool eco}) async {
     );
   }
 
+  DateTime getNextScheduleDate(BookingDetailModel booking) {
+  final today = DateTime.now();
+  if (booking.type == "recurring" && booking.monthSchedules != null) {
+    List<DateTime> upcomingDates = [];
+    for (var sched in booking.monthSchedules!) {
+      int weekday = sched.dayOfWeek!; // 1=Mon, 7=Sun
+      DateTime date = today;
+      while (date.weekday != weekday) {
+        date = date.add(Duration(days: 1));
+      }
+      upcomingDates.add(date);
+    }
+    upcomingDates.sort();
+    return upcomingDates.first;
+  } else if (booking.date != null) {
+    DateTime bDate = DateTime.parse(booking.date!).toLocal();
+    if (bDate.isBefore(today)) return today;
+    return bDate;
+  }
+  return today;
+}
+
+void _showRescheduleSheet(BuildContext context, String bookingId) {
+  final booking = controller.bookingDetail!;
+  final nextSchedule = getNextScheduleDate(booking);
+
+  int daysRange = 7; // default 7 days
+  if (booking.type == "recurring" && booking.reccuingType == "biweekly") {
+    daysRange = 14;
+  }
+
+  selectedRescheduleDate = nextSchedule;
+
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r))),
+    builder: (context) {
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return Padding(
+            padding: EdgeInsets.all(20.w),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "Reschedule Booking",
+                  style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
+                ),
+                SizedBox(height: 10.h),
+                _infoText(
+                    title: "Next Schedule Date",
+                    value: DateFormat("EEE, MMM d, yyyy | hh:mm a")
+                        .format(nextSchedule)),
+                SizedBox(height: 10.h),
+                SizedBox(
+                  height: 250,
+                  child: GridView.builder(
+                      itemCount: daysRange,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 7,
+                          mainAxisSpacing: 10,
+                          crossAxisSpacing: 10,
+                          childAspectRatio: 1),
+                      itemBuilder: (context, index) {
+                        DateTime date = nextSchedule.add(Duration(days: index));
+                        bool isSelected = selectedRescheduleDate != null &&
+                            selectedRescheduleDate!.day == date.day &&
+                            selectedRescheduleDate!.month == date.month &&
+                            selectedRescheduleDate!.year == date.year;
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              selectedRescheduleDate = date;
+                            });
+                          },
+                          child: Container(
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                color: isSelected
+                                    ? Color(0xff19A4C6)
+                                    : Colors.grey[200],
+                                borderRadius: BorderRadius.circular(8.r)),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  DateFormat("E").format(date), // Mon, Tue
+                                  style: TextStyle(
+                                      fontSize: 10.sp,
+                                      color: isSelected
+                                          ? Colors.white
+                                          : Colors.black),
+                                ),
+                                Text(
+                                  DateFormat("d").format(date),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      color: isSelected
+                                          ? Colors.white
+                                          : Colors.black),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
+                ),
+                SizedBox(height: 20.h),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xff19A4C6),
+                    minimumSize: Size(double.infinity, 50.h),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                  ),
+                  onPressed: () async {
+                    if (selectedRescheduleDate == null) return;
+                    bool success = await controller.updateBookingDetails(
+                      bookingId,
+                      {"rescheduledDate": selectedRescheduleDate!.toIso8601String()},
+                    );
+                    if (success) {
+                      Fluttertoast.showToast(msg: "Booking rescheduled successfully");
+                      await controller.fetchBookingDetails(bookingId);
+                      Navigator.pop(context);
+                      setState(() {});
+                    } else {
+                      Fluttertoast.showToast(msg: "Failed to reschedule booking");
+                    }
+                  },
+                  child: Text(
+                    "Save",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w600),
+                  ),
+                ),
+                SizedBox(height: 20.h),
+              ],
+            ),
+          );
+        },
+      );
+    },
+  );
+}
+
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -281,8 +398,6 @@ void _toggleEcoOrMaterial({required bool eco}) async {
                           sheduleID: widget.scheduleId!,
                           currentStatus: widget.status!,
                           onStatusChanged: (value) {
-                            //  booking.status = value;
-      
                             if (widget.status != null) widget.status = value;
                             setState(() {});
                             if (widget.pCtrl != null) widget.pCtrl.reload();
@@ -309,8 +424,7 @@ void _toggleEcoOrMaterial({required bool eco}) async {
         appBar: AppBar(
           backgroundColor: Colors.white,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_new_outlined,
-                color: Colors.black),
+            icon: const Icon(Icons.arrow_back_ios_new_outlined, color: Colors.black),
             onPressed: () => Navigator.pop(context),
           ),
           title: appText.primaryText(
@@ -323,73 +437,46 @@ void _toggleEcoOrMaterial({required bool eco}) async {
           return SingleChildScrollView(
             padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
             child: GetBuilder<BookingsController>(builder: (_) {
-              if (controller.isLoading) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              if (controller.errorMessage.isNotEmpty) {
-                return Center(child: Text(controller.errorMessage));
-              }
-              if (controller.bookingDetail == null) {
-                return const Center(child: Text('No booking details found'));
-              }
-      
+              if (controller.isLoading) return const Center(child: CircularProgressIndicator());
+              if (controller.errorMessage.isNotEmpty) return Center(child: Text(controller.errorMessage));
+              if (controller.bookingDetail == null) return const Center(child: Text('No booking details found'));
+
               final detail = controller.bookingDetail!;
               final customer = detail.customer;
               final service = detail.service;
               final booking = detail;
+
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Name & Call Button Row
                   Row(
                     children: [
                       Expanded(
-                        child: _infoText(
-                          title: "Name",
-                          value: customer?.name ?? 'N/A',
-                        ),
+                        child: _infoText(title: "Name", value: customer?.name ?? 'N/A'),
                       ),
                       if (customer?.phone != null && customer!.phone!.isNotEmpty)
                         InkWell(
                           onTap: () {
                             launchUrl(Uri.parse("tel:${customer.phone!}"));
                           },
-                          child: Image.asset(
-                            'assets/call2.png',
-                            width: 30.w,
-                            height: 30.h,
-                          ),
+                          child: Image.asset('assets/call2.png', width: 30.w, height: 30.h),
                         ),
                     ],
                   ),
                   SizedBox(height: 10.h),
-      
-                  _infoText(
-                      title: "Contact Number", value: customer?.phone ?? 'N/A'),
-                  SizedBox(height: 10.h),
-      
+                  _infoText(title: "Contact Number", value: customer?.phone ?? 'N/A'),
                   SizedBox(height: 10.h),
                   _infoText(title: "Email", value: customer?.email ?? 'N/A'),
                   SizedBox(height: 10.h),
                   _infoText(
                     title: "Address",
-                    value:
-                        "${booking.bookingAddress?.address?.line1 ?? ''}, ${booking.bookingAddress?.address?.city ?? ''}",
+                    value: "${booking.bookingAddress?.address?.line1 ?? ''}, ${booking.bookingAddress?.address?.city ?? ''}",
                   ),
                   SizedBox(height: 10.h),
-                  // _infoText(
-                  //   title: "Status",
-                  //   value: _getCurrentStatus(booking),
-                  // ),
-      
-                  // SizedBox(height: 10.h),
                   _infoText(
-                    title: widget.date == null
-                        ? "Booking Date"
-                        : "Cleaning Schedule",
+                    title: widget.date == null ? "Booking Date" : "Cleaning Schedule",
                     value: widget.date ??
-                        DateFormat("dd MMM yyyy|hh:mm a")
-                            .format(DateTime.parse(booking.createdAt!).toLocal()),
+                        DateFormat("EEE, MMM d, yyyy | hh:mm a").format(DateTime.parse(booking.createdAt!).toLocal()),
                   ),
                   SizedBox(height: 10.h),
                   if (widget.date == null)
@@ -397,11 +484,9 @@ void _toggleEcoOrMaterial({required bool eco}) async {
                       title: "Schedules",
                       value: (detail.type == "recurring")
                           ? booking.monthSchedules!
-                              .map((e) =>
-                                  "${controller.weektoDay(e.dayOfWeek!)}, ${e.time!}")
+                              .map((e) => "${controller.weektoDay(e.dayOfWeek!)}, ${e.time!}")
                               .join("\n")
-                          : DateFormat("dd-MM-yyyy|hh:mm:ss a")
-                              .format(DateTime.parse(booking.date!)),
+                          : DateFormat("EEE, MMM d, yyyy | hh:mm a").format(DateTime.parse(booking.date!).toLocal()),
                     ),
                   SizedBox(height: 10.h),
                   Row(
@@ -422,14 +507,11 @@ void _toggleEcoOrMaterial({required bool eco}) async {
                                   Fluttertoast.showToast(msg: "Invalid number");
                                   return;
                                 }
-                                final success =
-                                    await controller.updateBookingDetails(
+                                final success = await controller.updateBookingDetails(
                                   booking.id!,
                                   {"finalAmount": parsedPrice},
                                 );
-                                if (success) {
-                                  Fluttertoast.showToast(msg: "Price updated");
-                                }
+                                if (success) Fluttertoast.showToast(msg: "Price updated");
                               },
                             );
                           },
@@ -438,41 +520,23 @@ void _toggleEcoOrMaterial({required bool eco}) async {
                     ],
                   ),
                   SizedBox(height: 10.h),
-                  _infoText(
-                    title: "Total Sq",
-                    value: "Estimated sqft: ${booking.areaSize ?? 'N/A'}",
-                  ),
+                  _infoText(title: "Total Sq", value: "Estimated sqft: ${booking.areaSize ?? 'N/A'}"),
                   SizedBox(height: 10.h),
-                  _infoText(
-                    title: "Payment Method",
-                    value: booking.paymentMethod ?? 'N/A',
-                  ),
+                  _infoText(title: "Payment Method", value: booking.paymentMethod ?? 'N/A'),
                   SizedBox(height: 10.h),
-                  _infoText(
-                    title: "Type of cleaning",
-                    value: booking.reccuingType ?? "One Time",
-                  ),
+                  _infoText(title: "Type of cleaning", value: booking.reccuingType ?? "One Time"),
                   SizedBox(height: 10.h),
-                  if (widget.date != null)
-                    _infoText(title: "Cleaned By", value: widget.staff ?? 'N/A'),
-      
+                  if (widget.date != null) _infoText(title: "Cleaned By", value: widget.staff ?? 'N/A'),
                   SizedBox(height: 10.h),
-                  _infoText(
-                      title: "Type of property",
-                      value: booking.propertyType ?? 'N/A'),
+                  _infoText(title: "Type of property", value: booking.propertyType ?? 'N/A'),
                   SizedBox(height: 10.h),
-      
-                  // Room & Bathroom aligned row
                   Row(
-                    //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       appText.primaryText(
                         text: "Rooms: ${detail.noOfRooms ?? 'N/A'}",
                         fontWeight: FontWeight.w500,
                       ),
-                      SizedBox(
-                        width: 130.w,
-                      ),
+                      SizedBox(width: 130.w),
                       appText.primaryText(
                         text: "Bathrooms: ${detail.noOfBathRooms ?? 'N/A'}",
                         fontWeight: FontWeight.w500,
@@ -480,16 +544,11 @@ void _toggleEcoOrMaterial({required bool eco}) async {
                     ],
                   ),
                   SizedBox(height: 20.h),
-      
-                  // Service Plan and ECO Tag
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
-                        child: _infoText(
-                          title: "Service plan",
-                          value: service!.name ?? "",
-                        ),
+                        child: _infoText(title: "Service plan", value: service!.name ?? ""),
                       ),
                       if (detail.isEco ?? false)
                         Container(
@@ -511,21 +570,36 @@ void _toggleEcoOrMaterial({required bool eco}) async {
                     ],
                   ),
                   SizedBox(height: 10.h),
-      
                   if (detail.materialProvided ?? false)
                     appText.primaryText(
                       text: "Cleaning items given",
                       color: const Color(0xFF1C9F0B),
                       fontSize: 12.sp,
                     ),
-      
                   if (widget.date == null) ...[
                     SizedBox(height: 30.h),
                     GestureDetector(
-                      onTap: () => Get.to(
-                        () => CleaningHistory(bookingId: booking.id!),
-                        transition: Transition.rightToLeft,
+                      onTap: () => _showRescheduleSheet(context, booking.id!),
+                      child: Container(
+                        width: double.infinity,
+                        height: 50.h,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: Color(0xff19A4C6),
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                        child: Text(
+                          "Reschedule",
+                          style: TextStyle(color: Colors.white, fontSize: 14.sp, fontWeight: FontWeight.w600),
+                        ),
                       ),
+                    ),
+                  ],
+                  if (widget.date == null) ...[
+                    SizedBox(height: 30.h),
+                    GestureDetector(
+                      onTap: () => Get.to(() => CleaningHistory(bookingId: booking.id!),
+                          transition: Transition.rightToLeft),
                       child: Center(
                         child: appText.primaryText(
                           text: "View Cleaning History",
