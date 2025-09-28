@@ -181,6 +181,44 @@ Future<void> fetchSchedulesForDate(DateTime date, {String staffId = "-1"}) async
   isLoadingHeatmap = false;
   update();
 }
+Future<bool> rescheduleBooking({
+  required String bookingId,
+  required DateTime newDate,
+  required String time,
+}) async {
+  final prefs = await SharedPreferences.getInstance();
+  final token = prefs.getString("access_token");
+
+  final url = "$baseUrl/scheduler/reschedule/$bookingId";
+
+  final body = {
+    "newDate": DateFormat("yyyy-MM-dd").format(newDate),
+    "time": time,
+  };
+
+  try {
+    final response = await patch(
+      Uri.parse(url),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      debugPrint("✅ Booking rescheduled successfully: ${response.body}");
+      return true;
+    } else {
+      debugPrint(
+          "❌ Failed to reschedule booking: ${response.statusCode} → ${response.body}");
+      return false;
+    }
+  } catch (e) {
+    debugPrint("⚠️ Error rescheduling booking: $e");
+    return false;
+  }
+}
 
   Future<void> fetchHeatmap(
     {required int year, required int month, String staffId = "-1"}) async {

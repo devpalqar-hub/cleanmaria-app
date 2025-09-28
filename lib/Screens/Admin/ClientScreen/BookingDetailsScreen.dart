@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cleanby_maria/Screens/Admin/BookingScreen/Controller/EstimateController.dart';
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/CleaningHistory.dart';
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/Models/BookingDetailModel.dart';
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/Service/BookingController.dart';
@@ -52,6 +53,9 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
   final HistoryController hiscontroller = Get.put(HistoryController());
 
   DateTime? selectedRescheduleDate;
+  List<String> availableSlots = [];
+  String? selectedSlot;
+  int? totalDuration;
 
   @override
   void initState() {
@@ -231,157 +235,297 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
     );
   }
 
-  DateTime getNextScheduleDate(BookingDetailModel booking) {
-  final today = DateTime.now();
-  if (booking.type == "recurring" && booking.monthSchedules != null) {
-    List<DateTime> upcomingDates = [];
-    for (var sched in booking.monthSchedules!) {
-      int weekday = sched.dayOfWeek!; // 1=Mon, 7=Sun
-      DateTime date = today;
-      while (date.weekday != weekday) {
-        date = date.add(Duration(days: 1));
-      }
-      upcomingDates.add(date);
-    }
-    upcomingDates.sort();
-    return upcomingDates.first;
-  } else if (booking.date != null) {
-    DateTime bDate = DateTime.parse(booking.date!).toLocal();
-    if (bDate.isBefore(today)) return today;
-    return bDate;
+  /// ------------------------ FIXED NEXT SCHEDULE FUNCTION ------------------------
+  /// ------------------------ DEBUGGED NEXT SCHEDULE FUNCTION ------------------------
+DateTime getNextScheduleDate(
+  BookingDetailModel booking, {
+  DateTime? fromDate,
+}) {
+  final baseDate = fromDate ?? DateTime.now();
+  print("=== getNextScheduleDate called ===");
+  print("Booking ID: ${booking.id}");
+  print("Booking type: ${booking.type}");
+  print("Recurring type: ${booking.reccuingType}");
+  print("From date (baseDate): $baseDate");
+
+  // ---------------- ONE-TIME ----------------
+  if (booking.type == "one_time" && booking.date != null) {
+    final bookingDate = DateTime.parse(booking.date!).toLocal();
+    print("One-time booking date: $bookingDate");
+    return bookingDate.isAfter(baseDate)
+        ? bookingDate
+        : bookingDate.add(const Duration(days: 1));
   }
-  return today;
+
+  // ---------------- RECURRING ----------------
+  if (booking.type == "recurring" &&
+      booking.date != null &&
+      booking.monthSchedules != null &&
+      booking.monthSchedules!.isNotEmpty) {
+    List<DateTime> possibleDates = [];
+
+    for (var sched in booking.monthSchedules!) {
+      int weekday = sched.dayOfWeek!;
+      var parts = sched.time!.split(":");
+      int hour = int.parse(parts[0]);
+      int minute = int.parse(parts[1]);
+
+      DateTime startDate = DateTime.parse(booking.date!).toLocal();
+
+      // Align to correct weekday first
+      int daysToAdd = (weekday - startDate.weekday + 7) % 7;
+      DateTime firstSchedule = DateTime(
+        startDate.year,
+        startDate.month,
+        startDate.day,
+        hour,
+        minute,
+      ).add(Duration(days: daysToAdd));
+
+      // Determine stepDays based on recurring type
+      int stepDays = 7; // default weekly
+if (booking.reccuingType != null) {
+  final normalized = booking.reccuingType!.toLowerCase().replaceAll(RegExp(r'[\s-]'), '');
+  if (normalized == "biweekly") {
+    stepDays = 14;
+  }
 }
 
-void _showRescheduleSheet(BuildContext context, String bookingId) {
-  final booking = controller.bookingDetail!;
-  final nextSchedule = getNextScheduleDate(booking);
 
-  int daysRange = 7; // default 7 days
-  if (booking.type == "recurring" && booking.reccuingType == "biweekly") {
-    daysRange = 14;
+      // Move forward until after baseDate
+      while (!firstSchedule.isAfter(baseDate)) {
+        firstSchedule = firstSchedule.add(Duration(days: stepDays));
+      }
+
+      possibleDates.add(firstSchedule);
+
+      // DEBUG OUTPUT
+      print("--- Schedule Debug ---");
+      print("Weekday: $weekday, Time: ${sched.time}");
+      print("Start date: $startDate");
+      print("Initial firstSchedule: ${firstSchedule.subtract(Duration(days: stepDays))}");
+      print("Step days: $stepDays");
+      print("Next schedule date after adjustments: $firstSchedule");
+    }
+
+    possibleDates.sort((a, b) => a.compareTo(b));
+    print("Final next schedule: ${possibleDates.first}");
+    return possibleDates.first;
   }
 
-  selectedRescheduleDate = nextSchedule;
+  // ---------------- FALLBACK ----------------
+  print("Fallback: returning baseDate + 1 day");
+  return baseDate.add(const Duration(days: 1));
+}
 
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r))),
-    builder: (context) {
-      return StatefulBuilder(
-        builder: (context, setState) {
-          return Padding(
-            padding: EdgeInsets.all(20.w),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  "Reschedule Booking",
-                  style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
-                ),
-                SizedBox(height: 10.h),
-                _infoText(
-                    title: "Next Schedule Date",
-                    value: DateFormat("EEE, MMM d, yyyy | hh:mm a")
-                        .format(nextSchedule)),
-                SizedBox(height: 10.h),
-                SizedBox(
-                  height: 250,
-                  child: GridView.builder(
-                      itemCount: daysRange,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 7,
-                          mainAxisSpacing: 10,
-                          crossAxisSpacing: 10,
-                          childAspectRatio: 1),
-                      itemBuilder: (context, index) {
-                        DateTime date = nextSchedule.add(Duration(days: index));
-                        bool isSelected = selectedRescheduleDate != null &&
-                            selectedRescheduleDate!.day == date.day &&
-                            selectedRescheduleDate!.month == date.month &&
-                            selectedRescheduleDate!.year == date.year;
+  Future<void> fetchSlotsForDate(DateTime date) async {
+    final booking = controller.bookingDetail!;
+    if (totalDuration == null) {
+      // Calculate estimate first
+      final estimateData = await AppController().calculateEstimate(
+        serviceId: booking.service?.id ?? "",
+        noOfRooms: booking.noOfRooms ?? 0,
+        noOfBathrooms: booking.noOfBathRooms ?? 0,
+        squareFeet: booking.areaSize ?? 0,
+        isEcoCleaning: booking.isEco ?? false,
+        materialsProvidedByClient: booking.materialProvided ?? false,
+      );
+      totalDuration = estimateData['totalDuration'];
+    }
+
+    final slots = await AppController().fetchTimeSlots(
+      date: date,
+      totalDuration: totalDuration!,
+      recurringTypeId: booking.reccuingType ?? "one_time",
+    );
+
+    setState(() {
+      availableSlots = slots.map((e) => e['time'].toString()).toList();
+      selectedSlot = null;
+    });
+  }
+
+  void _showRescheduleSheet(BuildContext context, String bookingId) {
+    final booking = controller.bookingDetail!;
+    final nextSchedule = getNextScheduleDate(booking);
+
+    int daysRange = 7; // default 7 days
+    if (booking.type == "recurring" && booking.reccuingType == "biweekly") {
+      daysRange = 14;
+    }
+
+    selectedRescheduleDate = nextSchedule;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r))),
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setStateModal) {
+            return Padding(
+              padding: EdgeInsets.all(20.w),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "Reschedule Booking",
+                    style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
+                  ),
+                  SizedBox(height: 8.h),
+                  _infoText(
+                      title: "Next Schedule Date",
+                      value: DateFormat("EEE, MMM d, yyyy | hh:mm a")
+                          .format(nextSchedule)),
+                  SizedBox(height: 8.h),
+
+                  // Dates Grid
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: daysRange,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 7,
+                      mainAxisSpacing: 5,
+                      crossAxisSpacing: 5,
+                      childAspectRatio: 1,
+                    ),
+                    itemBuilder: (context, index) {
+                      DateTime date = nextSchedule.add(Duration(days: index));
+                      bool isSelected = selectedRescheduleDate != null &&
+                          selectedRescheduleDate!.day == date.day &&
+                          selectedRescheduleDate!.month == date.month &&
+                          selectedRescheduleDate!.year == date.year;
+                      return GestureDetector(
+                        onTap: () async {
+                          setStateModal(() {
+                            selectedRescheduleDate = date;
+                            selectedSlot = null;
+                            availableSlots = [];
+                          });
+                          await fetchSlotsForDate(date);
+                          setStateModal(() {});
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: isSelected
+                                  ? Color(0xff19A4C6)
+                                  : Colors.grey[200],
+                              borderRadius: BorderRadius.circular(8.r)),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                DateFormat("E").format(date),
+                                style: TextStyle(
+                                    fontSize: 10.sp,
+                                    color: isSelected ? Colors.white : Colors.black),
+                              ),
+                              Text(
+                                DateFormat("d").format(date),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: isSelected ? Colors.white : Colors.black),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+
+                  // Time Slots
+                  if (availableSlots.isNotEmpty) ...[
+                    SizedBox(height: 10.h),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Available Time Slots",
+                        style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    SizedBox(height: 5.h),
+                    Wrap(
+                      spacing: 5.w,
+                      runSpacing: 5.h,
+                      children: availableSlots.map((slot) {
+                        bool isSelected = selectedSlot == slot;
                         return GestureDetector(
                           onTap: () {
-                            setState(() {
-                              selectedRescheduleDate = date;
+                            setStateModal(() {
+                              selectedSlot = slot;
                             });
                           },
                           child: Container(
-                            alignment: Alignment.center,
+                            padding:
+                                EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
                             decoration: BoxDecoration(
                                 color: isSelected
                                     ? Color(0xff19A4C6)
                                     : Colors.grey[200],
                                 borderRadius: BorderRadius.circular(8.r)),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  DateFormat("E").format(date), // Mon, Tue
-                                  style: TextStyle(
-                                      fontSize: 10.sp,
-                                      color: isSelected
-                                          ? Colors.white
-                                          : Colors.black),
-                                ),
-                                Text(
-                                  DateFormat("d").format(date),
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      color: isSelected
-                                          ? Colors.white
-                                          : Colors.black),
-                                ),
-                              ],
+                            child: Text(
+                              slot,
+                              style: TextStyle(
+                                  color: isSelected ? Colors.white : Colors.black,
+                                  fontSize: 12.sp),
                             ),
                           ),
                         );
-                      }),
-                ),
-                SizedBox(height: 20.h),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xff19A4C6),
-                    minimumSize: Size(double.infinity, 50.h),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.r),
+                      }).toList(),
+                    ),
+                  ],
+
+                  SizedBox(height: 15.h),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xff19A4C6),
+                      minimumSize: Size(double.infinity, 50.h),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                    ),
+                    onPressed: (selectedRescheduleDate != null &&
+                            selectedSlot != null)
+                        ? () async {
+                            bool success = await hiscontroller.rescheduleBooking(
+                              bookingId: booking.id!,
+                              newDate: selectedRescheduleDate!,
+                              time: selectedSlot!,
+                            );
+
+                            if (success) {
+                              Fluttertoast.showToast(
+                                  msg: "Booking rescheduled successfully");
+                              await controller.fetchBookingDetails(booking.id!);
+                              await hiscontroller.fetchSchedules(clear: true);
+                              Navigator.pop(context);
+                              setState(() {});
+                            } else {
+                              Fluttertoast.showToast(
+                                  msg: "Failed to reschedule booking");
+                            }
+                          }
+                        : null,
+                    child: Text(
+                      "Save",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600),
                     ),
                   ),
-                  onPressed: () async {
-                    if (selectedRescheduleDate == null) return;
-                    bool success = await controller.updateBookingDetails(
-                      bookingId,
-                      {"rescheduledDate": selectedRescheduleDate!.toIso8601String()},
-                    );
-                    if (success) {
-                      Fluttertoast.showToast(msg: "Booking rescheduled successfully");
-                      await controller.fetchBookingDetails(bookingId);
-                      Navigator.pop(context);
-                      setState(() {});
-                    } else {
-                      Fluttertoast.showToast(msg: "Failed to reschedule booking");
-                    }
-                  },
-                  child: Text(
-                    "Save",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w600),
-                  ),
-                ),
-                SizedBox(height: 20.h),
-              ],
-            ),
-          );
-        },
-      );
-    },
-  );
-}
-
+                  SizedBox(height: 10.h),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
