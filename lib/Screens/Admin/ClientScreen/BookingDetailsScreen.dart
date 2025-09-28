@@ -235,7 +235,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
     );
   }
 
-  /// ------------------------ FIXED NEXT SCHEDULE FUNCTION ------------------------
+ 
   /// ------------------------ DEBUGGED NEXT SCHEDULE FUNCTION ------------------------
 DateTime getNextScheduleDate(
   BookingDetailModel booking, {
@@ -272,7 +272,7 @@ DateTime getNextScheduleDate(
 
       DateTime startDate = DateTime.parse(booking.date!).toLocal();
 
-      // Align to correct weekday first
+      
       int daysToAdd = (weekday - startDate.weekday + 7) % 7;
       DateTime firstSchedule = DateTime(
         startDate.year,
@@ -282,8 +282,8 @@ DateTime getNextScheduleDate(
         minute,
       ).add(Duration(days: daysToAdd));
 
-      // Determine stepDays based on recurring type
-      int stepDays = 7; // default weekly
+     
+      int stepDays = 7; 
 if (booking.reccuingType != null) {
   final normalized = booking.reccuingType!.toLowerCase().replaceAll(RegExp(r'[\s-]'), '');
   if (normalized == "biweekly") {
@@ -298,14 +298,6 @@ if (booking.reccuingType != null) {
       }
 
       possibleDates.add(firstSchedule);
-
-      // DEBUG OUTPUT
-      print("--- Schedule Debug ---");
-      print("Weekday: $weekday, Time: ${sched.time}");
-      print("Start date: $startDate");
-      print("Initial firstSchedule: ${firstSchedule.subtract(Duration(days: stepDays))}");
-      print("Step days: $stepDays");
-      print("Next schedule date after adjustments: $firstSchedule");
     }
 
     possibleDates.sort((a, b) => a.compareTo(b));
@@ -349,7 +341,7 @@ if (booking.reccuingType != null) {
     final booking = controller.bookingDetail!;
     final nextSchedule = getNextScheduleDate(booking);
 
-    int daysRange = 7; // default 7 days
+    int daysRange = 7; 
     if (booking.type == "recurring" && booking.reccuingType == "biweekly") {
       daysRange = 14;
     }
@@ -373,12 +365,32 @@ if (booking.reccuingType != null) {
                     "Reschedule Booking",
                     style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
                   ),
-                  SizedBox(height: 8.h),
-                  _infoText(
-                      title: "Next Schedule Date",
-                      value: DateFormat("EEE, MMM d, yyyy | hh:mm a")
-                          .format(nextSchedule)),
-                  SizedBox(height: 8.h),
+                  SizedBox(height: 25.h),
+                RichText(
+  text: TextSpan(
+    children: [
+      TextSpan(
+        text: "Next Schedule Date: ", // the label
+        style: TextStyle(
+          fontSize: 15.sp,
+          fontWeight: FontWeight.w600, // bold
+          color: Colors.black87,
+        ),
+      ),
+      TextSpan(
+        text: DateFormat("EEE, MMM d, yyyy | hh:mm a").format(nextSchedule), // the date
+        style: TextStyle(
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w500, // normal
+          color: Colors.black87,
+        ),
+      ),
+    ],
+  ),
+),
+
+
+                  SizedBox(height: 30.h),
 
                   // Dates Grid
                   GridView.builder(
@@ -478,7 +490,7 @@ if (booking.reccuingType != null) {
                     ),
                   ],
 
-                  SizedBox(height: 15.h),
+                  SizedBox(height: 25.h),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xff19A4C6),
