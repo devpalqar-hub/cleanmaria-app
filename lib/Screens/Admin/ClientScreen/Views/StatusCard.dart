@@ -113,7 +113,7 @@ class StatusCard extends StatelessWidget {
                         "",
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 10.sp,
+                      fontSize: 9.sp,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
