@@ -25,18 +25,20 @@ class CalendarBookingScreen extends StatefulWidget {
 }
 
 class _CalendarBookingScreenState extends State<CalendarBookingScreen> {
-  final DateRangePickerController _pickerController = DateRangePickerController();
+  final DateRangePickerController _pickerController =
+      DateRangePickerController();
   final StaffController staffController = Get.put(StaffController());
   final HistoryController historyController = Get.put(HistoryController());
 
- DateTime _currentMonth = DateTime.now();
+  DateTime _currentMonth = DateTime.now();
   DateTime? _selectedDate;
   String selectedStaff = "-1";
 
   @override
   void initState() {
     super.initState();
-    _pickerController.displayDate = DateTime(_currentMonth.year, _currentMonth.month, 1);
+    _pickerController.displayDate =
+        DateTime(_currentMonth.year, _currentMonth.month, 1);
     selectedStaff = widget.staffId;
     loadSchedules();
   }
@@ -56,7 +58,8 @@ class _CalendarBookingScreenState extends State<CalendarBookingScreen> {
       historyController.history.clear();
       historyController.update();
       await Future.delayed(const Duration(milliseconds: 300));
-      await historyController.fetchSchedulesForDate(_selectedDate!, staffId: staffIdToUse);
+      await historyController.fetchSchedulesForDate(_selectedDate!,
+          staffId: staffIdToUse);
     }
   }
 
@@ -78,11 +81,13 @@ class _CalendarBookingScreenState extends State<CalendarBookingScreen> {
 
       final start = visibleRange.startDate!;
       final end = visibleRange.endDate ?? start;
-      final midDate = start.add(Duration(days: ((end.difference(start).inDays) ~/ 2)));
+      final midDate =
+          start.add(Duration(days: ((end.difference(start).inDays) ~/ 2)));
 
       final newMonth = DateTime(midDate.year, midDate.month, 1);
 
-      if (newMonth.month != _currentMonth.month || newMonth.year != _currentMonth.year) {
+      if (newMonth.month != _currentMonth.month ||
+          newMonth.year != _currentMonth.year) {
         setState(() {
           _currentMonth = newMonth;
           _selectedDate = null;
@@ -117,14 +122,17 @@ class _CalendarBookingScreenState extends State<CalendarBookingScreen> {
 
       await Future.delayed(const Duration(milliseconds: 300));
 
-      await historyController.fetchSchedulesForDate(selected, staffId: staffIdToUse);
+      await historyController.fetchSchedulesForDate(selected,
+          staffId: staffIdToUse);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final firstDayOfMonth = DateTime(_currentMonth.year, _currentMonth.month, 1);
-    final lastDayOfMonth = DateTime(_currentMonth.year, _currentMonth.month + 1, 0);
+    final firstDayOfMonth =
+        DateTime(_currentMonth.year, _currentMonth.month, 1);
+    final lastDayOfMonth =
+        DateTime(_currentMonth.year, _currentMonth.month + 1, 0);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -154,7 +162,8 @@ class _CalendarBookingScreenState extends State<CalendarBookingScreen> {
                   );
                 }
 
-                if (controller.staffList.isEmpty) return const SizedBox.shrink();
+                if (controller.staffList.isEmpty)
+                  return const SizedBox.shrink();
 
                 return Container(
                   padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
@@ -168,15 +177,23 @@ class _CalendarBookingScreenState extends State<CalendarBookingScreen> {
                       isExpanded: true,
                       value: selectedStaff,
                       items: [
-                        Staff(id: "-1", name: "All", email: "", phone: "", status: "", priority: 1),
+                        Staff(
+                            id: "-1",
+                            name: "All",
+                            email: "",
+                            phone: "",
+                            status: "",
+                            priority: 1),
                         ...controller.staffList
-                      ].map((s) => DropdownMenuItem(
-                            value: s.id,
-                            child: Text(
-                              s.name ?? "",
-                              style: GoogleFonts.poppins(fontSize: 14.sp),
-                            ),
-                          )).toList(),
+                      ]
+                          .map((s) => DropdownMenuItem(
+                                value: s.id,
+                                child: Text(
+                                  s.name ?? "",
+                                  style: GoogleFonts.poppins(fontSize: 14.sp),
+                                ),
+                              ))
+                          .toList(),
                       onChanged: (v) async {
                         if (v == null) return;
                         setState(() => selectedStaff = v);
@@ -214,19 +231,23 @@ class _CalendarBookingScreenState extends State<CalendarBookingScreen> {
                     onViewChanged: _onViewChanged,
                     onSelectionChanged: _onDateSelected,
                     cellBuilder: (context, DateRangePickerCellDetails data) {
-                      if (data.date.isBefore(firstDayOfMonth) || data.date.isAfter(lastDayOfMonth)) {
+                      if (data.date.isBefore(firstDayOfMonth) ||
+                          data.date.isAfter(lastDayOfMonth)) {
                         return Container();
                       }
 
-                      int scheduleCount = historyController.fetchCountFromDate(data.date);
+                      int scheduleCount =
+                          historyController.fetchCountFromDate(data.date);
 
                       return GestureDetector(
-                        onTap: () => _onDateSelected(DateRangePickerSelectionChangedArgs(data.date)),
+                        onTap: () => _onDateSelected(
+                            DateRangePickerSelectionChangedArgs(data.date)),
                         child: Container(
                           height: 40.h,
                           margin: EdgeInsets.all(2.h),
                           decoration: BoxDecoration(
-                            color: historyController.getHeatMapColor(scheduleCount, historyController.total),
+                            color: historyController.getHeatMapColor(
+                                scheduleCount, historyController.total),
                             borderRadius: BorderRadius.circular(5.r),
                           ),
                           child: Column(
@@ -264,7 +285,8 @@ class _CalendarBookingScreenState extends State<CalendarBookingScreen> {
               flex: 1,
               child: GetBuilder<HistoryController>(
                 builder: (_) {
-                  if (_.isLoadingHeatmap) return const Center(child: CircularProgressIndicator());
+                  if (_.isLoadingHeatmap)
+                    return const Center(child: CircularProgressIndicator());
                   if (_selectedDate == null) return const SizedBox.shrink();
                   if (_.history.isEmpty) {
                     return Center(
@@ -293,35 +315,41 @@ class _CalendarBookingScreenState extends State<CalendarBookingScreen> {
                             final item = _.history[index];
 
                             String start = item.startTime != null
-                                ? DateFormat("hh:mm a").format(DateTime.parse(item.startTime!))
+                                ? DateFormat("hh:mm a")
+                                    .format(DateTime.parse(item.startTime!))
                                 : "-";
                             String end = item.endTime != null
-                                ? DateFormat("hh:mm a").format(DateTime.parse(item.endTime!))
+                                ? DateFormat("hh:mm a")
+                                    .format(DateTime.parse(item.endTime!))
                                 : "-";
 
                             return Padding(
                               padding: EdgeInsets.all(10.h),
                               child: InkWell(
                                 onTap: () {
-  final bookingId = item.booking?.id;
-  if (bookingId != null) {
-    // Format the schedule date and time
-   String formattedDate = _selectedDate != null
-        ? "${DateFormat('EEE, MMM d, yyyy').format(_selectedDate!)} | ${start} - ${end}"
-        : "";
+                                  final bookingId = item.booking?.id;
+                                  if (bookingId != null) {
+                                    // Format the schedule date and time
+                                    String formattedDate = _selectedDate != null
+                                        ? "${DateFormat('EEE, MMM d, yyyy').format(_selectedDate!)} | ${start} - ${end}"
+                                        : "";
 
-    Get.to(
-      () => BookingDetailsScreen(
-        bookingId: bookingId,
-        date: formattedDate,  // Pass the formatted string
-        staff: item.staff?.name,
-      ),
-    );
-  } else {
-    Get.snackbar("Error", "Booking details not available");
-  }
-},
-
+                                    Get.to(
+                                      () => BookingDetailsScreen(
+                                          bookingId: bookingId,
+                                          // date:
+                                          //     formattedDate, // Pass the formatted string
+                                          staff: item.staff?.name,
+                                          status: item.status,
+                                          scheduleId: item.id,
+                                          date:
+                                              "${DateFormat("EEE, MMM dd, yyyy | hh:mm a").format(DateTime.parse(item.startTime!))} - ${DateFormat("hh:mm a").format(DateTime.parse(item.endTime!))}"),
+                                    );
+                                  } else {
+                                    Get.snackbar("Error",
+                                        "Booking details not available");
+                                  }
+                                },
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
@@ -329,7 +357,9 @@ class _CalendarBookingScreenState extends State<CalendarBookingScreen> {
                                       radius: 20.sp,
                                       backgroundColor: const Color(0xff17A5C6),
                                       child: Text(
-                                        (item.booking?.customer?.name ?? "U").substring(0, 1).toUpperCase(),
+                                        (item.booking?.customer?.name ?? "U")
+                                            .substring(0, 1)
+                                            .toUpperCase(),
                                         style: GoogleFonts.poppins(
                                           color: Colors.white,
                                           fontSize: 14.sp,
@@ -340,10 +370,12 @@ class _CalendarBookingScreenState extends State<CalendarBookingScreen> {
                                     SizedBox(width: 12.w),
                                     Expanded(
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            item.booking?.customer?.name ?? "Unknown Customer",
+                                            item.booking?.customer?.name ??
+                                                "Unknown Customer",
                                             style: GoogleFonts.poppins(
                                               fontSize: 15.sp,
                                               fontWeight: FontWeight.w600,

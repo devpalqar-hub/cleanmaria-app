@@ -235,80 +235,78 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
     );
   }
 
- 
   /// ------------------------ DEBUGGED NEXT SCHEDULE FUNCTION ------------------------
-DateTime getNextScheduleDate(
-  BookingDetailModel booking, {
-  DateTime? fromDate,
-}) {
-  final baseDate = fromDate ?? DateTime.now();
-  print("=== getNextScheduleDate called ===");
-  print("Booking ID: ${booking.id}");
-  print("Booking type: ${booking.type}");
-  print("Recurring type: ${booking.reccuingType}");
-  print("From date (baseDate): $baseDate");
+  DateTime getNextScheduleDate(
+    BookingDetailModel booking, {
+    DateTime? fromDate,
+  }) {
+    final baseDate = fromDate ?? DateTime.now();
+    print("=== getNextScheduleDate called ===");
+    print("Booking ID: ${booking.id}");
+    print("Booking type: ${booking.type}");
+    print("Recurring type: ${booking.reccuingType}");
+    print("From date (baseDate): $baseDate");
 
-  // ---------------- ONE-TIME ----------------
-  if (booking.type == "one_time" && booking.date != null) {
-    final bookingDate = DateTime.parse(booking.date!).toLocal();
-    print("One-time booking date: $bookingDate");
-    return bookingDate.isAfter(baseDate)
-        ? bookingDate
-        : bookingDate.add(const Duration(days: 1));
-  }
-
-  // ---------------- RECURRING ----------------
-  if (booking.type == "recurring" &&
-      booking.date != null &&
-      booking.monthSchedules != null &&
-      booking.monthSchedules!.isNotEmpty) {
-    List<DateTime> possibleDates = [];
-
-    for (var sched in booking.monthSchedules!) {
-      int weekday = sched.dayOfWeek!;
-      var parts = sched.time!.split(":");
-      int hour = int.parse(parts[0]);
-      int minute = int.parse(parts[1]);
-
-      DateTime startDate = DateTime.parse(booking.date!).toLocal();
-
-      
-      int daysToAdd = (weekday - startDate.weekday + 7) % 7;
-      DateTime firstSchedule = DateTime(
-        startDate.year,
-        startDate.month,
-        startDate.day,
-        hour,
-        minute,
-      ).add(Duration(days: daysToAdd));
-
-     
-      int stepDays = 7; 
-if (booking.reccuingType != null) {
-  final normalized = booking.reccuingType!.toLowerCase().replaceAll(RegExp(r'[\s-]'), '');
-  if (normalized == "biweekly") {
-    stepDays = 14;
-  }
-}
-
-
-      // Move forward until after baseDate
-      while (!firstSchedule.isAfter(baseDate)) {
-        firstSchedule = firstSchedule.add(Duration(days: stepDays));
-      }
-
-      possibleDates.add(firstSchedule);
+    // ---------------- ONE-TIME ----------------
+    if (booking.type == "one_time" && booking.date != null) {
+      final bookingDate = DateTime.parse(booking.date!).toLocal();
+      print("One-time booking date: $bookingDate");
+      return bookingDate.isAfter(baseDate)
+          ? bookingDate
+          : bookingDate.add(const Duration(days: 1));
     }
 
-    possibleDates.sort((a, b) => a.compareTo(b));
-    print("Final next schedule: ${possibleDates.first}");
-    return possibleDates.first;
-  }
+    // ---------------- RECURRING ----------------
+    if (booking.type == "recurring" &&
+        booking.date != null &&
+        booking.monthSchedules != null &&
+        booking.monthSchedules!.isNotEmpty) {
+      List<DateTime> possibleDates = [];
 
-  // ---------------- FALLBACK ----------------
-  print("Fallback: returning baseDate + 1 day");
-  return baseDate.add(const Duration(days: 1));
-}
+      for (var sched in booking.monthSchedules!) {
+        int weekday = sched.dayOfWeek!;
+        var parts = sched.time!.split(":");
+        int hour = int.parse(parts[0]);
+        int minute = int.parse(parts[1]);
+
+        DateTime startDate = DateTime.parse(booking.date!).toLocal();
+
+        int daysToAdd = (weekday - startDate.weekday + 7) % 7;
+        DateTime firstSchedule = DateTime(
+          startDate.year,
+          startDate.month,
+          startDate.day,
+          hour,
+          minute,
+        ).add(Duration(days: daysToAdd));
+
+        int stepDays = 7;
+        if (booking.reccuingType != null) {
+          final normalized = booking.reccuingType!
+              .toLowerCase()
+              .replaceAll(RegExp(r'[\s-]'), '');
+          if (normalized == "biweekly") {
+            stepDays = 14;
+          }
+        }
+
+        // Move forward until after baseDate
+        while (!firstSchedule.isAfter(baseDate)) {
+          firstSchedule = firstSchedule.add(Duration(days: stepDays));
+        }
+
+        possibleDates.add(firstSchedule);
+      }
+
+      possibleDates.sort((a, b) => a.compareTo(b));
+      print("Final next schedule: ${possibleDates.first}");
+      return possibleDates.first;
+    }
+
+    // ---------------- FALLBACK ----------------
+    print("Fallback: returning baseDate + 1 day");
+    return baseDate.add(const Duration(days: 1));
+  }
 
   Future<void> fetchSlotsForDate(DateTime date) async {
     final booking = controller.bookingDetail!;
@@ -341,7 +339,7 @@ if (booking.reccuingType != null) {
     final booking = controller.bookingDetail!;
     final nextSchedule = getNextScheduleDate(booking);
 
-    int daysRange = 7; 
+    int daysRange = 7;
     if (booking.type == "recurring" && booking.reccuingType == "biweekly") {
       daysRange = 14;
     }
@@ -363,32 +361,33 @@ if (booking.reccuingType != null) {
                 children: [
                   Text(
                     "Reschedule Booking",
-                    style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
+                    style:
+                        TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
                   ),
                   SizedBox(height: 25.h),
-                RichText(
-  text: TextSpan(
-    children: [
-      TextSpan(
-        text: "Next Schedule Date: ", // the label
-        style: TextStyle(
-          fontSize: 15.sp,
-          fontWeight: FontWeight.w600, // bold
-          color: Colors.black87,
-        ),
-      ),
-      TextSpan(
-        text: DateFormat("EEE, MMM d, yyyy | hh:mm a").format(nextSchedule), // the date
-        style: TextStyle(
-          fontSize: 14.sp,
-          fontWeight: FontWeight.w500, // normal
-          color: Colors.black87,
-        ),
-      ),
-    ],
-  ),
-),
-
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "Next Schedule Date: ", // the label
+                          style: TextStyle(
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.w600, // bold
+                            color: Colors.black87,
+                          ),
+                        ),
+                        TextSpan(
+                          text: DateFormat("EEE, MMM d, yyyy | hh:mm a")
+                              .format(nextSchedule), // the date
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w500, // normal
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
 
                   SizedBox(height: 30.h),
 
@@ -433,13 +432,17 @@ if (booking.reccuingType != null) {
                                 DateFormat("E").format(date),
                                 style: TextStyle(
                                     fontSize: 10.sp,
-                                    color: isSelected ? Colors.white : Colors.black),
+                                    color: isSelected
+                                        ? Colors.white
+                                        : Colors.black),
                               ),
                               Text(
                                 DateFormat("d").format(date),
                                 style: TextStyle(
                                     fontWeight: FontWeight.w600,
-                                    color: isSelected ? Colors.white : Colors.black),
+                                    color: isSelected
+                                        ? Colors.white
+                                        : Colors.black),
                               ),
                             ],
                           ),
@@ -455,7 +458,8 @@ if (booking.reccuingType != null) {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         "Available Time Slots",
-                        style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
+                        style: TextStyle(
+                            fontSize: 14.sp, fontWeight: FontWeight.w600),
                       ),
                     ),
                     SizedBox(height: 5.h),
@@ -471,8 +475,8 @@ if (booking.reccuingType != null) {
                             });
                           },
                           child: Container(
-                            padding:
-                                EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 10.w, vertical: 6.h),
                             decoration: BoxDecoration(
                                 color: isSelected
                                     ? Color(0xff19A4C6)
@@ -481,7 +485,8 @@ if (booking.reccuingType != null) {
                             child: Text(
                               slot,
                               style: TextStyle(
-                                  color: isSelected ? Colors.white : Colors.black,
+                                  color:
+                                      isSelected ? Colors.white : Colors.black,
                                   fontSize: 12.sp),
                             ),
                           ),
@@ -502,7 +507,8 @@ if (booking.reccuingType != null) {
                     onPressed: (selectedRescheduleDate != null &&
                             selectedSlot != null)
                         ? () async {
-                            bool success = await hiscontroller.rescheduleBooking(
+                            bool success =
+                                await hiscontroller.rescheduleBooking(
                               bookingId: booking.id!,
                               newDate: selectedRescheduleDate!,
                               time: selectedSlot!,
@@ -580,7 +586,8 @@ if (booking.reccuingType != null) {
         appBar: AppBar(
           backgroundColor: Colors.white,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_new_outlined, color: Colors.black),
+            icon: const Icon(Icons.arrow_back_ios_new_outlined,
+                color: Colors.black),
             onPressed: () => Navigator.pop(context),
           ),
           title: appText.primaryText(
@@ -593,9 +600,12 @@ if (booking.reccuingType != null) {
           return SingleChildScrollView(
             padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
             child: GetBuilder<BookingsController>(builder: (_) {
-              if (controller.isLoading) return const Center(child: CircularProgressIndicator());
-              if (controller.errorMessage.isNotEmpty) return Center(child: Text(controller.errorMessage));
-              if (controller.bookingDetail == null) return const Center(child: Text('No booking details found'));
+              if (controller.isLoading)
+                return const Center(child: CircularProgressIndicator());
+              if (controller.errorMessage.isNotEmpty)
+                return Center(child: Text(controller.errorMessage));
+              if (controller.bookingDetail == null)
+                return const Center(child: Text('No booking details found'));
 
               final detail = controller.bookingDetail!;
               final customer = detail.customer;
@@ -608,31 +618,39 @@ if (booking.reccuingType != null) {
                   Row(
                     children: [
                       Expanded(
-                        child: _infoText(title: "Name", value: customer?.name ?? 'N/A'),
+                        child: _infoText(
+                            title: "Name", value: customer?.name ?? 'N/A'),
                       ),
-                      if (customer?.phone != null && customer!.phone!.isNotEmpty)
+                      if (customer?.phone != null &&
+                          customer!.phone!.isNotEmpty)
                         InkWell(
                           onTap: () {
                             launchUrl(Uri.parse("tel:${customer.phone!}"));
                           },
-                          child: Image.asset('assets/call2.png', width: 30.w, height: 30.h),
+                          child: Image.asset('assets/call2.png',
+                              width: 30.w, height: 30.h),
                         ),
                     ],
                   ),
                   SizedBox(height: 10.h),
-                  _infoText(title: "Contact Number", value: customer?.phone ?? 'N/A'),
+                  _infoText(
+                      title: "Contact Number", value: customer?.phone ?? 'N/A'),
                   SizedBox(height: 10.h),
                   _infoText(title: "Email", value: customer?.email ?? 'N/A'),
                   SizedBox(height: 10.h),
                   _infoText(
                     title: "Address",
-                    value: "${booking.bookingAddress?.address?.line1 ?? ''}, ${booking.bookingAddress?.address?.city ?? ''}",
+                    value:
+                        "${booking.bookingAddress?.address?.line1 ?? ''}, ${booking.bookingAddress?.address?.city ?? ''}",
                   ),
                   SizedBox(height: 10.h),
                   _infoText(
-                    title: widget.date == null ? "Booking Date" : "Cleaning Schedule",
+                    title: widget.date == null
+                        ? "Booking Date"
+                        : "Cleaning Schedule",
                     value: widget.date ??
-                        DateFormat("EEE, MMM d, yyyy | hh:mm a").format(DateTime.parse(booking.createdAt!).toLocal()),
+                        DateFormat("EEE, MMM d, yyyy | hh:mm a").format(
+                            DateTime.parse(booking.createdAt!).toLocal()),
                   ),
                   SizedBox(height: 10.h),
                   if (widget.date == null)
@@ -640,9 +658,11 @@ if (booking.reccuingType != null) {
                       title: "Schedules",
                       value: (detail.type == "recurring")
                           ? booking.monthSchedules!
-                              .map((e) => "${controller.weektoDay(e.dayOfWeek!)}, ${e.time!}")
+                              .map((e) =>
+                                  "${controller.weektoDay(e.dayOfWeek!)}, ${e.time!}")
                               .join("\n")
-                          : DateFormat("EEE, MMM d, yyyy | hh:mm a").format(DateTime.parse(booking.date!).toLocal()),
+                          : DateFormat("EEE, MMM d, yyyy | hh:mm a")
+                              .format(DateTime.parse(booking.date!).toLocal()),
                     ),
                   SizedBox(height: 10.h),
                   Row(
@@ -663,11 +683,13 @@ if (booking.reccuingType != null) {
                                   Fluttertoast.showToast(msg: "Invalid number");
                                   return;
                                 }
-                                final success = await controller.updateBookingDetails(
+                                final success =
+                                    await controller.updateBookingDetails(
                                   booking.id!,
                                   {"finalAmount": parsedPrice},
                                 );
-                                if (success) Fluttertoast.showToast(msg: "Price updated");
+                                if (success)
+                                  Fluttertoast.showToast(msg: "Price updated");
                               },
                             );
                           },
@@ -676,15 +698,25 @@ if (booking.reccuingType != null) {
                     ],
                   ),
                   SizedBox(height: 10.h),
-                  _infoText(title: "Total Sq", value: "Estimated sqft: ${booking.areaSize ?? 'N/A'}"),
+                  _infoText(
+                      title: "Total Sq",
+                      value: "Estimated sqft: ${booking.areaSize ?? 'N/A'}"),
                   SizedBox(height: 10.h),
-                  _infoText(title: "Payment Method", value: booking.paymentMethod ?? 'N/A'),
+                  _infoText(
+                      title: "Payment Method",
+                      value: booking.paymentMethod ?? 'N/A'),
                   SizedBox(height: 10.h),
-                  _infoText(title: "Type of cleaning", value: booking.reccuingType ?? "One Time"),
+                  _infoText(
+                      title: "Type of cleaning",
+                      value: booking.reccuingType ?? "One Time"),
                   SizedBox(height: 10.h),
-                  if (widget.date != null) _infoText(title: "Cleaned By", value: widget.staff ?? 'N/A'),
+                  if (widget.date != null)
+                    _infoText(
+                        title: "Cleaned By", value: widget.staff ?? 'N/A'),
                   SizedBox(height: 10.h),
-                  _infoText(title: "Type of property", value: booking.propertyType ?? 'N/A'),
+                  _infoText(
+                      title: "Type of property",
+                      value: booking.propertyType ?? 'N/A'),
                   SizedBox(height: 10.h),
                   Row(
                     children: [
@@ -704,7 +736,8 @@ if (booking.reccuingType != null) {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
-                        child: _infoText(title: "Service plan", value: service!.name ?? ""),
+                        child: _infoText(
+                            title: "Service plan", value: service!.name ?? ""),
                       ),
                       if (detail.isEco ?? false)
                         Container(
@@ -732,7 +765,7 @@ if (booking.reccuingType != null) {
                       color: const Color(0xFF1C9F0B),
                       fontSize: 12.sp,
                     ),
-                  if (widget.date == null) ...[
+                  if (widget.date != null) ...[
                     SizedBox(height: 30.h),
                     GestureDetector(
                       onTap: () => _showRescheduleSheet(context, booking.id!),
@@ -746,7 +779,10 @@ if (booking.reccuingType != null) {
                         ),
                         child: Text(
                           "Reschedule",
-                          style: TextStyle(color: Colors.white, fontSize: 14.sp, fontWeight: FontWeight.w600),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w600),
                         ),
                       ),
                     ),
@@ -754,7 +790,8 @@ if (booking.reccuingType != null) {
                   if (widget.date == null) ...[
                     SizedBox(height: 30.h),
                     GestureDetector(
-                      onTap: () => Get.to(() => CleaningHistory(bookingId: booking.id!),
+                      onTap: () => Get.to(
+                          () => CleaningHistory(bookingId: booking.id!),
                           transition: Transition.rightToLeft),
                       child: Center(
                         child: appText.primaryText(
