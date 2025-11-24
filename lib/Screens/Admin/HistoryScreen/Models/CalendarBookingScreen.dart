@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class CalendarBookingScreen extends StatefulWidget {
   final bool isStaff;
   final String staffId;
+  
 
   const CalendarBookingScreen({
     super.key,
@@ -139,10 +140,7 @@ class _CalendarBookingScreenState extends State<CalendarBookingScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
+       
         title: Text(
           "Schedules",
           style: GoogleFonts.poppins(
@@ -326,30 +324,44 @@ class _CalendarBookingScreenState extends State<CalendarBookingScreen> {
                             return Padding(
                               padding: EdgeInsets.all(10.h),
                               child: InkWell(
-                                onTap: () {
-                                  final bookingId = item.booking?.id;
-                                  if (bookingId != null) {
-                                    // Format the schedule date and time
-                                    String formattedDate = _selectedDate != null
-                                        ? "${DateFormat('EEE, MMM d, yyyy').format(_selectedDate!)} | ${start} - ${end}"
-                                        : "";
+                              onTap: () {
+  final bookingId = item.booking?.id;
+  if (bookingId != null) {
+    Get.to(
+      () => BookingDetailsScreen(
+        bookingId: bookingId,
+        staff: item.staff?.name,
+        status: item.status,
+        scheduleId: item.id,
+        date:
+            "${DateFormat("EEE, MMM dd, yyyy | hh:mm a").format(DateTime.parse(item.startTime!))} - ${DateFormat("hh:mm a").format(DateTime.parse(item.endTime!))}",
+      ),
+    )!.then((value) async {
+      if (_selectedDate != null) {
+        String staffIdToUse = await getStaffId();
 
-                                    Get.to(
-                                      () => BookingDetailsScreen(
-                                          bookingId: bookingId,
-                                          // date:
-                                          //     formattedDate, // Pass the formatted string
-                                          staff: item.staff?.name,
-                                          status: item.status,
-                                          scheduleId: item.id,
-                                          date:
-                                              "${DateFormat("EEE, MMM dd, yyyy | hh:mm a").format(DateTime.parse(item.startTime!))} - ${DateFormat("hh:mm a").format(DateTime.parse(item.endTime!))}"),
-                                    );
-                                  } else {
-                                    Get.snackbar("Error",
-                                        "Booking details not available");
-                                  }
-                                },
+        // Refresh DAY schedules
+        historyController.history.clear();
+        historyController.update();
+        await historyController.fetchSchedulesForDate(
+          _selectedDate!,
+          staffId: staffIdToUse,
+        );
+
+        // Refresh MONTH heatmap
+        await historyController.fetchHeatmap(
+          year: _currentMonth.year,
+          month: _currentMonth.month,
+          staffId: staffIdToUse,
+        );
+
+        setState(() {});
+      }
+    });
+  }
+},
+
+
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [

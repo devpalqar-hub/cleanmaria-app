@@ -496,45 +496,49 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                   ],
 
                   SizedBox(height: 25.h),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xff19A4C6),
-                      minimumSize: Size(double.infinity, 50.h),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                      ),
-                    ),
-                    onPressed: (selectedRescheduleDate != null &&
-                            selectedSlot != null)
-                        ? () async {
-                            bool success =
-                                await hiscontroller.rescheduleBooking(
-                              bookingId: booking.id!,
-                              newDate: selectedRescheduleDate!,
-                              time: selectedSlot!,
-                            );
+              ElevatedButton(
+  style: ElevatedButton.styleFrom(
+    backgroundColor: Color(0xff19A4C6),
+    minimumSize: Size(double.infinity, 50.h),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(12.r),
+    ),
+  ),
+  onPressed: (selectedRescheduleDate != null && selectedSlot != null)
+      ? () async {
+          String? msg = await hiscontroller.rescheduleBooking(
+            bookingId: booking.id!,
+            newDate: selectedRescheduleDate!,
+            time: selectedSlot!,
+          );
 
-                            if (success) {
-                              Fluttertoast.showToast(
-                                  msg: "Booking rescheduled successfully");
-                              await controller.fetchBookingDetails(booking.id!);
-                              await hiscontroller.fetchSchedules(clear: true);
-                              Navigator.pop(context);
-                              setState(() {});
-                            } else {
-                              Fluttertoast.showToast(
-                                  msg: "Failed to reschedule booking");
-                            }
-                          }
-                        : null,
-                    child: Text(
-                      "Save",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600),
-                    ),
-                  ),
+          if (msg == null) {
+            // SUCCESS
+            Fluttertoast.showToast(
+              msg: "Booking rescheduled successfully",
+            );
+
+            await controller.fetchBookingDetails(booking.id!);
+            await hiscontroller.fetchSchedules(clear: true);
+            Navigator.pop(context);
+            setState(() {});
+          } else {
+            // FAILURE → Show: "Failed: <backend message>"
+            Fluttertoast.showToast(
+              msg: "Failed: $msg",
+            );
+          }
+        }
+      : null,
+  child: Text(
+    "Save",
+    style: TextStyle(
+      color: Colors.white,
+      fontSize: 14.sp,
+      fontWeight: FontWeight.w600),
+  ),
+),
+
                   SizedBox(height: 10.h),
                 ],
               ),
@@ -765,7 +769,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                       color: const Color(0xFF1C9F0B),
                       fontSize: 12.sp,
                     ),
-                  if (widget.date != null) ...[
+                
                     SizedBox(height: 30.h),
                     GestureDetector(
                       onTap: () => _showRescheduleSheet(context, booking.id!),
@@ -786,7 +790,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                         ),
                       ),
                     ),
-                  ],
+                  
                   if (widget.date == null) ...[
                     SizedBox(height: 30.h),
                     GestureDetector(

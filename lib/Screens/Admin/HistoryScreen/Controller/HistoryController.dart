@@ -181,7 +181,7 @@ Future<void> fetchSchedulesForDate(DateTime date, {String staffId = "-1"}) async
   isLoadingHeatmap = false;
   update();
 }
-Future<bool> rescheduleBooking({
+Future<String?> rescheduleBooking({
   required String bookingId,
   required DateTime newDate,
   required String time,
@@ -207,18 +207,19 @@ Future<bool> rescheduleBooking({
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
-      debugPrint("✅ Booking rescheduled successfully: ${response.body}");
-      return true;
+      return null; // success
     } else {
-      debugPrint(
-          "❌ Failed to reschedule booking: ${response.statusCode} → ${response.body}");
-      return false;
+      final decoded = jsonDecode(response.body);
+
+      // return ONLY message field
+      return decoded["message"]?.toString() ?? "Something went wrong";
     }
   } catch (e) {
-    debugPrint("⚠️ Error rescheduling booking: $e");
-    return false;
+    return e.toString();
   }
 }
+
+
 
   Future<void> fetchHeatmap(
     {required int year, required int month, String staffId = "-1"}) async {
