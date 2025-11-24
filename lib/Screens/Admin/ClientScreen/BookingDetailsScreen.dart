@@ -813,7 +813,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                       onTap: () => _showCancelDialog(context),
                       child: Center(
                         child: appText.primaryText(
-                          text: "Cancelation of Booking",
+                          text: "Cancelation of Subscription",
                           color: Colors.red,
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w600,

@@ -18,11 +18,12 @@ class ScheduleListScreen extends StatefulWidget {
 }
 
 class _ScheduleListScreenState extends State<ScheduleListScreen> {
-  final HistoryController hisCtrl = Get.put(HistoryController());
+  final HistoryController hisCtrl = Get.find<HistoryController>();
 
   @override
   void initState() {
     super.initState();
+
     // 🔹 Default filter: from today to +45 days
     final DateTime today = DateTime.now();
     final DateTime future = today.add(const Duration(days: 45));
@@ -30,7 +31,7 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
     hisCtrl.startDate = today;
     hisCtrl.endDate = future;
 
-    // Fetch schedules for this range automatically
+    // Fetch schedules automatically
     WidgetsBinding.instance.addPostFrameCallback((_) {
       hisCtrl.fetchSchedules();
     });
@@ -94,6 +95,23 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
     );
   }
 
+  Future<void> _openBookingDetails(item) async {
+    if (item.booking?.id == null) return;
+
+    await Get.to(() => BookingDetailsScreen(
+          bookingId: item.booking!.id!,
+          staff: item.staff?.name,
+          pCtrl: hisCtrl,
+          status: item.status ?? "Unknown",
+          scheduleId: item.id,
+          date:
+              "${DateFormat("EEE, MMM dd, yyyy | hh:mm a").format(DateTime.parse(item.startTime!))} - ${DateFormat("hh:mm a").format(DateTime.parse(item.endTime!))}",
+        ));
+
+    // Refresh schedules & heatmap on return
+    await hisCtrl.fetchSchedules();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -139,20 +157,10 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
                             status: data.status ?? "Unknown",
                             color: hisCtrl.getStatusColor(data.status!),
                             customerName: data.booking!.customer!.name!,
-                            onTap: () {
-                              Get.to(() => BookingDetailsScreen(
-                                    bookingId: data.booking!.id!,
-                                    staff: data.staff!.name,
-                                    pCtrl: hisCtrl,
-                                    status: data.status ?? "Unknown",
-                                    scheduleId: data.id,
-                                    date:
-                                        "${DateFormat("EEE, MMM dd, yyyy | hh:mm a").format(DateTime.parse(data.startTime!))} - ${DateFormat("hh:mm a").format(DateTime.parse(data.endTime!))}",
-                                  ))?.then((_) => hisCtrl.reload());
-                            },
                             time:
                                 "${DateFormat("EEE, MMM dd, yyyy | hh:mm a").format(DateTime.parse(data.startTime!))} - ${DateFormat("hh:mm a").format(DateTime.parse(data.endTime!))}",
                             location: "Cleaned By : ${data.staff!.name}",
+                            onTap: () => _openBookingDetails(data),
                           ),
                       if (hisCtrl.history.isEmpty)
                         Padding(

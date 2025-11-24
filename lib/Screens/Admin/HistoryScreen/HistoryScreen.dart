@@ -14,6 +14,8 @@ class BookingsaScreen extends StatefulWidget {
 }
 
 class _BookingsaScreenState extends State<BookingsaScreen> {
+  final GlobalKey calendarKey = GlobalKey(); // Use plain GlobalKey
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -30,12 +32,24 @@ class _BookingsaScreenState extends State<BookingsaScreen> {
             IconButton(
               icon: const Icon(Icons.note_alt, color: Colors.black),
               onPressed: () {
-                Get.to(() => const ScheduleListScreen());
+                Get.to(() => const ScheduleListScreen())?.then((_) async {
+                  // Refresh calendar when returning from ScheduleListScreen
+                  if (calendarKey.currentState != null) {
+                    // Call your loadSchedules method via the key
+                    dynamic state = calendarKey.currentState;
+                    if (state != null && state.loadSchedules != null) {
+                      await state.loadSchedules();
+                    }
+                  }
+                });
               },
             ),
           ],
         ),
-        body: const CalendarBookingScreen(isStaff: false),
+        body: CalendarBookingScreen(
+          key: calendarKey, // attach the key here
+          isStaff: false,
+        ),
       ),
     );
   }
