@@ -1,3 +1,4 @@
+import 'package:cleanby_maria/Screens/User/UserHomeScreen/UserHomeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -7,10 +8,10 @@ import 'Screens/AuthenticationScreen/AutheticationScreen.dart';
 import 'Screens/Admin/HomeScreen/HomeScreen.dart';
 import 'Screens/staff/DashBoardScreen.dart';
 
-String baseUrl = 
+String baseUrl =
 //(true)
-  //? "https://app.cleanmaria.com/api"
-  //: 
+    //? "https://app.cleanmaria.com/api"
+    //:
     "https://staging.cleanmaria.com/api";
 
 String login = "";
@@ -29,9 +30,9 @@ class CleanbyMaria extends StatelessWidget {
     return ScreenUtilInit(
       designSize: const Size(390, 850),
       builder: (context, child) => GetMaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: const SplashScreen(),
-      ),
+          debugShowCheckedModeBanner: false,
+          home: UserHomeScreen() //const SplashScreen(),
+          ),
     );
   }
 }
