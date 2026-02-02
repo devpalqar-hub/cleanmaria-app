@@ -10,8 +10,8 @@ import 'Screens/staff/DashBoardScreen.dart';
 
 String baseUrl =
 //(true)
-    //? "https://app.cleanmaria.com/api"
-    //:
+//? "https://app.cleanmaria.com/api"
+//:
     "https://staging.cleanmaria.com/api";
 
 String login = "";
@@ -30,9 +30,10 @@ class CleanbyMaria extends StatelessWidget {
     return ScreenUtilInit(
       designSize: const Size(390, 850),
       builder: (context, child) => GetMaterialApp(
-          debugShowCheckedModeBanner: false,
-          home: UserHomeScreen() //const SplashScreen(),
-          ),
+        debugShowCheckedModeBanner: false,
+        home: BookingScreen(),
+        //const SplashScreen(),
+      ),
     );
   }
 }

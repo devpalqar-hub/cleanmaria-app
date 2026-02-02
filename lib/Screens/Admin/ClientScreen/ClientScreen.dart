@@ -49,7 +49,6 @@ class _ClientScreenState extends State<ClientScreen> {
               margin: EdgeInsets.symmetric(horizontal: 16.w),
               width: 360.w,
               child: CupertinoSlidingSegmentedControl(
-                proportionalWidth: true,
                 children: {
                   0: SizedBox(
                     width: 178.w,
