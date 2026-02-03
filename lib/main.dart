@@ -31,7 +31,7 @@ class CleanbyMaria extends StatelessWidget {
       designSize: const Size(390, 850),
       builder: (context, child) => GetMaterialApp(
         debugShowCheckedModeBanner: false,
-        home: BookingScreen(),
+        home: SplashScreen(),
         //const SplashScreen(),
       ),
     );

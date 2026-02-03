@@ -1,13 +1,12 @@
 import 'package:cleanby_maria/Screens/Admin/BookingScreen/BookingScreen.dart';
-
-import 'package:cleanby_maria/Screens/Admin/ClientScreen/Views/BStatusCard.dart';
+import 'package:cleanby_maria/Screens/Admin/ClientScreen/Models/bookingModel.dart';
+import 'package:cleanby_maria/Screens/Admin/ClientScreen/Service/BookingController.dart';
+import 'package:cleanby_maria/Screens/Admin/ClientScreen/BookingDetailsScreen.dart';
 import 'package:cleanby_maria/Src/appText.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'BookingDetailsScreen.dart';
-import 'Service/BookingController.dart';
 
 class ClientScreen extends StatefulWidget {
   const ClientScreen({super.key});
@@ -19,6 +18,7 @@ class ClientScreen extends StatefulWidget {
 class _ClientScreenState extends State<ClientScreen> {
   final BookingsController bookingsController = Get.put(BookingsController());
   final TextEditingController searchController = TextEditingController();
+
   int selectedMenu = 0;
 
   @override
@@ -32,120 +32,216 @@ class _ClientScreenState extends State<ClientScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
+
         appBar: AppBar(
           backgroundColor: Colors.white,
+          elevation: 0,
           title: appText.primaryText(
             text: "Bookings",
             fontSize: 18.sp,
             fontWeight: FontWeight.w600,
           ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.add, color: Colors.blue),
+              onPressed: () {
+                Get.to(() => EstimateScreen());
+              },
+            )
+          ],
         ),
+
         body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 10.h),
-            Container(
-              alignment: Alignment.center,
-              margin: EdgeInsets.symmetric(horizontal: 16.w),
-              width: 360.w,
-              child: CupertinoSlidingSegmentedControl(
-                children: {
-                  0: SizedBox(
-                    width: 178.w,
-                    height: 46.h,
-                    child: Center(child: Text("Subscription")),
+
+            /// SEARCH
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              child: TextField(
+                controller: searchController,
+                onChanged: (_) => setState(() {}),
+                decoration: InputDecoration(
+                  hintText: "Search...",
+                  filled: true,
+                  fillColor: Colors.grey.shade100,
+                  prefixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
                   ),
-                  1: SizedBox(
-                    width: 178.w,
-                    height: 46.h,
-                    child: Center(child: Text("One-Time")),
-                  ),
-                },
-                groupValue: selectedMenu,
-                onValueChanged: (value) {
-                  if (value != null) {
-                    setState(() {
-                      selectedMenu = value;
-                      if (value == 0) {
-                        bookingsController.fetchBookings("booked", "recurring");
-                      } else {
-                        bookingsController.fetchBookings("booked", "one_time");
-                      }
-                    });
+                ),
+              ),
+            ),
+
+            SizedBox(height: 20.h),
+
+            /// SEGMENTS
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              child: Row(
+                children: [
+                  _segment("SUBSCRIPTION", selectedMenu == 0, () {
+                    setState(() => selectedMenu = 0);
+                    bookingsController.fetchBookings("booked", "recurring");
+                  }),
+                  SizedBox(width: 20.w),
+                  _segment("ONE-TIME", selectedMenu == 1, () {
+                    setState(() => selectedMenu = 1);
+                    bookingsController.fetchBookings("booked", "one_time");
+                  }),
+                ],
+              ),
+            ),
+
+            SizedBox(height: 10.h),
+
+            /// LIST
+            Expanded(
+              child: GetBuilder<BookingsController>(
+                builder: (_) {
+                  if (bookingsController.isLoading) {
+                    return const Center(child: CircularProgressIndicator());
                   }
+
+                  if (bookingsController.errorMessage.isNotEmpty) {
+                    return Center(
+                      child: Text(bookingsController.errorMessage),
+                    );
+                  }
+
+                  final List<BookingModel> list =
+                      bookingsController.bookings;
+
+                  return ListView.builder(
+                    itemCount: list.length,
+                    itemBuilder: (context, index) {
+                      final booking = list[index];
+                      final name = booking.customer?.name ?? "N/A";
+
+                      if (searchController.text.isNotEmpty &&
+                          !name
+                              .toLowerCase()
+                              .contains(searchController.text.toLowerCase())) {
+                        return const SizedBox.shrink();
+                      }
+
+                      return _BookingListTile(
+                        booking: booking,
+                        onTap: () {
+                          Get.to(() => BookingDetailsScreen(
+                            bookingId: booking.id!,
+                          ));
+                        },
+                      );
+                    },
+                  );
                 },
               ),
             ),
-            SizedBox(height: 10.h),
-            Container(
-              width: 360.w,
-              height: 50.h,
-              margin: EdgeInsets.only(left: 15.w),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.r),
-                color: Colors.grey.shade200,
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _segment(String text, bool selected, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 12.sp,
+          fontWeight: FontWeight.w600,
+          color: selected ? Colors.black : Colors.grey,
+        ),
+      ),
+    );
+  }
+}
+
+/// ================= LIST TILE UI =================
+
+class _BookingListTile extends StatelessWidget {
+  final BookingModel booking;
+  final VoidCallback onTap;
+
+  const _BookingListTile({
+    required this.booking,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final name = booking.customer?.name ?? "N/A";
+    final initials = name.isNotEmpty
+        ? name.split(" ").map((e) => e[0]).take(2).join()
+        : "NA";
+
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+        child: Row(
+          children: [
+            /// AVATAR
+            CircleAvatar(
+              radius: 20,
+              backgroundColor: Colors.grey.shade200,
+              child: Text(
+                initials,
+                style: const TextStyle(fontWeight: FontWeight.w600),
               ),
-              child: Row(
+            ),
+
+            SizedBox(width: 14.w),
+
+            /// NAME + ADDRESS
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(width: 15.w),
-                  const Icon(Icons.search, color: Colors.black),
-                  SizedBox(width: 10.w),
-                  Expanded(
-                    child: TextField(
-                      controller: searchController,
-                      onChanged: (value) {
-                        setState(() {});
-                      },
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "Search for Bookings",
-                      ),
+                  Text(
+                    name,
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: 4.h),
+                  Text(
+                    "${booking.bookingAddress?.address?.line1 ?? ""}",
+                    style: TextStyle(
+                      fontSize: 11.sp,
+                      color: Colors.grey,
                     ),
                   ),
                 ],
               ),
             ),
-            SizedBox(height: 25.h),
-            GetBuilder<BookingsController>(builder: (context) {
-              if (bookingsController.isLoading) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              if (bookingsController.errorMessage.isNotEmpty) {
-                return Center(child: Text(bookingsController.errorMessage));
-              }
-              return Expanded(
-        child: ListView.builder(
-      itemCount: bookingsController.bookings.length,
-      itemBuilder: (context, index) {
-        final booking = bookingsController.bookings[index];
-      
-        if (searchController.text.isEmpty ||
-            booking.customer?.name
-                    ?.toLowerCase()
-                    .contains(searchController.text.toLowerCase()) ==
-                true) {
-          return GestureDetector(
-            onTap: () {
-              Get.to(() => BookingDetailsScreen(
-                    bookingId: booking.id ?? '',
-                  ));
-            },
-            child: BStatusCard(booking: booking),
-          );
-        }
-        return SizedBox.shrink();
-      },
-        ),
-      );
-        }),
+
+            /// PRICE + TYPE
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  "\$${booking.price ?? 0}",
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(height: 4.h),
+                Text(
+                  booking.reccuingType ?? "ONE-TIME",
+                  style: TextStyle(
+                    fontSize: 10.sp,
+                    color: Colors.grey,
+                  ),
+                ),
+              ],
+            ),
           ],
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Get.to(() => EstimateScreen());
-          },
-          backgroundColor: Colors.blue,
-          child:  Icon(Icons.add,),
         ),
       ),
     );
