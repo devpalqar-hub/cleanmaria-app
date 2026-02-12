@@ -34,15 +34,15 @@ class BookingDetailsScreen extends StatefulWidget {
 
   BookingDetailsScreen(
       {required this.bookingId,
-      this.date,
-      this.staff,
-      this.status,
-      this.pCtrl,
-      this.scheduleId,
-      this.subscriptionId,
-      this.isStaff = false,
-      this.isCanceld = false,
-      super.key});
+        this.date,
+        this.staff,
+        this.status,
+        this.pCtrl,
+        this.scheduleId,
+        this.subscriptionId,
+        this.isStaff = false,
+        this.isCanceld = false,
+        super.key});
 
   @override
   State<BookingDetailsScreen> createState() => _BookingDetailsScreenState();
@@ -111,7 +111,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
     required Function(String newValue) onSave,
   }) {
     TextEditingController controllerText =
-        TextEditingController(text: initialValue);
+    TextEditingController(text: initialValue);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -155,11 +155,40 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
       ],
     );
   }
+  Widget _rowItem(String label, String value) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 10.h),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 13.sp,
+                color: Colors.grey,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 
   String _getCurrentStatus(BookingDetailModel booking) {
     if (widget.scheduleId != null) {
       final historyMatch = hiscontroller.history.firstWhere(
-        (h) => h.id == widget.scheduleId,
+            (h) => h.id == widget.scheduleId,
         orElse: () => HistoryModel(status: booking.status),
       );
       return historyMatch.status ?? booking.status ?? 'N/A';
@@ -226,7 +255,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
               },
               child: (isLoading)
                   ? LoadingAnimationWidget.staggeredDotsWave(
-                      color: Colors.blue, size: 24.sp)
+                  color: Colors.blue, size: 24.sp)
                   : const Text("Yes", style: TextStyle(color: Colors.blue)),
             );
           }),
@@ -237,9 +266,9 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
 
   /// ------------------------ DEBUGGED NEXT SCHEDULE FUNCTION ------------------------
   DateTime getNextScheduleDate(
-    BookingDetailModel booking, {
-    DateTime? fromDate,
-  }) {
+      BookingDetailModel booking, {
+        DateTime? fromDate,
+      }) {
     final baseDate = fromDate ?? DateTime.now();
     print("=== getNextScheduleDate called ===");
     print("Booking ID: ${booking.id}");
@@ -362,7 +391,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                   Text(
                     "Reschedule Booking",
                     style:
-                        TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
+                    TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
                   ),
                   SizedBox(height: 25.h),
                   RichText(
@@ -486,7 +515,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                               slot,
                               style: TextStyle(
                                   color:
-                                      isSelected ? Colors.white : Colors.black,
+                                  isSelected ? Colors.white : Colors.black,
                                   fontSize: 12.sp),
                             ),
                           ),
@@ -496,48 +525,48 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                   ],
 
                   SizedBox(height: 25.h),
-              ElevatedButton(
-  style: ElevatedButton.styleFrom(
-    backgroundColor: Color(0xff19A4C6),
-    minimumSize: Size(double.infinity, 50.h),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(12.r),
-    ),
-  ),
-  onPressed: (selectedRescheduleDate != null && selectedSlot != null)
-      ? () async {
-          String? msg = await hiscontroller.rescheduleBooking(
-            bookingId: booking.id!,
-            newDate: selectedRescheduleDate!,
-            time: selectedSlot!,
-          );
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xff19A4C6),
+                      minimumSize: Size(double.infinity, 50.h),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                    ),
+                    onPressed: (selectedRescheduleDate != null && selectedSlot != null)
+                        ? () async {
+                      String? msg = await hiscontroller.rescheduleBooking(
+                        bookingId: booking.id!,
+                        newDate: selectedRescheduleDate!,
+                        time: selectedSlot!,
+                      );
 
-          if (msg == null) {
-            // SUCCESS
-            Fluttertoast.showToast(
-              msg: "Booking rescheduled successfully",
-            );
+                      if (msg == null) {
+                        // SUCCESS
+                        Fluttertoast.showToast(
+                          msg: "Booking rescheduled successfully",
+                        );
 
-            await controller.fetchBookingDetails(booking.id!);
-            await hiscontroller.fetchSchedules(clear: true);
-            Navigator.pop(context);
-            setState(() {});
-          } else {
-            // FAILURE → Show: "Failed: <backend message>"
-            Fluttertoast.showToast(
-              msg: "Failed: $msg",
-            );
-          }
-        }
-      : null,
-  child: Text(
-    "Save",
-    style: TextStyle(
-      color: Colors.white,
-      fontSize: 14.sp,
-      fontWeight: FontWeight.w600),
-  ),
-),
+                        await controller.fetchBookingDetails(booking.id!);
+                        await hiscontroller.fetchSchedules(clear: true);
+                        Navigator.pop(context);
+                        setState(() {});
+                      } else {
+                        // FAILURE → Show: "Failed: <backend message>"
+                        Fluttertoast.showToast(
+                          msg: "Failed: $msg",
+                        );
+                      }
+                    }
+                        : null,
+                    child: Text(
+                      "Save",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ),
 
                   SizedBox(height: 10.h),
                 ],
@@ -554,41 +583,54 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        bottomNavigationBar: (widget.scheduleId == null)
-            ? null
-            : InkWell(
-                onTap: () {
-                  Get.bottomSheet(
-                      BookingStatusBottomSheet(
-                          isStaff: widget.isStaff,
-                          sheduleID: widget.scheduleId!,
-                          currentStatus: widget.status!,
-                          onStatusChanged: (value) {
-                            if (widget.status != null) widget.status = value;
-                            setState(() {});
-                            if (widget.pCtrl != null) widget.pCtrl.reload();
-                          }),
-                      isScrollControlled: true);
-                },
-                child: Container(
-                  width: 320.w,
-                  margin: EdgeInsets.only(bottom: 20, left: 20, right: 20),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30.r),
-                      color: Color(0xff19A4C6)),
-                  height: 50,
-                  alignment: Alignment.center,
-                  child: Text(
-                    "Change Status",
-                    style: TextStyle(
-                        fontSize: 14.w,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500),
-                  ),
-                ),
-              ),
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          currentIndex: 1, // bookings selected
+          selectedItemColor: const Color(0xff19A4C6),
+          unselectedItemColor: Colors.grey,
+          onTap: (index) {
+            switch (index) {
+              case 0:
+                Get.offAllNamed("/home");
+                break;
+
+              case 1:
+              // already here
+                break;
+
+              case 2:
+                Get.to(() => CleaningHistory(bookingId: widget.bookingId));
+                break;
+
+              case 3:
+                Get.offAllNamed("/selfService");
+                break;
+            }
+          },
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: "Home",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.calendar_today),
+              label: "Bookings",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.history),
+              label: "History",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.build),
+              label: "Self-Service",
+            ),
+          ],
+        ),
+
+
         appBar: AppBar(
           backgroundColor: Colors.white,
+          elevation: 0,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new_outlined,
                 color: Colors.black),
@@ -600,231 +642,178 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
             fontWeight: FontWeight.w600,
           ),
         ),
+
         body: GetBuilder<BookingsController>(builder: (_) {
+          if (controller.isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (controller.errorMessage.isNotEmpty) {
+            return Center(child: Text(controller.errorMessage));
+          }
+
+          if (controller.bookingDetail == null) {
+            return const Center(child: Text('No booking details found'));
+          }
+
+          final detail = controller.bookingDetail!;
+          final customer = detail.customer;
+          final booking = detail;
+          final service = detail.service;
+
           return SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
-            child: GetBuilder<BookingsController>(builder: (_) {
-              if (controller.isLoading)
-                return const Center(child: CircularProgressIndicator());
-              if (controller.errorMessage.isNotEmpty)
-                return Center(child: Text(controller.errorMessage));
-              if (controller.bookingDetail == null)
-                return const Center(child: Text('No booking details found'));
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
 
-              final detail = controller.bookingDetail!;
-              final customer = detail.customer;
-              final service = detail.service;
-              final booking = detail;
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
 
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _infoText(
-                            title: "Name", value: customer?.name ?? 'N/A'),
+                // ================= HEADER =================
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          appText.primaryText(
+                            text: customer?.name ?? "N/A",
+                            fontSize: 20.sp,
+                            fontWeight: FontWeight.w700,
+                          ),
+                          SizedBox(height: 4.h),
+                          appText.primaryText(
+                            text: customer?.email ?? "",
+                            fontSize: 13.sp,
+                            color: Colors.grey,
+                          ),
+                        ],
                       ),
-                      if (customer?.phone != null &&
-                          customer!.phone!.isNotEmpty)
-                        InkWell(
-                          onTap: () {
-                            launchUrl(Uri.parse("tel:${customer.phone!}"));
-                          },
-                          child: Image.asset('assets/call2.png',
-                              width: 30.w, height: 30.h),
-                        ),
-                    ],
-                  ),
-                  SizedBox(height: 10.h),
-                  _infoText(
-                      title: "Contact Number", value: customer?.phone ?? 'N/A'),
-                  SizedBox(height: 10.h),
-                  _infoText(title: "Email", value: customer?.email ?? 'N/A'),
-                  SizedBox(height: 10.h),
-                  _infoText(
-                    title: "Address",
-                    value:
-                        "${booking.bookingAddress?.address?.line1 ?? ''}, ${booking.bookingAddress?.address?.city ?? ''}",
-                  ),
-                  SizedBox(height: 10.h),
-                  _infoText(
-                    title: widget.date == null
-                        ? "Booking Date"
-                        : "Cleaning Schedule",
-                    value: widget.date ??
-                        DateFormat("EEE, MMM d, yyyy | hh:mm a").format(
-                            DateTime.parse(booking.createdAt!).toLocal()),
-                  ),
-                  SizedBox(height: 10.h),
-                  if (widget.date == null)
-                    _infoText(
-                      title: "Schedules",
-                      value: (detail.type == "recurring")
-                          ? booking.monthSchedules!
-                              .map((e) =>
-                                  "${controller.weektoDay(e.dayOfWeek!)}, ${e.time!}")
-                              .join("\n")
-                          : DateFormat("EEE, MMM d, yyyy | hh:mm a")
-                              .format(DateTime.parse(booking.date!).toLocal()),
                     ),
-                  SizedBox(height: 10.h),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: _editableField(
-                          title: "Service Cost",
-                          value: "Estimated Cost: ₹${booking.price ?? 'N/A'}",
-                          onEdit: () {
-                            showEditDialog(
-                              context: context,
-                              fieldName: "Service Cost",
-                              initialValue: booking.price?.toString() ?? '',
-                              onSave: (newVal) async {
-                                final parsedPrice = double.tryParse(newVal);
-                                if (parsedPrice == null) {
-                                  Fluttertoast.showToast(msg: "Invalid number");
-                                  return;
-                                }
-                                final success =
-                                    await controller.updateBookingDetails(
-                                  booking.id!,
-                                  {"finalAmount": parsedPrice},
-                                );
-                                if (success)
-                                  Fluttertoast.showToast(msg: "Price updated");
-                              },
-                            );
-                          },
+
+                    if (customer?.phone != null &&
+                        customer!.phone!.isNotEmpty)
+                      InkWell(
+                        onTap: () {
+                          launchUrl(Uri.parse("tel:${customer.phone!}"));
+                        },
+                        child: CircleAvatar(
+                          radius: 22.r,
+                          backgroundColor: const Color(0xffE9F5FB),
+                          child: const Icon(Icons.call,
+                              color: Color(0xff19A4C6)),
                         ),
                       ),
-                    ],
-                  ),
-                  SizedBox(height: 10.h),
-                  _infoText(
-                      title: "Total Sq",
-                      value: "Estimated sqft: ${booking.areaSize ?? 'N/A'}"),
-                  SizedBox(height: 10.h),
-                  _infoText(
-                      title: "Payment Method",
-                      value: booking.paymentMethod ?? 'N/A'),
-                  SizedBox(height: 10.h),
-                  _infoText(
-                      title: "Type of cleaning",
-                      value: booking.reccuingType ?? "One Time"),
-                  SizedBox(height: 10.h),
-                  if (widget.date != null)
-                    _infoText(
-                        title: "Cleaned By", value: widget.staff ?? 'N/A'),
-                  SizedBox(height: 10.h),
-                  _infoText(
-                      title: "Type of property",
-                      value: booking.propertyType ?? 'N/A'),
-                  SizedBox(height: 10.h),
-                  Row(
-                    children: [
-                      appText.primaryText(
-                        text: "Rooms: ${detail.noOfRooms ?? 'N/A'}",
-                        fontWeight: FontWeight.w500,
-                      ),
-                      SizedBox(width: 130.w),
-                      appText.primaryText(
-                        text: "Bathrooms: ${detail.noOfBathRooms ?? 'N/A'}",
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20.h),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: _infoText(
-                            title: "Service plan", value: service!.name ?? ""),
-                      ),
-                      if (detail.isEco ?? false)
-                        Container(
-                          width: 65.w,
-                          height: 19.h,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10.r),
-                            color: const Color(0xFF1C9F0B),
-                          ),
-                          child: Center(
-                            child: appText.primaryText(
-                              text: "ECO SERVICE",
-                              fontSize: 8.sp,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                  SizedBox(height: 10.h),
-                  if (detail.materialProvided ?? false)
-                    appText.primaryText(
-                      text: "Cleaning items given",
+                  ],
+                ),
+
+                SizedBox(height: 25.h),
+
+                // ================= DETAILS =================
+                _rowItem("Phone", customer?.phone ?? "N/A"),
+
+                _rowItem(
+                  "Address",
+                  "${booking.bookingAddress?.address?.line1 ?? ''}, ${booking.bookingAddress?.address?.city ?? ''}",
+                ),
+
+                _rowItem(
+                  "Time",
+                  widget.date ??
+                      DateFormat("EEE, MMM d | hh:mm a")
+                          .format(DateTime.parse(booking.createdAt!).toLocal()),
+                ),
+
+                Divider(height: 30.h),
+
+                _rowItem("Status", booking.status ?? "N/A"),
+
+                _rowItem("Est. Cost", "₹${booking.price ?? '0'}"),
+
+                _rowItem("Est. Sqft", "${booking.areaSize ?? '0'}"),
+
+                _rowItem("Payment", booking.paymentMethod ?? "N/A"),
+
+                _rowItem("Type", booking.reccuingType ?? "One Time"),
+
+                if (widget.date != null)
+                  _rowItem("Cleaned By", widget.staff ?? "N/A"),
+
+                SizedBox(height: 20.h),
+
+                _rowItem("Service Plan", service?.name ?? ""),
+
+                if (detail.isEco ?? false)
+                  Padding(
+                    padding: EdgeInsets.only(top: 8.h),
+                    child: appText.primaryText(
+                      text: "ECO SERVICE",
                       color: const Color(0xFF1C9F0B),
                       fontSize: 12.sp,
                     ),
-                
-                    SizedBox(height: 30.h),
-                    GestureDetector(
-                      onTap: () => _showRescheduleSheet(context, booking.id!),
-                      child: Container(
-                        width: double.infinity,
-                        height: 50.h,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: Color(0xff19A4C6),
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                        child: Text(
-                          "Reschedule",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w600),
-                        ),
+                  ),
+
+                SizedBox(height: 40.h),
+
+                // ================= RESCHEDULE =================
+                GestureDetector(
+                  onTap: () => _showRescheduleSheet(context, booking.id!),
+                  child: Container(
+                    width: double.infinity,
+                    height: 50.h,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: const Color(0xff19A4C6),
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                    child: Text(
+                      "Reschedule",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ),
+
+                SizedBox(height: 25.h),
+
+                // ================= CHANGE STATUS =================
+                GestureDetector(
+                  onTap: () {
+                    Get.bottomSheet(
+                      BookingStatusBottomSheet(
+                        isStaff: widget.isStaff,
+                        sheduleID: booking.id!, // ✅ use booking id directly
+                        currentStatus: booking.status ?? "",
+                        onStatusChanged: (value) {
+                          widget.status = value;
+                          setState(() {});
+                        },
+                      ),
+                      isScrollControlled: true,
+                    );
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    height: 55.h,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: const Color(0xff0B1320),
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                    child: Text(
+                      "Change Status",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                  
-                  if (widget.date == null) ...[
-                    SizedBox(height: 30.h),
-                    GestureDetector(
-                      onTap: () => Get.to(
-                          () => CleaningHistory(bookingId: booking.id!),
-                          transition: Transition.rightToLeft),
-                      child: Center(
-                        child: appText.primaryText(
-                          text: "View Cleaning History",
-                          color: Colors.black,
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
-                  if (booking.status == "booked") ...[
-                    SizedBox(height: 10.h),
-                    GestureDetector(
-                      onTap: () => _showCancelDialog(context),
-                      child: Center(
-                        child: appText.primaryText(
-                          text: "Cancelation of Subscription",
-                          color: Colors.red,
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
-                  SizedBox(height: 20.h),
-                ],
-              );
-            }),
+                  ),
+                ),
+                SizedBox(height: 30.h),
+              ],
+            ),
           );
         }),
       ),
