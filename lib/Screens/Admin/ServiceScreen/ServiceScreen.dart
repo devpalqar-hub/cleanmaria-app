@@ -44,10 +44,25 @@ class _ServiceScreenState extends State<ServiceScreen> {
           actions: [
             Padding(
               padding: EdgeInsets.only(right: 16.w),
-              child: Icon(
-                Icons.add,
-                color: const Color(0xFF19A4C6),
-                size: 22.sp,
+              child: InkWell(
+                onTap: () {
+                  sRCtrl.clearText();
+
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(20.r)),
+                    ),
+                    builder: (context) => CreateService(),
+                  );
+                },
+                child: Icon(
+                  Icons.add,
+                  color: const Color(0xFF19A4C6),
+                  size: 22.sp,
+                ),
               ),
             ),
           ],
@@ -60,28 +75,26 @@ class _ServiceScreenState extends State<ServiceScreen> {
               return Column(
                 children: [
                   SizedBox(height: 12.h),
-
                   Expanded(
                     child: _.isLoading
                         ? const Center(child: CircularProgressIndicator())
                         : _.services.isEmpty
-                        ? const Center(
-                        child: Text("No services available"))
-                        : ListView.builder(
-                      padding: EdgeInsets.only(
-                          bottom: 100.h, top: 4.h),
-                      itemCount: _.services.length,
-                      itemBuilder: (context, index) {
-                        final service = _.services[index];
+                            ? const Center(child: Text("No services available"))
+                            : ListView.builder(
+                                padding:
+                                    EdgeInsets.only(bottom: 100.h, top: 4.h),
+                                itemCount: _.services.length,
+                                itemBuilder: (context, index) {
+                                  final service = _.services[index];
 
-                        return (searchController.text.isEmpty ||
-                            service.name
-                                .toLowerCase()
-                                .contains(searchController.text))
-                            ? ServiceCard(service: service)
-                            : const SizedBox.shrink();
-                      },
-                    ),
+                                  return (searchController.text.isEmpty ||
+                                          service.name
+                                              .toLowerCase()
+                                              .contains(searchController.text))
+                                      ? ServiceCard(service: service)
+                                      : const SizedBox.shrink();
+                                },
+                              ),
                   ),
                 ],
               );

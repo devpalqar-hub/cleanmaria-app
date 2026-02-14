@@ -33,7 +33,7 @@ class ServiceCard extends StatelessWidget {
                 child: Text(
                   service.name,
                   style: GoogleFonts.poppins(
-                    fontSize: 16.sp,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
                     color: const Color(0xFF111827),
                   ),
@@ -42,8 +42,8 @@ class ServiceCard extends StatelessWidget {
               Row(
                 children: [
                   Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 12.w, vertical: 6.h),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                     decoration: BoxDecoration(
                       color: const Color(0xFFF3F4F6),
                       borderRadius: BorderRadius.circular(10.r),
@@ -61,15 +61,14 @@ class ServiceCard extends StatelessWidget {
                   IconButton(
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
-                    icon: const Icon(Icons.edit,
-                        color: Color(0xFF6B7280)),
+                    icon: const Icon(Icons.edit, color: Color(0xFF6B7280)),
                     onPressed: () {
                       showModalBottomSheet(
                         context: context,
                         isScrollControlled: true,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(20.r)),
+                          borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(20.r)),
                         ),
                         builder: (context) =>
                             EditServiceBottomSheet(service: service),
@@ -80,18 +79,16 @@ class ServiceCard extends StatelessWidget {
               )
             ],
           ),
-
-          SizedBox(height: 16.h),
+          SizedBox(height: 10.h),
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                "\$${service.basePrice}",
+                "\$${service.basePrice}/",
                 style: GoogleFonts.poppins(
-                  fontSize: 24.sp,
-                  fontWeight: FontWeight.w700,
+                  fontSize: 22.sp,
+                  fontWeight: FontWeight.w600,
                   color: const Color(0xFF2D3748),
-
                 ),
               ),
               SizedBox(width: 8.w),
@@ -107,16 +104,12 @@ class ServiceCard extends StatelessWidget {
               ),
             ],
           ),
-
-          SizedBox(height: 18.h),
-
+          SizedBox(height: 10.h),
           Divider(
             thickness: 1,
             color: const Color(0xFFE5E7EB),
           ),
-
-          SizedBox(height: 16.h),
-
+          SizedBox(height: 10.h),
           Row(
             children: [
               _bottomColumn("BATH", service.bathroomRate),

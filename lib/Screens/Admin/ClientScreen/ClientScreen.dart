@@ -1,4 +1,5 @@
 import 'package:cleanby_maria/Screens/Admin/BookingScreen/BookingScreen.dart';
+import 'package:cleanby_maria/Screens/Admin/ClientScreen/ClientBookingDetailsScreen.dart';
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/Models/bookingModel.dart';
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/Service/BookingController.dart';
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/BookingDetailsScreen.dart';
@@ -124,9 +125,14 @@ class _ClientScreenState extends State<ClientScreen> {
                     return _BookingListTile(
                       booking: booking,
                       onTap: () {
-                        Get.to(() => BookingDetailsScreen(
-                              bookingId: booking.id!,
-                            ));
+                        Get.to(
+                            () => ClientBookingDetailsScreen(
+                                  bookingID: booking.id!,
+                                ),
+                            transition: Transition.rightToLeft);
+                        // Get.to(() => BookingDetailsScreen(
+                        //       bookingId: booking.id!,
+                        //     ));
                       },
                     );
                   },
@@ -174,8 +180,11 @@ class _BookingListTile extends StatelessWidget {
 
     return InkWell(
       onTap: onTap,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 15.h),
+        decoration: BoxDecoration(
+            border: Border(
+                bottom: BorderSide(color: Colors.black.withOpacity(.05)))),
         child: Row(
           children: [
             /// AVATAR
@@ -184,7 +193,10 @@ class _BookingListTile extends StatelessWidget {
               backgroundColor: Colors.grey.shade200,
               child: Text(
                 initials,
-                style: const TextStyle(fontWeight: FontWeight.w600),
+                style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xff99A1AF)),
               ),
             ),
 
@@ -197,12 +209,13 @@ class _BookingListTile extends StatelessWidget {
                 children: [
                   Text(
                     name,
+                    overflow: TextOverflow.clip,
+                    maxLines: 1,
                     style: TextStyle(
                       fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
-                  SizedBox(height: 4.h),
                   Text(
                     "${booking.bookingAddress?.address?.line1 ?? ""}",
                     style: TextStyle(
@@ -222,7 +235,7 @@ class _BookingListTile extends StatelessWidget {
                   "\$${booking.price ?? 0}",
                   style: TextStyle(
                     fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
                 SizedBox(height: 4.h),

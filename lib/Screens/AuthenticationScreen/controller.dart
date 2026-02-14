@@ -164,6 +164,8 @@ class AuthenticationController extends GetxController {
           await prefs.setString("user_name", data['user']['name'] ?? "User");
           await prefs.setString("email", email);
           await prefs.setString("LOGIN", "IN");
+
+          authToken = accessToken;
           return {
             "success": true,
             "accessToken": data['access_token'],

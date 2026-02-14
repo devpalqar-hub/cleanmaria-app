@@ -14,6 +14,7 @@ String baseUrl = (false)
 
 String login = "";
 String? userType = "";
+String authToken = "";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,8 +45,9 @@ class SplashScreen extends StatelessWidget {
 
   Future<Widget> _checkLoginStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String loginStatus = ""; //prefs.getString("LOGIN") ?? "";
+    String loginStatus = prefs.getString("LOGIN") ?? "";
     String userType = prefs.getString("role") ?? "";
+    authToken = prefs.getString("access_token") ?? "";
 
     if (loginStatus == "IN") {
       return userType == "staff"

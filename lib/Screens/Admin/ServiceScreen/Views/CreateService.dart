@@ -14,17 +14,17 @@ class CreateService extends StatefulWidget {
 }
 
 class _CreateServiceState extends State<CreateService> {
-void dispose() {
+  void dispose() {
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder<ServiceController>(
       builder: (_) {
         return Padding(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: Container(
             padding: EdgeInsets.all(20.w),
             decoration: BoxDecoration(
@@ -54,37 +54,51 @@ void dispose() {
                     ),
                   ),
                   SizedBox(height: 20.h),
-                  _buildInputField("Service Name", "Enter service name", _.nameController),
-                  _buildInputField("Duration (minutes)", "Enter duration", _.durationController, isNumber: true),
-                  _buildInputField("Base Price", "Enter base price", _.basePriceController, isNumber: true),
-                  _buildInputField("Bathroom Rate", "Enter bathroom rate", _.bathroomRateController, isNumber: true),
-                  _buildInputField("Room Rate", "Enter room rate", _.roomRateController, isNumber: true),
-                  _buildInputField("Square Foot Price", "Enter square foot price", _.squareFootPriceController, isNumber: true),
+                  _buildInputField(
+                      "Service Name", "Enter service name", _.nameController),
+                  _buildInputField("Duration (minutes)", "Enter duration",
+                      _.durationController,
+                      isNumber: true),
+                  _buildInputField(
+                      "Base Price", "Enter base price", _.basePriceController,
+                      isNumber: true),
+                  _buildInputField("Bathroom Rate", "Enter bathroom rate",
+                      _.bathroomRateController,
+                      isNumber: true),
+                  _buildInputField(
+                      "Room Rate", "Enter room rate", _.roomRateController,
+                      isNumber: true),
+                  _buildInputField("Square Foot Price",
+                      "Enter square foot price", _.squareFootPriceController,
+                      isNumber: true),
                   SizedBox(height: 20.h),
                   _.isLoading
                       ? const CircularProgressIndicator()
                       : AppButton(
-  text: "Create Service",
-  onPressed: () {
-   // final service = ServiceModel(
-     // name: _.nameController.text,
-     // durationMinutes: int.tryParse(_.durationController.text) ?? 0,
-     // basePrice: double.tryParse(_.basePriceController.text) ?? 0.0,
-      //bathroomRate: double.tryParse(_.bathroomRateController.text) ?? 0.0,
-     // roomRate: double.tryParse(_.roomRateController.text) ?? 0.0,
-      //squareFootPrice: double.tryParse(_.squareFootPriceController.text) ?? 0.0,
-      // durationMinutes: null,
-  //  );
+                          text: "Create Service",
+                          onPressed: () {
+                            // final service = ServiceModel(
+                            // name: _.nameController.text,
+                            // durationMinutes: int.tryParse(_.durationController.text) ?? 0,
+                            // basePrice: double.tryParse(_.basePriceController.text) ?? 0.0,
+                            //bathroomRate: double.tryParse(_.bathroomRateController.text) ?? 0.0,
+                            // roomRate: double.tryParse(_.roomRateController.text) ?? 0.0,
+                            //squareFootPrice: double.tryParse(_.squareFootPriceController.text) ?? 0.0,
+                            // durationMinutes: null,
+                            //  );
 
-    _.createService(context,);
-  },
-),     TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Center(
-                      child: Text("Get Back",
-                          style:
-                              TextStyle(fontSize: 14.sp, color: Colors.black))),
-                ),
+                            _.createService(
+                              context,
+                            );
+                          },
+                        ),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Center(
+                        child: Text("Get Back",
+                            style: TextStyle(
+                                fontSize: 14.sp, color: Colors.black))),
+                  ),
                 ],
               ),
             ),
@@ -105,7 +119,8 @@ void dispose() {
       children: [
         Text(
           label,
-          style: GoogleFonts.poppins(fontSize: 14.sp, fontWeight: FontWeight.w600),
+          style:
+              GoogleFonts.poppins(fontSize: 14.sp, fontWeight: FontWeight.w600),
         ),
         SizedBox(height: 5.h),
         TextFormField(
@@ -119,7 +134,8 @@ void dispose() {
               borderRadius: BorderRadius.circular(10.r),
               borderSide: BorderSide.none,
             ),
-            contentPadding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 12.h),
+            contentPadding:
+                EdgeInsets.symmetric(horizontal: 15.w, vertical: 12.h),
           ),
         ),
         SizedBox(height: 15.h),
