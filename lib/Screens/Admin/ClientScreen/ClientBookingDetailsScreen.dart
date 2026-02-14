@@ -2,6 +2,7 @@ import 'package:cleanby_maria/Screens/Admin/ClientScreen/Service/BookingDetailsC
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -21,6 +22,10 @@ class ClientBookingDetailsScreen extends StatelessWidget {
           "Booking Details",
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
         ),
+      ),
+      bottomNavigationBar: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [],
       ),
       body: GetBuilder<bookingDetailsController>(builder: (__) {
         return SafeArea(
@@ -93,9 +98,7 @@ class ClientBookingDetailsScreen extends StatelessWidget {
                             DateFormat(
                               "yyyy-MM-dd",
                             ).format(DateTime.parse(__.bookingDetail!.date!!))),
-                        SizedBox(
-                          height: 20,
-                        ),
+
                         _itemRow(
                             "Service Day",
                             DateFormat(
@@ -104,7 +107,40 @@ class ClientBookingDetailsScreen extends StatelessWidget {
                                 .format(
                                     DateTime.parse(__.bookingDetail!.date!!))
                                 .toUpperCase()),
-                        _itemRow("Service Time", __.bookingDetail!.price!!)
+                        _itemRow(
+                            "Service Time",
+                            DateFormat(
+                              "hh:mm a",
+                            ).format(DateTime.parse(__.bookingDetail!.date!!))),
+                        _itemRow(
+                            "Service Type", __.bookingDetail!.service!.name!!),
+
+                        _itemRow("Recurring Type",
+                            __.bookingDetail!.reccuingType ?? "One Time"),
+                        _itemRow("No of Rooms",
+                            (__.bookingDetail!.noOfRooms ?? 0).toString()),
+                        _itemRow("No of Bathrooms",
+                            (__.bookingDetail!.noOfBathRooms ?? 0).toString()),
+                        _itemRow(
+                            "Total Area",
+                            (__.bookingDetail!.areaSize ?? 0).toString() +
+                                " Sqft"),
+
+                        _itemRow("Address",
+                            "   ${__.bookingDetail!.bookingAddress!.address!.line1!} , ${__.bookingDetail!.bookingAddress!.address!.city!} - ${__.bookingDetail!.bookingAddress!.address!.state ?? ""}  ${__.bookingDetail!.bookingAddress!.address!.zip!}"),
+                        _itemRow(
+                            "Add Ons",
+                            (__.bookingDetail!.isEco ?? false)
+                                ? "Eco Cleaning"
+                                : (__.bookingDetail!.materialProvided ?? false)
+                                    ? "Material Provided"
+                                    : "No Add ons",
+                            color: Colors.green),
+                        _itemRow(
+                          "Service Price",
+                          "\$ " + (__.bookingDetail!.price ?? "--:--"),
+                        )
+
                         // DateFormat(
                         //   "hh mm ss",
                         // )
@@ -121,30 +157,33 @@ class ClientBookingDetailsScreen extends StatelessWidget {
   }
 }
 
-Widget _itemRow(String label, String value) {
-  return Row(
-    children: [
-      Text(
-        "$label",
-        style: TextStyle(
-            fontWeight: FontWeight.w500,
-            color: Color(0xff64748B),
-            fontSize: 14),
-      ),
-      SizedBox(
-        width: 10,
-      ),
-      Expanded(
-        child: Text(
-          "$value",
-          textAlign: TextAlign.right,
+Widget _itemRow(String label, String value, {Color? color = null}) {
+  return Container(
+    padding: EdgeInsets.only(bottom: 24),
+    child: Row(
+      children: [
+        Text(
+          "$label",
           style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 16,
-            color: Colors.black,
+              fontWeight: FontWeight.w500,
+              color: Color(0xff64748B),
+              fontSize: 14),
+        ),
+        SizedBox(
+          width: 10,
+        ),
+        Expanded(
+          child: Text(
+            "$value",
+            textAlign: TextAlign.right,
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 14,
+              color: (color != null) ? color : Colors.black,
+            ),
           ),
         ),
-      ),
-    ],
+      ],
+    ),
   );
 }

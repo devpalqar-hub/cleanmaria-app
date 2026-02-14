@@ -1,3 +1,4 @@
+import 'package:cleanby_maria/Screens/Admin/RegionScreen/RegionScreen.dart';
 import 'package:cleanby_maria/Screens/Admin/StaffScreen/Models/StaffModel.dart';
 import 'package:cleanby_maria/Screens/Admin/StaffScreen/Service/Controller.dart';
 import 'package:flutter/material.dart';
@@ -38,12 +39,26 @@ class _StaffScreenState extends State<StaffScreen> {
               padding: EdgeInsets.only(right: 16.w),
               child: InkWell(
                 onTap: () {
+                  Get.to(() => RegionScreen(),
+                      transition: Transition.rightToLeft);
+                },
+                child: Icon(
+                  Icons.location_on,
+                  color: Colors.blue,
+                  size: 22.sp,
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(right: 16.w),
+              child: InkWell(
+                onTap: () {
                   showModalBottomSheet(
                     context: context,
                     isScrollControlled: true,
                     shape: RoundedRectangleBorder(
                       borderRadius:
-                      BorderRadius.vertical(top: Radius.circular(20.r)),
+                          BorderRadius.vertical(top: Radius.circular(20.r)),
                     ),
                     builder: (context) => CreateStaffBottomSheet(),
                   );
@@ -78,7 +93,6 @@ class _StaffScreenState extends State<StaffScreen> {
 
               return Column(
                 children: [
-
                   SizedBox(height: 12.h),
 
                   /// HEADER
@@ -137,10 +151,8 @@ class _StaffScreenState extends State<StaffScreen> {
                             Padding(
                               padding: EdgeInsets.symmetric(vertical: 12.h),
                               child: Row(
-                                crossAxisAlignment:
-                                CrossAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-
                                   /// NAME COLUMN
                                   Expanded(
                                     flex: 4,
@@ -148,11 +160,11 @@ class _StaffScreenState extends State<StaffScreen> {
                                       children: [
                                         CircleAvatar(
                                           radius: 12.r,
-                                          backgroundColor: const Color(0xFFF2F2F2),
+                                          backgroundColor:
+                                              const Color(0xFFF2F2F2),
                                           child: Text(
                                             staff.name.isNotEmpty
-                                                ? staff.name[0]
-                                                .toUpperCase()
+                                                ? staff.name[0].toUpperCase()
                                                 : '',
                                             style: TextStyle(
                                               fontSize: 10.sp,
@@ -164,26 +176,26 @@ class _StaffScreenState extends State<StaffScreen> {
                                         Expanded(
                                           child: Column(
                                             crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 staff.name,
                                                 style: TextStyle(
                                                   fontSize: 14.sp,
                                                   fontWeight: FontWeight.w600,
-                                                  color: const Color(0xFF1F2937),
+                                                  color:
+                                                      const Color(0xFF1F2937),
                                                 ),
                                               ),
-
                                               SizedBox(height: 2.h),
                                               Text(
                                                 staff.email,
                                                 style: TextStyle(
                                                   fontSize: 11.sp,
-                                                  color: const Color(0xFF2C2C2C),
+                                                  color:
+                                                      const Color(0xFF2C2C2C),
                                                 ),
-                                                overflow:
-                                                TextOverflow.ellipsis,
+                                                overflow: TextOverflow.ellipsis,
                                               ),
                                             ],
                                           ),
@@ -215,25 +227,20 @@ class _StaffScreenState extends State<StaffScreen> {
                                           vertical: 4.h,
                                         ),
                                         decoration: BoxDecoration(
-                                          color: staff.status
-                                              .toLowerCase() ==
-                                              "active"
+                                          color: staff.status.toLowerCase() ==
+                                                  "active"
                                               ? const Color(0xFFE6F4EA)
                                               : const Color(0xFFF1F1F1),
                                           borderRadius:
-                                          BorderRadius.circular(
-                                              14.r),
+                                              BorderRadius.circular(14.r),
                                         ),
                                         child: Text(
-                                          staff.status
-                                              .toLowerCase(),
+                                          staff.status.toLowerCase(),
                                           style: TextStyle(
                                             fontSize: 11.sp,
-                                            color: staff.status
-                                                .toLowerCase() ==
-                                                "active"
-                                                ? const Color(
-                                                0xFF2E7D32)
+                                            color: staff.status.toLowerCase() ==
+                                                    "active"
+                                                ? const Color(0xFF2E7D32)
                                                 : Colors.grey,
                                           ),
                                         ),
@@ -243,10 +250,10 @@ class _StaffScreenState extends State<StaffScreen> {
                                 ],
                               ),
                             ),
-                                Divider(
-                                height: 1,
-                        color: const Color(0xFFF1F1F1),
-                        ),
+                            Divider(
+                              height: 1,
+                              color: const Color(0xFFF1F1F1),
+                            ),
                           ],
                         );
                       },

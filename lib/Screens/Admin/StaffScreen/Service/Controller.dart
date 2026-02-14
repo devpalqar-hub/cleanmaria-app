@@ -79,6 +79,8 @@ class StaffController extends GetxController {
     update();
     final response = await http.get(url, headers: authHeader);
     isLoading = false;
+
+    print(response.body);
     update();
     if (response.statusCode == 200) {
       for (var data in json.decode(response.body)["data"]) {
