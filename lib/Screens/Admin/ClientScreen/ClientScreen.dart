@@ -29,118 +29,112 @@ class _ClientScreenState extends State<ClientScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
         backgroundColor: Colors.white,
-
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          title: appText.primaryText(
-            text: "Bookings",
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w600,
-          ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.add, color: Colors.blue),
-              onPressed: () {
-                Get.to(() => EstimateScreen());
-              },
-            )
-          ],
+        elevation: 0,
+        title: Text(
+          "Bookings",
+          style: TextStyle(fontWeight: FontWeight.w500),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add, color: Colors.blue),
+            onPressed: () {
+              Get.to(() => EstimateScreen());
+            },
+          )
+        ],
+      ),
+      body: Column(
+        children: [
+          SizedBox(height: 10.h),
 
-        body: Column(
-          children: [
-            SizedBox(height: 10.h),
-
-            /// SEARCH
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
-              child: TextField(
-                controller: searchController,
-                onChanged: (_) => setState(() {}),
-                decoration: InputDecoration(
-                  hintText: "Search...",
-                  filled: true,
-                  fillColor: Colors.grey.shade100,
-                  prefixIcon: const Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
+          /// SEARCH
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            child: TextField(
+              controller: searchController,
+              onChanged: (_) => setState(() {}),
+              decoration: InputDecoration(
+                hintText: "Search...",
+                filled: true,
+                fillColor: Colors.grey.shade100,
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
                 ),
               ),
             ),
+          ),
 
-            SizedBox(height: 20.h),
+          SizedBox(height: 20.h),
 
-            /// SEGMENTS
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
-              child: Row(
-                children: [
-                  _segment("SUBSCRIPTION", selectedMenu == 0, () {
-                    setState(() => selectedMenu = 0);
-                    bookingsController.fetchBookings("booked", "recurring");
-                  }),
-                  SizedBox(width: 20.w),
-                  _segment("ONE-TIME", selectedMenu == 1, () {
-                    setState(() => selectedMenu = 1);
-                    bookingsController.fetchBookings("booked", "one_time");
-                  }),
-                ],
-              ),
+          /// SEGMENTS
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            child: Row(
+              children: [
+                _segment("SUBSCRIPTION", selectedMenu == 0, () {
+                  setState(() => selectedMenu = 0);
+                  bookingsController.fetchBookings("booked", "recurring");
+                }),
+                SizedBox(width: 20.w),
+                _segment("ONE-TIME", selectedMenu == 1, () {
+                  setState(() => selectedMenu = 1);
+                  bookingsController.fetchBookings("booked", "one_time");
+                }),
+              ],
             ),
+          ),
 
-            SizedBox(height: 10.h),
+          SizedBox(height: 10.h),
 
-            /// LIST
-            Expanded(
-              child: GetBuilder<BookingsController>(
-                builder: (_) {
-                  if (bookingsController.isLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
+          /// LIST
+          Expanded(
+            child: GetBuilder<BookingsController>(
+              builder: (_) {
+                if (bookingsController.isLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-                  if (bookingsController.errorMessage.isNotEmpty) {
-                    return Center(
-                      child: Text(bookingsController.errorMessage),
-                    );
-                  }
-
-                  final List<BookingModel> list =
-                      bookingsController.bookings;
-
-                  return ListView.builder(
-                    itemCount: list.length,
-                    itemBuilder: (context, index) {
-                      final booking = list[index];
-                      final name = booking.customer?.name ?? "N/A";
-
-                      if (searchController.text.isNotEmpty &&
-                          !name
-                              .toLowerCase()
-                              .contains(searchController.text.toLowerCase())) {
-                        return const SizedBox.shrink();
-                      }
-
-                      return _BookingListTile(
-                        booking: booking,
-                        onTap: () {
-                          Get.to(() => BookingDetailsScreen(
-                            bookingId: booking.id!,
-                          ));
-                        },
-                      );
-                    },
+                if (bookingsController.errorMessage.isNotEmpty) {
+                  return Center(
+                    child: Text(bookingsController.errorMessage),
                   );
-                },
-              ),
+                }
+
+                final List<BookingModel> list = bookingsController.bookings;
+
+                return ListView.builder(
+                  itemCount: list.length,
+                  itemBuilder: (context, index) {
+                    final booking = list[index];
+                    final name = booking.customer?.name ?? "N/A";
+
+                    if (searchController.text.isNotEmpty &&
+                        !name
+                            .toLowerCase()
+                            .contains(searchController.text.toLowerCase())) {
+                      return const SizedBox.shrink();
+                    }
+
+                    return _BookingListTile(
+                      booking: booking,
+                      onTap: () {
+                        Get.to(() => BookingDetailsScreen(
+                              bookingId: booking.id!,
+                            ));
+                      },
+                    );
+                  },
+                );
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

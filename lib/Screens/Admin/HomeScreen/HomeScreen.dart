@@ -39,29 +39,29 @@ class _HomescreenState extends State<Homescreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: _pages[indexnum],
+      bottomNavigationBar: BottomNavigationBar(
+        items: [
+          _buildBarItem("assets/v2/home.png", "Home", 0),
+          _buildBarItem("assets/v2/bookings.png", "Client", 1),
+          _buildBarItem("assets/v2/schedules.png", "History", 2),
+          _buildBarItem("assets/v2/staff.png", "Staff", 3),
+          _buildBarItem("assets/v2/services.png", "Service", 4),
+        ],
+        currentIndex: indexnum,
+        showUnselectedLabels: true,
+        onTap: (index) => setState(() => indexnum = index),
+        selectedFontSize: 11.sp,
         backgroundColor: Colors.white,
-        body: _pages[indexnum],
-        bottomNavigationBar: BottomNavigationBar(
-          items: [
-            _buildBarItem("assets/home_new.png", "Home", 0),
-            _buildBarItem("assets/booking_new.png", "Client", 1),
-            _buildBarItem("assets/history_new.png", "History", 2),
-            _buildBarItem("assets/staff_new.png", "Staff", 3),
-             _buildBarItem("assets/service.png", "Service", 4),
-          ],
-          currentIndex: indexnum,
-          onTap: (index) => setState(() => indexnum = index),
-          selectedFontSize: 11.sp,
-          unselectedFontSize: 11.sp,
-          selectedItemColor: const Color(0xff17A5C6),
-          unselectedItemColor: const Color(0xff9DB2CE),
-          selectedLabelStyle:
-              GoogleFonts.lexend(fontSize: 10.sp, fontWeight: FontWeight.w400),
-          unselectedLabelStyle:
-              GoogleFonts.lexend(fontSize: 10.sp, fontWeight: FontWeight.w400),
-        ),
+        unselectedFontSize: 11.sp,
+        selectedItemColor: const Color(0xff17A5C6),
+        unselectedItemColor: const Color(0xff9DB2CE),
+        selectedLabelStyle:
+            GoogleFonts.lexend(fontSize: 12.sp, fontWeight: FontWeight.w400),
+        unselectedLabelStyle:
+            GoogleFonts.lexend(fontSize: 12.sp, fontWeight: FontWeight.w400),
       ),
     );
   }
@@ -69,13 +69,13 @@ class _HomescreenState extends State<Homescreen> {
   BottomNavigationBarItem _buildBarItem(
       String iconPath, String label, int index) {
     return BottomNavigationBarItem(
+      backgroundColor: Colors.white,
       icon: Image.asset(
-          
         iconPath,
         color: indexnum == index
             ? const Color(0xff17A5C6)
             : const Color(0xff9DB2CE),
-        height: 24.h,
+        height: 22.h,
       ),
       label: label,
     );

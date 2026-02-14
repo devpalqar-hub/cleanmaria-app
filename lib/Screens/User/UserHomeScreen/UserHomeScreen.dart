@@ -24,12 +24,13 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xffF9FAFB),
       body: IndexedStack(
         index: _currentIndex,
         children: _screens,
       ),
-
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Color(0xffF9FAFB),
         currentIndex: _currentIndex,
         type: BottomNavigationBarType.fixed,
         selectedItemColor: const Color(0xFF2F7F6F),
@@ -41,9 +42,12 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
         },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: "Bookings"),
-          BottomNavigationBarItem(icon: Icon(Icons.chat_bubble_outline), label: "Inbox"),
-          BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: "Profile"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.calendar_today), label: "Bookings"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.chat_bubble_outline), label: "Inbox"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.person_outline), label: "Profile"),
         ],
       ),
     );

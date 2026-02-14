@@ -8,11 +8,9 @@ import 'Screens/AuthenticationScreen/AutheticationScreen.dart';
 import 'Screens/Admin/HomeScreen/HomeScreen.dart';
 import 'Screens/staff/DashBoardScreen.dart';
 
-String baseUrl =
-//(true)
-//? "https://app.cleanmaria.com/api"
-//:
-    "https://app.cleanmaria.com/api";
+String baseUrl = (false)
+    ? "https://app.cleanmaria.com/api"
+    : "https://staging.cleanmaria.com/api";
 
 String login = "";
 String? userType = "";
@@ -31,6 +29,9 @@ class CleanbyMaria extends StatelessWidget {
       designSize: const Size(390, 850),
       builder: (context, child) => GetMaterialApp(
         debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          fontFamily: 'Inter',
+        ),
         home: SplashScreen(),
         //const SplashScreen(),
       ),
@@ -43,11 +44,15 @@ class SplashScreen extends StatelessWidget {
 
   Future<Widget> _checkLoginStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String loginStatus = prefs.getString("LOGIN") ?? "";
+    String loginStatus = ""; //prefs.getString("LOGIN") ?? "";
     String userType = prefs.getString("role") ?? "";
 
     if (loginStatus == "IN") {
-      return userType == "staff" ? DashBoardScreen() : Homescreen();
+      return userType == "staff"
+          ? DashBoardScreen()
+          : (userType == "customer")
+              ? UserHomeScreen()
+              : Homescreen();
     } else {
       return AuthenticationScreen();
     }

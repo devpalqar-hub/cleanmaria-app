@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 // 👉 ADD THESE IMPORTS
 import '../new_booking/service_screen.dart';
@@ -18,19 +19,19 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             /// 🔹 HEADER
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Column(
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Good morning,", style: TextStyle(color: Colors.grey)),
+                    Text("Good morning,",
+                        style: GoogleFonts.inter(color: Colors.grey)),
                     SizedBox(height: 4),
                     Text(
                       "Maria",
-                      style: TextStyle(
+                      style: GoogleFonts.inter(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
                       ),
@@ -67,25 +68,25 @@ class HomeScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     "Book a cleaning",
-                    style: TextStyle(
+                    style: GoogleFonts.inter(
                       color: Colors.white,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    "Schedule your next\nprofessional home cleaning in seconds.",
-                    style: TextStyle(color: Colors.white70),
+                  Text(
+                    "Schedule your next professional home cleaning in seconds.",
+                    style: GoogleFonts.inter(color: Colors.white70),
                   ),
                   const SizedBox(height: 16),
 
                   /// ✅ CLICKABLE NEW BOOKING BUTTON
                   GestureDetector(
                     onTap: () {
-                      Get.to(() =>  ServiceScreen());
+                      Get.to(() => ServiceScreen());
                     },
                     child: Container(
                       height: 46,
@@ -95,9 +96,9 @@ class HomeScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(30),
                       ),
                       alignment: Alignment.center,
-                      child: const Text(
+                      child: Text(
                         "+ New Booking",
-                        style: TextStyle(fontWeight: FontWeight.w600),
+                        style: GoogleFonts.inter(fontWeight: FontWeight.w600),
                       ),
                     ),
                   ),
@@ -110,14 +111,15 @@ class HomeScreen extends StatelessWidget {
             /// 🔹 UPCOMING HEADER
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
+              children: [
                 Text(
                   "Upcoming",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: GoogleFonts.inter(
+                      fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 Text(
                   "See all",
-                  style: TextStyle(color: primaryGreen),
+                  style: GoogleFonts.inter(color: primaryGreen),
                 ),
               ],
             ),
@@ -127,7 +129,7 @@ class HomeScreen extends StatelessWidget {
             /// ✅ CLICKABLE UPCOMING CARD
             GestureDetector(
               onTap: () {
-                Get.to(() =>  BookingDetailsScreen());
+                Get.to(() => BookingDetailsScreen());
               },
               child: Container(
                 padding: const EdgeInsets.all(14),
@@ -146,23 +148,24 @@ class HomeScreen extends StatelessWidget {
                       child: const Icon(Icons.star, color: primaryGreen),
                     ),
                     const SizedBox(width: 12),
-                    const Expanded(
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             "Standard Cleaning",
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style:
+                                GoogleFonts.inter(fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: 4),
                           Text(
                             "Today, 2:00 PM",
-                            style: TextStyle(color: Colors.grey),
+                            style: GoogleFonts.inter(color: Colors.grey),
                           ),
                           SizedBox(height: 4),
                           Text(
                             "123 Main St, Apt 4B",
-                            style: TextStyle(color: Colors.grey),
+                            style: GoogleFonts.inter(color: Colors.grey),
                           ),
                         ],
                       ),
@@ -174,9 +177,9 @@ class HomeScreen extends StatelessWidget {
                         color: const Color(0xFFE8F5F2),
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: const Text(
+                      child: Text(
                         "Confirmed",
-                        style: TextStyle(
+                        style: GoogleFonts.inter(
                           color: primaryGreen,
                           fontSize: 12,
                         ),
@@ -190,9 +193,10 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 28),
 
             /// 🔹 YOUR STATUS
-            const Text(
+            Text(
               "Your Status",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style:
+                  GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.bold),
             ),
 
             const SizedBox(height: 12),
@@ -243,7 +247,7 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 12),
             Text(
               value,
-              style: const TextStyle(
+              style: GoogleFonts.inter(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
@@ -251,7 +255,7 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               label,
-              style: const TextStyle(color: Colors.grey),
+              style: GoogleFonts.inter(color: Colors.grey),
             ),
           ],
         ),

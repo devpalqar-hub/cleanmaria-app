@@ -38,6 +38,16 @@ class AuthenticationScreen extends StatelessWidget {
                 fontWeight: FontWeight.w500,
                 color: const Color(0xFF000000),
               ),
+              SizedBox(height: 12.h),
+              Text(
+                "Enter your email to receive OTP",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.grey[600],
+                ),
+              ),
               SizedBox(height: 40.h),
               Apptextfield.primary(
                 labelText: 'Email*',
@@ -46,23 +56,18 @@ class AuthenticationScreen extends StatelessWidget {
                 label: '',
                 keyType: TextInputType.emailAddress,
               ),
-              Apptextfield.password(
-                labelText: 'Password',
-                hintText: 'Enter your password',
-                controller: _authController.passwordController,
-              ),
-              SizedBox(height: 20.h),
-              SizedBox(height: 100.h),
+              SizedBox(height: 40.h),
               Obx(() => _authController.isLoading.value
                   ? CircularProgressIndicator()
                   : AppButton(
-                      text: "Login",
-                      onPressed: _authController.handleLogin,
+                      text: "Send OTP",
+                      onPressed: _authController.handleSendOTP,
                       width: 200.w,
                       height: 50.h,
                       fontSize: 16.sp,
                       fontWeight: FontWeight.bold,
                     )),
+              SizedBox(height: 20.h),
             ],
           ),
         ),
