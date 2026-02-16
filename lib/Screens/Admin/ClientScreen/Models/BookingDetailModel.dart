@@ -20,28 +20,28 @@ class BookingDetailModel {
   List<MonthSchedules>? monthSchedules;
   List<Transactions>? transactions;
 
-  BookingDetailModel(
-      {this.id,
-      this.userId,
-      this.type,
-      this.areaSize,
-      this.noOfRooms,
-      this.noOfBathRooms,
-      this.propertyType,
-      this.date,
-      this.materialProvided,
-      this.isEco,
-      this.status,
-      this.price,
-      this.createdAt,
-      this.reccuingType,
-      this.customer,
-      this.bookingAddress,
-      this.service,
-      this.monthSchedules,
-      this.transactions,
-      this.paymentMethod,
-      });
+  BookingDetailModel({
+    this.id,
+    this.userId,
+    this.type,
+    this.areaSize,
+    this.noOfRooms,
+    this.noOfBathRooms,
+    this.propertyType,
+    this.date,
+    this.materialProvided,
+    this.isEco,
+    this.status,
+    this.price,
+    this.createdAt,
+    this.reccuingType,
+    this.customer,
+    this.bookingAddress,
+    this.service,
+    this.monthSchedules,
+    this.transactions,
+    this.paymentMethod,
+  });
 
   BookingDetailModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -52,14 +52,14 @@ class BookingDetailModel {
     noOfBathRooms = json['noOfBathRooms'];
     propertyType = json['propertyType'];
     materialProvided = json['materialProvided'];
-    paymentMethod=json['paymentMethod'];
+    paymentMethod = json['paymentMethod'];
     isEco = json['isEco'];
     status = json['status'];
     price = json['price'];
     date = json['date'];
     createdAt = json['createdAt'];
     reccuingType = (json['recurringType'] == null)
-        ? ""
+        ? "One Time"
         : json['recurringType']["name"] ?? "";
     customer = json['customer'] != null
         ? new Customer.fromJson(json['customer'])
@@ -97,7 +97,7 @@ class BookingDetailModel {
     data['status'] = this.status;
     data['price'] = this.price;
     data['createdAt'] = this.createdAt;
-     data['paymentMethod'] = paymentMethod;
+    data['paymentMethod'] = paymentMethod;
     if (this.customer != null) {
       data['customer'] = this.customer!.toJson();
     }
@@ -209,12 +209,13 @@ class Address {
 class Service {
   String? id;
   String? name;
-
+  int? duration;
   Service({this.id, this.name});
 
   Service.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
+    duration = json['durationMinutes'];
   }
 
   Map<String, dynamic> toJson() {

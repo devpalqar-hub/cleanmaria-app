@@ -3,6 +3,11 @@ import 'package:cleanby_maria/Screens/Admin/ClientScreen/ClientBookingDetailsScr
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/Models/bookingModel.dart';
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/Service/BookingController.dart';
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/BookingDetailsScreen.dart';
+import 'package:cleanby_maria/Screens/Admin/ScheduleViewScreen/Controller/ScheduleDetailsController.dart';
+import 'package:cleanby_maria/Screens/Admin/ScheduleViewScreen/ScheduleDetailsScreen.dart';
+import 'package:cleanby_maria/Screens/Admin/ServiceScreen/ServiceScreen.dart';
+import 'package:cleanby_maria/Screens/User/new_booking/Controllers/CreateBookingController.dart';
+import 'package:cleanby_maria/Screens/User/new_booking/service_screen.dart';
 import 'package:cleanby_maria/Src/appText.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -37,13 +42,17 @@ class _ClientScreenState extends State<ClientScreen> {
         elevation: 0,
         title: Text(
           "Bookings",
-          style: TextStyle(fontWeight: FontWeight.w500),
+          style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
         ),
         actions: [
           IconButton(
             icon: const Icon(Icons.add, color: Colors.blue),
             onPressed: () {
-              Get.to(() => EstimateScreen());
+              //  Get.to(() => EstimateScreen());
+
+              Get.to(() => CreateBookingScreen(
+                    isAdmin: true,
+                  ));
             },
           )
         ],
@@ -126,8 +135,9 @@ class _ClientScreenState extends State<ClientScreen> {
                       booking: booking,
                       onTap: () {
                         Get.to(
-                            () => ClientBookingDetailsScreen(
+                            () => ScheduleDetailsScreen(
                                   bookingID: booking.id!,
+                                  isAdmin: true,
                                 ),
                             transition: Transition.rightToLeft);
                         // Get.to(() => BookingDetailsScreen(

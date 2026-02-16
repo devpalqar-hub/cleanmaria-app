@@ -8,12 +8,14 @@ import 'package:google_fonts/google_fonts.dart';
 
 final Color primaryGreen = const Color(0xFF2F7F6F);
 
-class ServiceScreen extends StatelessWidget {
-  ServiceScreen({super.key});
+class CreateBookingScreen extends StatelessWidget {
+  bool isAdmin = false;
+  CreateBookingScreen({super.key, this.isAdmin = false});
 
   @override
   Widget build(BuildContext context) {
-    CreateBookingController ctrl = Get.put(CreateBookingController());
+    CreateBookingController ctrl =
+        Get.put(CreateBookingController(isAdminUser: isAdmin));
     return Scaffold(
       backgroundColor: Colors.white,
       bottomNavigationBar: SafeArea(

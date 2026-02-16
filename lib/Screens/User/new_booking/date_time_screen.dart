@@ -4,10 +4,24 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'review_pay_screen.dart';
 
 class DateTimeScreen extends StatefulWidget {
-  const DateTimeScreen({super.key});
+  bool isForReschedule = false;
+  String zipcode = "";
+  String bookingID = "";
+  String duration = "";
+  String serviceID = "";
+  int maxDays = 15;
+  DateTimeScreen(
+      {super.key,
+      this.isForReschedule = false,
+      this.zipcode = "",
+      this.bookingID = "",
+      this.duration = "",
+      this.serviceID = "",
+      this.maxDays = 15});
 
   @override
   State<DateTimeScreen> createState() => _DateTimeScreenState();
@@ -19,10 +33,13 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
   late DateTime displayMonth;
   late DateTime minimumDate;
 
+  late DateTime maximumDate;
+
   @override
   void initState() {
     super.initState();
     minimumDate = DateTime.now().add(Duration(days: 2));
+    maximumDate = DateTime.now().add(Duration(days: widget.maxDays));
     selectedDate = minimumDate;
     displayMonth = DateTime(minimumDate.year, minimumDate.month, 1);
   }
@@ -36,8 +53,9 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
 
     for (int i = 0; i <= lastDayOfMonth.day - 1; i++) {
       DateTime date = firstDayOfMonth.add(Duration(days: i));
-      // Only add dates that are >= minimumDate
-      if (date.isAfter(minimumDate.subtract(Duration(days: 1)))) {
+      // Only add dates that are >= minimumDate and <= maximumDate
+      if (date.isAfter(minimumDate.subtract(Duration(days: 1))) &&
+          date.isBefore(maximumDate.add(Duration(days: 1)))) {
         dates.add(date);
       }
     }
@@ -52,18 +70,28 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
             previousMonth.month >= minimumDate.month);
   }
 
+  bool canNavigateToNextMonth() {
+    DateTime nextMonth = DateTime(displayMonth.year, displayMonth.month + 1, 1);
+    return nextMonth.year < maximumDate.year ||
+        (nextMonth.year == maximumDate.year &&
+            nextMonth.month <= maximumDate.month);
+  }
+
   void changeMonth(int direction) {
     if (direction < 0 && !canNavigateToPreviousMonth()) {
-      return; // Don't allow navigation to previous month
+      return;
+    }
+    if (direction > 0 && !canNavigateToNextMonth()) {
+      return;
     }
 
     setState(() {
       displayMonth =
           DateTime(displayMonth.year, displayMonth.month + direction, 1);
-      // If selected date is not in the new month or is before minimum date, select the first available day
       if (selectedDate.month != displayMonth.month ||
           selectedDate.year != displayMonth.year ||
-          selectedDate.isBefore(minimumDate)) {
+          selectedDate.isBefore(minimumDate) ||
+          selectedDate.isAfter(maximumDate)) {
         List<DateTime> availableDates = generateDates();
         if (availableDates.isNotEmpty) {
           selectedDate = availableDates.first;
@@ -71,6 +99,8 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
       }
     });
   }
+
+  CreateBookingController ctrl = Get.put(CreateBookingController());
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +114,7 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
           onPressed: () => Get.back(),
         ),
         title: Text(
-          "New Booking",
+          (widget.isForReschedule) ? "Reschedule Booking" : "New Booking",
           style: GoogleFonts.inter(
               color: Colors.black, fontWeight: FontWeight.w600),
         ),
@@ -95,7 +125,7 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _progress("Step 4 of 4"),
+              if (!widget.isForReschedule) _progress("Step 4 of 4"),
 
               Padding(
                 padding: EdgeInsets.all(16),
@@ -104,6 +134,21 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
                   style: GoogleFonts.inter(
                       fontSize: 16, fontWeight: FontWeight.w600),
                 ),
+              ),
+
+              if (widget.isForReschedule)
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    "reschedule your upcoming service date of the booking",
+                    style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        color: Color(0xFF17A5C6),
+                        fontSize: 10),
+                  ),
+                ),
+              SizedBox(
+                height: 10,
               ),
 
               Padding(
@@ -142,7 +187,9 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
                         ),
                         const SizedBox(width: 8),
                         InkWell(
-                          onTap: () => changeMonth(1),
+                          onTap: canNavigateToNextMonth()
+                              ? () => changeMonth(1)
+                              : null,
                           child: Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
@@ -151,7 +198,9 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
                             ),
                             child: Icon(
                               Icons.chevron_right,
-                              color: primaryGreen,
+                              color: canNavigateToNextMonth()
+                                  ? primaryGreen
+                                  : Colors.grey.withOpacity(0.4),
                               size: 20,
                             ),
                           ),
@@ -175,7 +224,8 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
                     final date = generateDates()[index];
                     final isSelected = DateFormat('yyyy-MM-dd').format(date) ==
                         DateFormat('yyyy-MM-dd').format(selectedDate);
-                    final isPastDate = date.isBefore(minimumDate);
+                    final isPastDate =
+                        date.isBefore(minimumDate) || date.isAfter(maximumDate);
                     final isMinimumDate =
                         DateFormat('yyyy-MM-dd').format(date) ==
                             DateFormat('yyyy-MM-dd').format(minimumDate);
@@ -187,8 +237,12 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
                               setState(() {
                                 selectedDate = date;
                                 print("working");
-                                ___.fetchAvalibility(DateFormat("yyyy-MM-dd")
-                                    .format(selectedDate));
+                                ___.fetchAvalibility(
+                                    DateFormat("yyyy-MM-dd")
+                                        .format(selectedDate),
+                                    zipCode: widget.zipcode,
+                                    duration: widget.duration,
+                                    service_id: widget.serviceID);
                               });
                             },
                       child: Opacity(
@@ -370,16 +424,27 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
                       ),
                     ),
                     onPressed: () {
-                      Get.to(() => ReviewPayScreen());
+                      if (!widget.isForReschedule) {
+                        ctrl.selectedDate = selectedDate;
+                        Get.to(() => ReviewPayScreen());
+                      } else {
+                        ctrl.rescheduleBooking(
+                            widget.bookingID, widget.zipcode, selectedDate);
+                      }
                     },
-                    child: Text(
-                      "Continue",
-                      style: GoogleFonts.inter(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                      ),
-                    ),
+                    child: (___.isRescheduleloading)
+                        ? LoadingAnimationWidget.staggeredDotsWave(
+                            color: Colors.white, size: 24)
+                        : Text(
+                            (widget.isForReschedule)
+                                ? " Reschedule"
+                                : "Continue",
+                            style: GoogleFonts.inter(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                            ),
+                          ),
                   ),
                 ),
               ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:cleanby_maria/Screens/User/new_booking/Controllers/CreateBookingController.dart';
 import 'package:cleanby_maria/Screens/User/new_booking/components/BookingUtils.dart';
 
@@ -19,18 +21,39 @@ class _ReviewPayScreenState extends State<ReviewPayScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      bottomNavigationBar: SafeArea(
-        child: bottomButton("Confirm & Pay", () {
-          // TODO: Implement payment logic
-          Get.snackbar(
-            'Booking Confirmed',
-            'Your booking has been confirmed!',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: primaryGreen.withOpacity(0.9),
-            colorText: Colors.white,
-          );
-        }),
-      ),
+      bottomNavigationBar:
+          GetBuilder<CreateBookingController>(builder: (_ctrl) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  textStyle: GoogleFonts.inter(color: Colors.white),
+                  backgroundColor: primaryGreen,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                ),
+                onPressed: _ctrl.isCreatingBooking
+                    ? null
+                    : () {
+                        _ctrl.createBoooking();
+                      },
+                child: _ctrl.isCreatingBooking
+                    ? LoadingAnimationWidget.staggeredDotsWave(
+                        color: Colors.white, size: 24)
+                    : Text(
+                        "Confirm & Pay",
+                        style: GoogleFonts.inter(
+                            color: Colors.white, fontWeight: FontWeight.w600),
+                      ),
+              ),
+            ),
+          ),
+        );
+      }),
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
@@ -103,7 +126,9 @@ class _ReviewPayScreenState extends State<ReviewPayScreen> {
                           _infoRow(
                             Icons.schedule,
                             "Date & Time",
-                            "${ctrl.selectedTimeSlot?.time ?? 'Not selected'}",
+                            ctrl.selectedDate != null
+                                ? "${DateFormat('EEEE, MMMM d, yyyy').format(ctrl.selectedDate!)} at ${ctrl.selectedTimeSlot?.time ?? 'Not selected'}"
+                                : "${ctrl.selectedTimeSlot?.time ?? 'Not selected'}",
                           ),
                         ],
                       ),
@@ -166,24 +191,102 @@ class _ReviewPayScreenState extends State<ReviewPayScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              "Price Summary",
-                              style: GoogleFonts.inter(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Price Summary",
+                                  style: GoogleFonts.inter(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                if (ctrl.isAdmin)
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: primaryGreen.withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: Text(
+                                      "ADMIN",
+                                      style: GoogleFonts.inter(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w600,
+                                        color: primaryGreen,
+                                      ),
+                                    ),
+                                  ),
+                              ],
                             ),
                             SizedBox(height: 12),
-                            _priceRow(
-                              "Subtotal",
-                              "\$${ctrl.selectedPlan?.finalPrice?.toStringAsFixed(2) ?? '0.00'}",
-                            ),
-                            _priceRow("Taxes & Fees (10%)",
-                                "\$${((ctrl.selectedPlan?.finalPrice ?? 0) * 0.1).toStringAsFixed(2)}"),
-                            Divider(height: 24),
+                            if (ctrl.isAdmin) ...[
+                              Text(
+                                "Base Price",
+                                style: GoogleFonts.inter(
+                                  fontSize: 12,
+                                  color: Colors.grey.shade600,
+                                ),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                "\$${ctrl.selectedPlan?.finalPrice?.toStringAsFixed(2) ?? '0.00'}",
+                                style: GoogleFonts.inter(
+                                  fontSize: 12,
+                                  color: Colors.grey.shade600,
+                                ),
+                              ),
+                              SizedBox(height: 12),
+                              Text(
+                                "Custom Price (editable)*",
+                                style: GoogleFonts.inter(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              SizedBox(height: 8),
+                              TextFormField(
+                                initialValue:
+                                    ctrl.customPrice?.toStringAsFixed(2) ??
+                                        ctrl.selectedPlan?.finalPrice
+                                            ?.toStringAsFixed(2) ??
+                                        '0.00',
+                                keyboardType: TextInputType.numberWithOptions(
+                                    decimal: true),
+                                decoration: InputDecoration(
+                                  prefixText: '\$ ',
+                                  hintText: 'Enter custom price',
+                                  hintStyle: GoogleFonts.inter(
+                                    color: Colors.grey,
+                                    fontSize: 14,
+                                  ),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide:
+                                        BorderSide(color: Colors.grey.shade300),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: BorderSide(
+                                        color: primaryGreen, width: 2),
+                                  ),
+                                  contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 12),
+                                ),
+                                onChanged: (value) {
+                                  ctrl.customPrice = double.tryParse(value);
+                                  ctrl.update();
+                                },
+                              ),
+                              SizedBox(height: 12),
+                              Divider(height: 24),
+                            ],
                             _priceRow(
                               "Total",
-                              "\$${((ctrl.selectedPlan?.finalPrice ?? 0) * 1.1).toStringAsFixed(2)}",
+                              "\$${(ctrl.customPrice ?? ctrl.selectedPlan?.finalPrice ?? 0).toStringAsFixed(2)}",
                               bold: true,
                             ),
                           ],

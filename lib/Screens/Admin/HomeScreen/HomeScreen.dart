@@ -1,7 +1,9 @@
 import 'dart:developer';
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/ClientScreen.dart';
 import 'package:cleanby_maria/Screens/Admin/HistoryScreen/HistoryScreen.dart';
+import 'package:cleanby_maria/Screens/Admin/HistoryScreen/ScheduleListView.dart';
 import 'package:cleanby_maria/Screens/Admin/HomeScreen/views/HomeView.dart';
+import 'package:cleanby_maria/Screens/Admin/ScheduleViewScreen/ScheduleViewScreen.dart';
 import 'package:cleanby_maria/Screens/Admin/ServiceScreen/ServiceScreen.dart';
 import 'package:cleanby_maria/Screens/Admin/StaffScreen/StaffScreen.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +25,7 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
-  int indexnum = 0;
+  int indexnum = 2;
   @override
   void initState() {
     super.initState();
@@ -32,7 +34,8 @@ class _HomescreenState extends State<Homescreen> {
   final List<Widget> _pages = [
     HomeContent(),
     ClientScreen(),
-    BookingsaScreen(),
+    // BookingsaScreen(),
+    ScheduleViewScreen(),
     StaffScreen(),
     ServiceScreen(),
   ];

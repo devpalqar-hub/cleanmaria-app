@@ -1,4 +1,5 @@
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/Service/BookingDetailsContoller.dart';
+import 'package:cleanby_maria/Screens/User/new_booking/date_time_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -10,10 +11,10 @@ import 'package:url_launcher/url_launcher.dart';
 class ClientBookingDetailsScreen extends StatelessWidget {
   String bookingID;
   ClientBookingDetailsScreen({super.key, required this.bookingID});
-  bookingDetailsController ctrl = Get.put(bookingDetailsController());
+  BookingDetailsController ctrl = Get.put(BookingDetailsController());
   @override
   Widget build(BuildContext context) {
-    // ctrl.fetchBookingDetails(bookingID);
+    ctrl.fetchBookingDetails(bookingID);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -22,12 +23,142 @@ class ClientBookingDetailsScreen extends StatelessWidget {
           "Booking Details",
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: InkWell(
+                onTap: () {},
+                child: Image.asset(
+                  "assets/v2/schedules.png",
+                  width: 24,
+                  height: 24,
+                  color: Color(0xff17A5C6),
+                )),
+          ),
+        ],
       ),
-      bottomNavigationBar: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [],
+      bottomNavigationBar: SafeArea(
+        child: GetBuilder<BookingDetailsController>(builder: (__) {
+          final status = __.bookingDetail?.status?.toLowerCase() ?? '';
+          final isCancelled = status == 'cancelled' || status == 'canceled';
+          return __.bookingDetail == null
+              ? Container(
+                  width: 0,
+                  height: 0,
+                  alignment: Alignment.center,
+                )
+              : Container(
+                  height: 60,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  child: Row(
+                    children: [
+                      /// Reschedule Button
+
+                      /// Cancel Button
+                      Expanded(
+                        child: SizedBox(
+                          height: 48,
+                          child: ElevatedButton(
+                            onPressed: (isCancelled || __.isCancelLoading)
+                                ? null
+                                : () {
+                                    Get.defaultDialog(
+                                      title: 'Cancel booking',
+                                      middleText:
+                                          'Are you sure you want to cancel this booking?',
+                                      textCancel: 'No',
+                                      textConfirm: 'Yes, cancel',
+                                      confirmTextColor: Colors.white,
+                                      onConfirm: () async {
+                                        Get.back();
+                                        final success =
+                                            await __.cancelBooking(bookingID);
+                                        if (success) {
+                                          __.fetchBookingDetails(bookingID);
+                                        }
+                                      },
+                                    );
+                                  },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red.shade50,
+                              foregroundColor: Colors.red.shade700,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(6.r),
+                                side: BorderSide(
+                                  color: Colors.red.shade300,
+                                  width: 1,
+                                ),
+                              ),
+                            ),
+                            child: const Text(
+                              "Cancel",
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: SizedBox(
+                          height: 48,
+                          child: ElevatedButton(
+                            onPressed: isCancelled
+                                ? null
+                                : () {
+                                    // Reschedule action
+                                    String duration =
+                                        ((__.bookingDetail!.areaSize! *
+                                                    __.bookingDetail!.service!
+                                                        .duration!) /
+                                                500)
+                                            .round()
+                                            .toString();
+                                    Get.to(
+                                      () => DateTimeScreen(
+                                        bookingID: bookingID,
+                                        isForReschedule: true,
+                                        zipcode: __.bookingDetail!
+                                            .bookingAddress!.address!.zip!,
+                                        serviceID:
+                                            __.bookingDetail!.service!.id!,
+                                        duration: duration,
+                                        maxDays:
+                                            (__.bookingDetail!.reccuingType ==
+                                                    "Bi-Weekly")
+                                                ? 15
+                                                : 7,
+                                      ),
+                                    );
+                                  },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF17A5C6),
+                              foregroundColor: Colors.white,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(6.r),
+                              ),
+                            ),
+                            child: const Text(
+                              "Reschedule",
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+        }),
       ),
-      body: GetBuilder<bookingDetailsController>(builder: (__) {
+      body: GetBuilder<BookingDetailsController>(builder: (__) {
         return SafeArea(
           child: (__.isLoading || __.bookingDetail == null)
               ? Center(

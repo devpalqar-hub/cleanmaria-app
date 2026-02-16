@@ -55,14 +55,80 @@ class _LocationScreenState extends State<LocationScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: EdgeInsets.all(16),
-                        child: Text(
-                          "Location details",
-                          style: GoogleFonts.inter(
-                              fontSize: 18, fontWeight: FontWeight.w600),
+                      if (ctrl.isAdmin) ...[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Text(
+                            "Customer Information",
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: primaryGreen,
+                            ),
+                          ),
                         ),
-                      ),
+                        SizedBox(height: 8),
+                        _buildTextField(
+                          label: "First Name*",
+                          hint: "Enter customer's first name",
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter customer\'s first name';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) =>
+                              ctrl.customerFirstName = value ?? '',
+                        ),
+                        _buildTextField(
+                          label: "Last Name*",
+                          hint: "Enter customer's last name",
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter customer\'s last name';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) =>
+                              ctrl.customerLastName = value ?? '',
+                        ),
+                        _buildTextField(
+                          label: "Email*",
+                          hint: "customer@example.com",
+                          keyboardType: TextInputType.emailAddress,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter customer\'s email';
+                            }
+                            if (!GetUtils.isEmail(value)) {
+                              return 'Please enter a valid email';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) => ctrl.customerEmail = value ?? '',
+                        ),
+                        _buildTextField(
+                          label: "Phone*",
+                          hint: "Enter customer's phone number",
+                          keyboardType: TextInputType.phone,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter customer\'s phone number';
+                            }
+                            if (value.length < 10) {
+                              return 'Please enter a valid phone number';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) => ctrl.customerPhone = value ?? '',
+                        ),
+                        SizedBox(height: 16),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Divider(),
+                        ),
+                        SizedBox(height: 8),
+                      ],
                       _buildTextField(
                         label: "Address*",
                         hint: "123 Main St, Apt 4B",

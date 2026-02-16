@@ -86,7 +86,7 @@ class HomeScreen extends StatelessWidget {
                   /// ✅ CLICKABLE NEW BOOKING BUTTON
                   GestureDetector(
                     onTap: () {
-                      Get.to(() => ServiceScreen());
+                      Get.to(() => CreateBookingScreen());
                     },
                     child: Container(
                       height: 46,

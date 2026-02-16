@@ -12,7 +12,8 @@ import 'package:http/http.dart' as http;
 
 class HomeController extends GetxController {
   TextEditingController fromDateController = TextEditingController(
-      text: DateFormat('yyyy/MM/dd').format(DateTime.now().subtract(const Duration(days: 7))));
+      text: DateFormat('yyyy/MM/dd')
+          .format(DateTime.now().subtract(const Duration(days: 7))));
   TextEditingController toDateController = TextEditingController(
       text: DateFormat('yyyy/MM/dd').format(DateTime.now()));
   String filterRange = "Last Week";
@@ -32,7 +33,8 @@ class HomeController extends GetxController {
   List<PerformanceOverTimeModel> GraphData = [];
 
   var history = <BookingModel>[].obs;
- /// ✅ Fetch canceled bookings with error handling
+
+  /// ✅ Fetch canceled bookings with error handling
   Future<void> fetchCancelBooking() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString("access_token");
@@ -51,7 +53,8 @@ class HomeController extends GetxController {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         history.value = List<BookingModel>.from(
-          (data["data"] as List).map((booking) => BookingModel.fromJson(booking)),
+          (data["data"] as List)
+              .map((booking) => BookingModel.fromJson(booking)),
         );
       }
     } catch (e) {
@@ -88,7 +91,8 @@ class HomeController extends GetxController {
     final token = prefs.getString("access_token");
 
     try {
-      final String apiUrl = "$baseUrl/analytics/summary?endDate=$startDate&startDate=$endDate";
+      final String apiUrl =
+          "$baseUrl/analytics/summary?endDate=$startDate&startDate=$endDate";
 
       final response = await http.get(
         Uri.parse(apiUrl),
@@ -108,7 +112,8 @@ class HomeController extends GetxController {
       } else if (response.statusCode == 401) {
         Fluttertoast.showToast(msg: "Logout Successful");
         prefs.setString("LOGIN", "OUT");
-        Get.offAll(() => AuthenticationScreen(), transition: Transition.rightToLeft);
+        Get.offAll(() => AuthenticationScreen(),
+            transition: Transition.rightToLeft);
       }
     } catch (e) {
       print("❗ Exception in fetchBusinessSummary: $e");
@@ -170,7 +175,8 @@ class HomeController extends GetxController {
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
         GraphData = List<PerformanceOverTimeModel>.from(
-          (jsonData["data"] as List).map((d) => PerformanceOverTimeModel.fromJson(d)),
+          (jsonData["data"] as List)
+              .map((d) => PerformanceOverTimeModel.fromJson(d)),
         );
       }
     } catch (e) {
@@ -201,7 +207,8 @@ class HomeController extends GetxController {
     update();
   }
 
-  Future<void> selectDate(BuildContext context, TextEditingController controller) async {
+  Future<void> selectDate(
+      BuildContext context, TextEditingController controller) async {
     DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
