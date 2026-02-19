@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "962406604168",
+    "project_id": "cleanmaria-53bb6",
+    "storage_bucket": "cleanmaria-53bb6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:962406604168:android:fe675e4f872549826dee3d",
+        "android_client_info": {
+          "package_name": "com.maria.cleaning.admin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqKa77sNjTOcp428lI5cH7hsP0i9_YnCo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:962406604168:android:e8da2d34ba117c2d6dee3d",
+        "android_client_info": {
+          "package_name": "parasya.cleanmaria.app.cleanby_maria"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqKa77sNjTOcp428lI5cH7hsP0i9_YnCo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

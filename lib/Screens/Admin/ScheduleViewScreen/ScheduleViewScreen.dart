@@ -7,7 +7,8 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:intl/intl.dart';
 
 class ScheduleViewScreen extends StatefulWidget {
-  const ScheduleViewScreen({super.key});
+  String staffID;
+  ScheduleViewScreen({super.key, this.staffID = ""});
 
   @override
   State<ScheduleViewScreen> createState() => _ScheduleViewScreenState();
@@ -66,12 +67,12 @@ class _ScheduleViewScreenState extends State<ScheduleViewScreen> {
     );
   }
 
-  Schedulecontroller ctrl = Get.put(Schedulecontroller());
-
+  late Schedulecontroller ctrl;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    ctrl = Get.put(Schedulecontroller(staffID: widget.staffID));
     ctrl.fetchHeatmapData();
     ctrl.fetchSchedules();
   }
@@ -83,7 +84,7 @@ class _ScheduleViewScreenState extends State<ScheduleViewScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text(
-          'History',
+          'Schedules',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
@@ -167,8 +168,10 @@ class _ScheduleViewScreenState extends State<ScheduleViewScreen> {
                           itemCount: ctrl.schedules.length,
                           separatorBuilder: (_, __) =>
                               const SizedBox(height: 12),
-                          itemBuilder: (ctx, i) =>
-                              ScheduleListCard(booking: ctrl.schedules[i]),
+                          itemBuilder: (ctx, i) => ScheduleListCard(
+                            booking: ctrl.schedules[i],
+                            isStaff: widget.staffID != "",
+                          ),
                         ),
                 ),
             ],
@@ -268,7 +271,7 @@ class _ScheduleViewScreenState extends State<ScheduleViewScreen> {
             const SizedBox(height: 2),
             if (bookingCount > 0)
               Text(
-                '${bookingCount}bk',
+                '${bookingCount} bk',
                 style: const TextStyle(
                   fontSize: 9,
                   fontWeight: FontWeight.w700,

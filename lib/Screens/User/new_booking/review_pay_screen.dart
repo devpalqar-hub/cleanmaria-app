@@ -170,12 +170,12 @@ class _ReviewPayScreenState extends State<ReviewPayScreen> {
                       ),
                       SizedBox(height: 12),
 
-                      _paymentOption(
-                        icon: Icons.credit_card,
-                        title: "Card Payment",
-                        subtitle: "Pay securely with credit/debit card",
-                        value: "card",
-                      ),
+                      // _paymentOption(
+                      //   icon: Icons.credit_card,
+                      //   title: "Card Payment",
+                      //   subtitle: "Pay securely with credit/debit card",
+                      //   value: "card",
+                      // ),
 
                       _paymentOption(
                         icon: Icons.money,

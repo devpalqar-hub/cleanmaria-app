@@ -1,6 +1,7 @@
 import 'package:cleanby_maria/Screens/Admin/RegionScreen/RegionScreen.dart';
 import 'package:cleanby_maria/Screens/Admin/StaffScreen/Models/StaffModel.dart';
 import 'package:cleanby_maria/Screens/Admin/StaffScreen/Service/Controller.dart';
+import 'package:cleanby_maria/Screens/Admin/StaffScreen/Views/EditBottomsheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -22,6 +23,8 @@ class _StaffScreenState extends State<StaffScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
+
+        /// APP BAR
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
@@ -35,12 +38,15 @@ class _StaffScreenState extends State<StaffScreen> {
             ),
           ),
           actions: [
+            /// REGION
             Padding(
               padding: EdgeInsets.only(right: 16.w),
               child: InkWell(
                 onTap: () {
-                  Get.to(() => RegionScreen(),
-                      transition: Transition.rightToLeft);
+                  Get.to(
+                    () => RegionScreen(),
+                    transition: Transition.rightToLeft,
+                  );
                 },
                 child: Icon(
                   Icons.location_on,
@@ -49,6 +55,8 @@ class _StaffScreenState extends State<StaffScreen> {
                 ),
               ),
             ),
+
+            /// ADD STAFF
             Padding(
               padding: EdgeInsets.only(right: 16.w),
               child: InkWell(
@@ -72,6 +80,8 @@ class _StaffScreenState extends State<StaffScreen> {
             ),
           ],
         ),
+
+        /// BODY
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.w),
           child: GetBuilder<StaffController>(
@@ -95,47 +105,49 @@ class _StaffScreenState extends State<StaffScreen> {
                 children: [
                   SizedBox(height: 12.h),
 
+                  /// HEADER ROW
                   Row(
                     children: [
                       Expanded(
                         flex: 4,
                         child: Text(
                           "NAME",
-                          style: TextStyle(
-                            fontSize: 11.sp,
-                            color: Colors.grey,
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: _headerStyle(),
                         ),
                       ),
+
                       Expanded(
                         flex: 2,
                         child: Text(
                           "PRIORITY",
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 11.sp,
-                            color: Colors.grey,
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: _headerStyle(),
                         ),
                       ),
+
                       Expanded(
                         flex: 2,
                         child: Text(
                           "STATUS",
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 11.sp,
-                            color: Colors.grey,
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: _headerStyle(),
+                        ),
+                      ),
+
+                      /// ACTION COLUMN
+                      SizedBox(
+                        width: 40.w,
+                        child: Text(
+                          "",
+                          textAlign: TextAlign.center,
+                          style: _headerStyle(),
                         ),
                       ),
                     ],
                   ),
 
                   SizedBox(height: 8.h),
+
                   Divider(color: const Color(0xFFF1F1F1)),
 
                   /// LIST
@@ -143,14 +155,15 @@ class _StaffScreenState extends State<StaffScreen> {
                     child: ListView.builder(
                       itemCount: _.staffList.length,
                       itemBuilder: (context, index) {
-                        final staff = _.staffList[index];
+                        final Staff staff = _.staffList[index];
+                        final bool isActive =
+                            staff.status.toLowerCase() == "active";
 
                         return Column(
                           children: [
                             Padding(
                               padding: EdgeInsets.symmetric(vertical: 12.h),
                               child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   /// NAME COLUMN
                                   Expanded(
@@ -182,8 +195,6 @@ class _StaffScreenState extends State<StaffScreen> {
                                                 style: TextStyle(
                                                   fontSize: 14.sp,
                                                   fontWeight: FontWeight.w600,
-                                                  color:
-                                                      const Color(0xFF1F2937),
                                                 ),
                                               ),
                                               SizedBox(height: 2.h),
@@ -191,8 +202,7 @@ class _StaffScreenState extends State<StaffScreen> {
                                                 staff.email,
                                                 style: TextStyle(
                                                   fontSize: 11.sp,
-                                                  color:
-                                                      const Color(0xFF2C2C2C),
+                                                  color: Colors.grey,
                                                 ),
                                                 overflow: TextOverflow.ellipsis,
                                               ),
@@ -203,7 +213,7 @@ class _StaffScreenState extends State<StaffScreen> {
                                     ),
                                   ),
 
-                                  /// PRIORITY COLUMN (NUMBER ONLY)
+                                  /// PRIORITY
                                   Expanded(
                                     flex: 2,
                                     child: Text(
@@ -216,7 +226,7 @@ class _StaffScreenState extends State<StaffScreen> {
                                     ),
                                   ),
 
-                                  /// STATUS COLUMN
+                                  /// STATUS
                                   Expanded(
                                     flex: 2,
                                     child: Center(
@@ -226,24 +236,80 @@ class _StaffScreenState extends State<StaffScreen> {
                                           vertical: 4.h,
                                         ),
                                         decoration: BoxDecoration(
-                                          color: staff.status.toLowerCase() ==
-                                                  "active"
+                                          color: isActive
                                               ? const Color(0xFFE6F4EA)
                                               : const Color(0xFFF1F1F1),
                                           borderRadius:
                                               BorderRadius.circular(14.r),
                                         ),
                                         child: Text(
-                                          staff.status.toLowerCase(),
+                                          staff.status,
                                           style: TextStyle(
                                             fontSize: 11.sp,
-                                            color: staff.status.toLowerCase() ==
-                                                    "active"
+                                            color: isActive
                                                 ? const Color(0xFF2E7D32)
                                                 : Colors.grey,
                                           ),
                                         ),
                                       ),
+                                    ),
+                                  ),
+
+                                  /// ACTION MENU (FIXED)
+                                  SizedBox(
+                                    width: 40.w,
+                                    height: 40.h,
+                                    child: PopupMenuButton<String>(
+                                      icon: Icon(
+                                        Icons.more_vert,
+                                        size: 20.sp,
+                                      ),
+                                      onSelected: (value) {
+                                        switch (value) {
+                                          case "Edit":
+                                            showModalBottomSheet(
+                                              context: context,
+                                              isScrollControlled: true,
+                                              builder: (_) =>
+                                                  EditStaffBottomSheet(
+                                                staff: staff,
+                                              ),
+                                            );
+                                            break;
+
+                                          case "Enable":
+                                            stCtrl.enableStaff(staff.id);
+                                            break;
+
+                                          case "Disable":
+                                            stCtrl.disableStaff(staff.id);
+                                            break;
+
+                                          case "Delete":
+                                            stCtrl.deleteStaff(staff);
+                                            break;
+                                        }
+                                      },
+                                      itemBuilder: (_) => [
+                                        const PopupMenuItem(
+                                          value: "Edit",
+                                          child: Text("Edit"),
+                                        ),
+                                        if (!isActive)
+                                          const PopupMenuItem(
+                                            value: "Enable",
+                                            child: Text("Enable"),
+                                          ),
+                                        if (isActive)
+                                          const PopupMenuItem(
+                                            value: "Disable",
+                                            child: Text("Disable"),
+                                          ),
+                                        const PopupMenuItem(
+                                          value: "Delete",
+                                          child: Text("Delete"),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
@@ -264,6 +330,14 @@ class _StaffScreenState extends State<StaffScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  TextStyle _headerStyle() {
+    return TextStyle(
+      fontSize: 11.sp,
+      color: Colors.grey,
+      fontWeight: FontWeight.w500,
     );
   }
 }

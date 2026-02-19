@@ -18,13 +18,24 @@ class Schedulecontroller extends GetxController {
   bool isloading = false;
   bool isScheduleLoading = false;
 
+  String selectedStaffID = "";
+
+  Schedulecontroller({String staffID = ""}) {
+    selectedStaffID = staffID;
+  }
+
   fetchHeatmapData() async {
     calenderItems = [];
     isloading = true;
     update();
+
+    String parms = "";
+    if (selectedStaffID != "") {
+      parms = "&staffId=$selectedStaffID";
+    }
     var response = await get(
       Uri.parse(baseUrl +
-          "/bookings/heatmap/calendar?year=${selectedYear}&month=${selectedMonth}"),
+          "/bookings/heatmap/calendar?year=${selectedYear}&month=${selectedMonth}$parms"),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $authToken',
@@ -48,6 +59,10 @@ class Schedulecontroller extends GetxController {
     schedules = [];
     isScheduleLoading = true;
     String date = DateFormat("yyyy-MM-dd").format(selectedDate);
+    String parms = "";
+    if (selectedStaffID != "") {
+      parms = "&staffId=$selectedStaffID";
+    }
     update();
     var response = await get(
       Uri.parse(baseUrl +

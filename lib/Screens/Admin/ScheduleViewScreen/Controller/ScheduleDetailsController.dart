@@ -52,22 +52,31 @@ class ScheduleDetailsController extends GetxController {
   }
 
   String getBookingTime() {
-    var date = "";
-    if (bookingDetail != null) {
-      date = date + "${bookingDetail!.monthSchedules!.first!.time}";
-    }
+    try {
+      var date = "";
+      if (bookingDetail != null) {
+        date = date + "${bookingDetail!.monthSchedules!.first!.time}";
+      }
 
-    if (schedule != null && schedule!.endTime != null) {
-      date = date +
-          " - ${DateFormat("hh:mm").format(DateTime.parse(schedule!.endTime!))} ";
+      if (schedule != null && schedule!.endTime != null) {
+        date = date +
+            " - ${DateFormat("hh:mm").format(DateTime.parse(schedule!.endTime!))} ";
+      }
+      return date + " ( ${bookingDetail!.reccuingType!.capitalize!} )";
+    } catch (e) {
+      if (bookingDetail!.nextSchedule == null) {
+        return "Completed";
+      } else {
+        return "${DateFormat("hh:mm").format(DateTime.parse(bookingDetail!.nextSchedule!.startTime!))} - ${DateFormat("hh:mm").format(DateTime.parse(bookingDetail!.nextSchedule!.endTime!))} ";
+      }
+      return "";
     }
-    return date + " ( ${bookingDetail!.reccuingType!.capitalize!} )";
   }
 
   String formatDuration(Duration duration) {
     // Handle negative duration
     if (duration.isNegative) {
-      return "0h 0m";
+      return "Completed";
     }
 
     if (duration.inDays > 0) {
@@ -145,6 +154,72 @@ class ScheduleDetailsController extends GetxController {
     }
 
     log('Cancel Booking Response Body: ${cancelResponse.body}');
+    isLoading = false;
+    update();
+    return false;
+  }
+
+  Future<bool> updateBookingPrice(String bookingId, double newPrice) async {
+    if (isLoading) return false;
+    isLoading = true;
+    update();
+
+    final response = await patch(
+      Uri.parse('$baseUrl/bookings/$bookingId'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $authToken',
+      },
+      body: jsonEncode({'finalAmount': newPrice}),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      if (bookingDetail != null) {
+        bookingDetail!.price = newPrice.toString();
+      }
+      isLoading = false;
+      update();
+      Fluttertoast.showToast(msg: "Price updated successfully");
+      return true;
+    } else {
+      Fluttertoast.showToast(msg: "Failed to update price");
+    }
+
+    log('Update Price Response Body: ${response.body}');
+    isLoading = false;
+    update();
+    return false;
+  }
+
+  Future<bool> updatePaymentMethod(
+      String bookingId, String paymentMethod) async {
+    if (isLoading) return false;
+    isLoading = true;
+    update();
+
+    final response = await post(
+      Uri.parse('$baseUrl/bookings/$bookingId/update-payment-method'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $authToken',
+      },
+      body: jsonEncode({'paymentMethod': paymentMethod}),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final responseData = json.decode(response.body);
+      final message =
+          responseData['message'] ?? 'Payment method updated successfully';
+      Fluttertoast.showToast(msg: message);
+
+      // Reload booking details
+      await fetchBookingDetails(bookingId);
+      return true;
+    } else {
+      Fluttertoast.showToast(msg: "Failed to update payment method");
+    }
+
+    log('Update Payment Method Response Body: ${response.body}');
     isLoading = false;
     update();
     return false;

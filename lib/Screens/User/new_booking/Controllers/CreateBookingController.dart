@@ -4,6 +4,7 @@ import 'package:cleanby_maria/Screens/Admin/ClientScreen/Service/BookingControll
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/Service/BookingDetailsContoller.dart';
 import 'package:cleanby_maria/Screens/Admin/ScheduleViewScreen/Controller/ScheduleDetailsController.dart';
 import 'package:cleanby_maria/Screens/Admin/ScheduleViewScreen/ScheduleDetailsScreen.dart';
+import 'package:cleanby_maria/Screens/User/home/Models/UserProfileModel.dart';
 import 'package:cleanby_maria/Screens/User/new_booking/Models/UserPlanModel.dart';
 import 'package:cleanby_maria/Screens/User/new_booking/Models/UserServiceModel.dart';
 import 'package:cleanby_maria/Screens/User/new_booking/Models/UserTimeSlotModel.dart';
@@ -16,11 +17,24 @@ import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 
 class CreateBookingController extends GetxController {
-  CreateBookingController({bool isAdminUser = false}) {
+  CreateBookingController({bool isAdminUser = false, UserProfileModel? user}) {
     isAdmin = isAdminUser;
+
+    if (user != null) {
+      isUser = true;
+
+      customerFirstName = user.name ?? "";
+      customerEmail = user.email ?? "";
+      customerPhone = user.phone ?? "";
+      print("Accssed Here");
+      print(customerFirstName);
+      print(customerLastName);
+      print(customerEmail);
+    }
     update();
   }
 
+  bool isUser = false;
   bool isAdmin = false;
   List<UserServiceModel> serviceList = [];
   UserServiceModel? selectedService = null;
@@ -53,7 +67,7 @@ class CreateBookingController extends GetxController {
   DateTime? selectedDate;
 
   // Payment fields
-  String paymentMethod = 'card'; // 'card' or 'cash'
+  String paymentMethod = 'cash'; // 'card' or 'cash'
   double? customPrice; // For admin to override default pricing
 
   // Loading states
@@ -214,7 +228,7 @@ class CreateBookingController extends GetxController {
       // Prepare booking data based on admin status
       Map<String, dynamic> bookingData = {
         "serviceId": selectedService!.id,
-        "type": selectedPlan!.title == "One Time" ? "one-time" : "recurring",
+        "type": selectedPlan!.title == "One Time" ? "one_time" : "recurring",
         "no_of_rooms": numberOfBedrooms,
         "no_of_bathrooms": numberOfBathrooms,
         "propertyType": propertyType,
@@ -223,7 +237,8 @@ class CreateBookingController extends GetxController {
         "isEco": ecoCleaning,
         "price": customPrice ?? selectedPlan!.finalPrice ?? 0,
         "paymentMethod": apiPaymentMethod,
-        "recurringTypeId": selectedPlan!.recurringTypeId,
+        if (selectedPlan!.recurringTypeId != "notASubcriptionTypeId")
+          "recurringTypeId": selectedPlan!.recurringTypeId,
         "address": {
           "street": address,
           "landmark": "",
@@ -237,12 +252,14 @@ class CreateBookingController extends GetxController {
         "time": selectedTimeSlot!.time,
       };
 
+      print(bookingData);
+
       // Add customer details (admin provides these, regular users use their own account)
-      if (isAdmin) {
-        bookingData["name"] = "$customerFirstName $customerLastName";
-        bookingData["email"] = customerEmail;
-        bookingData["phone"] = customerPhone;
-      }
+      //  if (isAdmin) {
+      bookingData["name"] = "$customerFirstName $customerLastName".trim();
+      bookingData["email"] = customerEmail;
+      bookingData["phone"] = customerPhone;
+      //  }
 
       final response = await post(
         Uri.parse('$baseUrl/bookings'),
@@ -252,7 +269,8 @@ class CreateBookingController extends GetxController {
         },
         body: jsonEncode(bookingData),
       );
-
+      print(response.body);
+      print(response.statusCode);
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = json.decode(response.body);
         final bookingId = data['data']['booking']['id'];

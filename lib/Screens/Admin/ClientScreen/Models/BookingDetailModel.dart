@@ -11,14 +11,19 @@ class BookingDetailModel {
   String? status;
   String? price;
   String? createdAt;
+  String? date;
+  String? paymentMethod;
+  String? reccuingType;
+
   Customer? customer;
   BookingAddress? bookingAddress;
   Service? service;
-  String? reccuingType;
-  String? date;
-  String? paymentMethod;
+
   List<MonthSchedules>? monthSchedules;
   List<Transactions>? transactions;
+
+  /// NEW FIELD
+  NextSchedule? nextSchedule;
 
   BookingDetailModel({
     this.id,
@@ -41,6 +46,7 @@ class BookingDetailModel {
     this.monthSchedules,
     this.transactions,
     this.paymentMethod,
+    this.nextSchedule,
   });
 
   BookingDetailModel.fromJson(Map<String, dynamic> json) {
@@ -58,65 +64,175 @@ class BookingDetailModel {
     price = json['price'];
     date = json['date'];
     createdAt = json['createdAt'];
+
     reccuingType = (json['recurringType'] == null)
         ? "One Time"
         : json['recurringType']["name"] ?? "";
-    customer = json['customer'] != null
-        ? new Customer.fromJson(json['customer'])
-        : null;
+
+    customer =
+        json['customer'] != null ? Customer.fromJson(json['customer']) : null;
+
     bookingAddress = json['bookingAddress'] != null
-        ? new BookingAddress.fromJson(json['bookingAddress'])
+        ? BookingAddress.fromJson(json['bookingAddress'])
         : null;
+
     service =
-        json['service'] != null ? new Service.fromJson(json['service']) : null;
+        json['service'] != null ? Service.fromJson(json['service']) : null;
+
+    /// MONTH SCHEDULES
     if (json['monthSchedules'] != null) {
       monthSchedules = <MonthSchedules>[];
       json['monthSchedules'].forEach((v) {
-        monthSchedules!.add(new MonthSchedules.fromJson(v));
+        monthSchedules!.add(MonthSchedules.fromJson(v));
       });
     }
+
+    /// TRANSACTIONS
     if (json['transactions'] != null) {
       transactions = <Transactions>[];
       json['transactions'].forEach((v) {
-        transactions!.add(new Transactions.fromJson(v));
+        transactions!.add(Transactions.fromJson(v));
       });
     }
+
+    /// NEXT SCHEDULE (NEW)
+    nextSchedule = json['nextSchedule'] != null
+        ? NextSchedule.fromJson(json['nextSchedule'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['userId'] = this.userId;
-    data['type'] = this.type;
-    data['areaSize'] = this.areaSize;
-    data['noOfRooms'] = this.noOfRooms;
-    data['noOfBathRooms'] = this.noOfBathRooms;
-    data['propertyType'] = this.propertyType;
-    data['materialProvided'] = this.materialProvided;
-    data['isEco'] = this.isEco;
-    data['status'] = this.status;
-    data['price'] = this.price;
-    data['createdAt'] = this.createdAt;
+    final Map<String, dynamic> data = {};
+
+    data['id'] = id;
+    data['userId'] = userId;
+    data['type'] = type;
+    data['areaSize'] = areaSize;
+    data['noOfRooms'] = noOfRooms;
+    data['noOfBathRooms'] = noOfBathRooms;
+    data['propertyType'] = propertyType;
+    data['materialProvided'] = materialProvided;
+    data['isEco'] = isEco;
+    data['status'] = status;
+    data['price'] = price;
+    data['createdAt'] = createdAt;
+    data['date'] = date;
     data['paymentMethod'] = paymentMethod;
-    if (this.customer != null) {
-      data['customer'] = this.customer!.toJson();
+
+    if (customer != null) {
+      data['customer'] = customer!.toJson();
     }
-    if (this.bookingAddress != null) {
-      data['bookingAddress'] = this.bookingAddress!.toJson();
+
+    if (bookingAddress != null) {
+      data['bookingAddress'] = bookingAddress!.toJson();
     }
-    if (this.service != null) {
-      data['service'] = this.service!.toJson();
+
+    if (service != null) {
+      data['service'] = service!.toJson();
     }
-    if (this.monthSchedules != null) {
-      data['monthSchedules'] =
-          this.monthSchedules!.map((v) => v.toJson()).toList();
+
+    if (monthSchedules != null) {
+      data['monthSchedules'] = monthSchedules!.map((v) => v.toJson()).toList();
     }
-    if (this.transactions != null) {
-      data['transactions'] = this.transactions!.map((v) => v.toJson()).toList();
+
+    if (transactions != null) {
+      data['transactions'] = transactions!.map((v) => v.toJson()).toList();
     }
+
+    if (nextSchedule != null) {
+      data['nextSchedule'] = nextSchedule!.toJson();
+    }
+
     return data;
   }
 }
+
+////////////////////////////////////////////////////////////
+/// NEXT SCHEDULE MODEL
+////////////////////////////////////////////////////////////
+
+class NextSchedule {
+  String? id;
+  String? startTime;
+  String? endTime;
+  String? status;
+  StaffMini? staff;
+
+  NextSchedule({
+    this.id,
+    this.startTime,
+    this.endTime,
+    this.status,
+    this.staff,
+  });
+
+  NextSchedule.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    startTime = json['startTime'];
+    endTime = json['endTime'];
+    status = json['status'];
+    staff = json['staff'] != null ? StaffMini.fromJson(json['staff']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {};
+
+    data['id'] = id;
+    data['startTime'] = startTime;
+    data['endTime'] = endTime;
+    data['status'] = status;
+
+    if (staff != null) {
+      data['staff'] = staff!.toJson();
+    }
+
+    return data;
+  }
+
+  /// Helper getters
+  DateTime? get startDate =>
+      startTime != null ? DateTime.tryParse(startTime!) : null;
+
+  DateTime? get endDate => endTime != null ? DateTime.tryParse(endTime!) : null;
+
+  Duration get duration => (startDate != null && endDate != null)
+      ? endDate!.difference(startDate!)
+      : Duration.zero;
+}
+
+////////////////////////////////////////////////////////////
+/// STAFF MINI MODEL
+////////////////////////////////////////////////////////////
+
+class StaffMini {
+  String? id;
+  String? name;
+  String? email;
+
+  StaffMini({
+    this.id,
+    this.name,
+    this.email,
+  });
+
+  StaffMini.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    email = json['email'];
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "id": id,
+      "name": name,
+      "email": email,
+    };
+  }
+}
+
+////////////////////////////////////////////////////////////
+/// CUSTOMER MODEL
+////////////////////////////////////////////////////////////
 
 class Customer {
   String? id;
@@ -134,14 +250,18 @@ class Customer {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['email'] = this.email;
-    data['phone'] = this.phone;
-    return data;
+    return {
+      "id": id,
+      "name": name,
+      "email": email,
+      "phone": phone,
+    };
   }
 }
+
+////////////////////////////////////////////////////////////
+/// BOOKING ADDRESS MODEL
+////////////////////////////////////////////////////////////
 
 class BookingAddress {
   String? specialInstructions;
@@ -152,18 +272,20 @@ class BookingAddress {
   BookingAddress.fromJson(Map<String, dynamic> json) {
     specialInstructions = json['specialInstructions'];
     address =
-        json['address'] != null ? new Address.fromJson(json['address']) : null;
+        json['address'] != null ? Address.fromJson(json['address']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['specialInstructions'] = this.specialInstructions;
-    if (this.address != null) {
-      data['address'] = this.address!.toJson();
-    }
-    return data;
+    return {
+      "specialInstructions": specialInstructions,
+      "address": address?.toJson(),
+    };
   }
 }
+
+////////////////////////////////////////////////////////////
+/// ADDRESS MODEL
+////////////////////////////////////////////////////////////
 
 class Address {
   String? landmark;
@@ -174,14 +296,15 @@ class Address {
   String? state;
   String? zip;
 
-  Address(
-      {this.landmark,
-      this.line1,
-      this.line2,
-      this.street,
-      this.city,
-      this.state,
-      this.zip});
+  Address({
+    this.landmark,
+    this.line1,
+    this.line2,
+    this.street,
+    this.city,
+    this.state,
+    this.zip,
+  });
 
   Address.fromJson(Map<String, dynamic> json) {
     landmark = json['landmark'];
@@ -194,23 +317,28 @@ class Address {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['landmark'] = this.landmark;
-    data['line_1'] = this.line1;
-    data['line_2'] = this.line2;
-    data['street'] = this.street;
-    data['city'] = this.city;
-    data['state'] = this.state;
-    data['zip'] = this.zip;
-    return data;
+    return {
+      "landmark": landmark,
+      "line_1": line1,
+      "line_2": line2,
+      "street": street,
+      "city": city,
+      "state": state,
+      "zip": zip,
+    };
   }
 }
+
+////////////////////////////////////////////////////////////
+/// SERVICE MODEL
+////////////////////////////////////////////////////////////
 
 class Service {
   String? id;
   String? name;
   int? duration;
-  Service({this.id, this.name});
+
+  Service({this.id, this.name, this.duration});
 
   Service.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -219,12 +347,17 @@ class Service {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    return data;
+    return {
+      "id": id,
+      "name": name,
+      "durationMinutes": duration,
+    };
   }
 }
+
+////////////////////////////////////////////////////////////
+/// MONTH SCHEDULE MODEL
+////////////////////////////////////////////////////////////
 
 class MonthSchedules {
   int? weekOfMonth;
@@ -240,13 +373,17 @@ class MonthSchedules {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['weekOfMonth'] = this.weekOfMonth;
-    data['dayOfWeek'] = this.dayOfWeek;
-    data['time'] = this.time;
-    return data;
+    return {
+      "weekOfMonth": weekOfMonth,
+      "dayOfWeek": dayOfWeek,
+      "time": time,
+    };
   }
 }
+
+////////////////////////////////////////////////////////////
+/// TRANSACTIONS MODEL
+////////////////////////////////////////////////////////////
 
 class Transactions {
   String? status;
@@ -254,8 +391,12 @@ class Transactions {
   String? createdAt;
   String? transactionType;
 
-  Transactions(
-      {this.status, this.paymentMethod, this.createdAt, this.transactionType});
+  Transactions({
+    this.status,
+    this.paymentMethod,
+    this.createdAt,
+    this.transactionType,
+  });
 
   Transactions.fromJson(Map<String, dynamic> json) {
     status = json['status'];
@@ -265,11 +406,11 @@ class Transactions {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
-    data['paymentMethod'] = this.paymentMethod;
-    data['createdAt'] = this.createdAt;
-    data['transactionType'] = this.transactionType;
-    return data;
+    return {
+      "status": status,
+      "paymentMethod": paymentMethod,
+      "createdAt": createdAt,
+      "transactionType": transactionType,
+    };
   }
 }

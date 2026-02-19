@@ -8,9 +8,15 @@ import 'package:intl/intl.dart';
 
 class ScheduleListCard extends StatelessWidget {
   bool makeClick = false;
+  bool isStaff = false;
+  bool isUser = false;
   final ScheduleItemModel booking;
 
-  ScheduleListCard({super.key, required this.booking, this.makeClick = true});
+  ScheduleListCard(
+      {super.key,
+      required this.booking,
+      this.makeClick = true,
+      this.isStaff = false});
 
   Color get _statusColor {
     switch (booking.status!.toUpperCase()) {
@@ -52,7 +58,9 @@ class ScheduleListCard extends StatelessWidget {
         Get.to(() => ScheduleDetailsScreen(
               schedule: booking,
               bookingID: booking.bookingId!,
-              isAdmin: true,
+              isAdmin: (isStaff || isUser) ? false : true,
+              isStaff: isStaff,
+              isUser: isUser,
             ));
       },
       child: Container(

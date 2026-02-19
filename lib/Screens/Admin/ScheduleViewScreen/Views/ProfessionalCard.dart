@@ -1,5 +1,8 @@
 import 'package:cleanby_maria/Screens/Admin/ScheduleViewScreen/ScheduleDetailsScreen.dart';
+import 'package:cleanby_maria/Screens/Chats/Controller/ChatController.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
 
 class ProfessionalCard extends StatelessWidget {
   String name;
@@ -54,7 +57,10 @@ class ProfessionalCard extends StatelessWidget {
 
           // Chat Button
           GestureDetector(
-            onTap: () {},
+            onTap: () {
+              Chatcontroller cctrl = Get.put(Chatcontroller());
+              cctrl.openChatUser(userID: id, isDonar: false, userName: name);
+            },
             child: Container(
               width: 44,
               height: 44,

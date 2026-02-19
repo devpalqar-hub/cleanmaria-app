@@ -1,3 +1,5 @@
+import 'package:cleanby_maria/Screens/Admin/ScheduleViewScreen/ScheduleDetailsScreen.dart';
+import 'package:cleanby_maria/Screens/User/home/Models/UserProfileModel.dart';
 import 'package:cleanby_maria/Screens/User/new_booking/Controllers/CreateBookingController.dart';
 import 'package:cleanby_maria/Screens/User/new_booking/Models/UserServiceModel.dart';
 import 'package:cleanby_maria/Screens/User/new_booking/PlanSelectionScreen.dart';
@@ -6,16 +8,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-final Color primaryGreen = const Color(0xFF2F7F6F);
+final Color primaryGreen = AppColors.teal;
 
 class CreateBookingScreen extends StatelessWidget {
   bool isAdmin = false;
-  CreateBookingScreen({super.key, this.isAdmin = false});
+  UserProfileModel? user;
+  CreateBookingScreen({super.key, this.isAdmin = false, this.user = null});
 
   @override
   Widget build(BuildContext context) {
     CreateBookingController ctrl =
-        Get.put(CreateBookingController(isAdminUser: isAdmin));
+        Get.put(CreateBookingController(isAdminUser: isAdmin, user: user));
     return Scaffold(
       backgroundColor: Colors.white,
       bottomNavigationBar: SafeArea(
@@ -160,6 +163,9 @@ class CreateBookingScreen extends StatelessWidget {
                             "Use environmentally friendly cleaning products",
                         value: __.ecoCleaning,
                         onChanged: (value) {
+                          if (__.materialProvide) {
+                            __.materialProvide = false;
+                          }
                           __.ecoCleaning = value;
                           __.update();
                         },
@@ -172,6 +178,9 @@ class CreateBookingScreen extends StatelessWidget {
                             "We provide all cleaning materials and equipment",
                         value: __.materialProvide,
                         onChanged: (value) {
+                          if (__.ecoCleaning) {
+                            __.ecoCleaning = false;
+                          }
                           __.materialProvide = value;
                           __.update();
                         },

@@ -1,13 +1,20 @@
 import 'package:cleanby_maria/Screens/Admin/ScheduleViewScreen/Controller/ScheduleHistoryController.dart';
 import 'package:cleanby_maria/Screens/Admin/ScheduleViewScreen/Views/ScheduleListCard.dart';
+import 'package:cleanby_maria/Screens/Admin/ScheduleViewScreen/Views/ScheduleLogCard.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ScheduleHistoryScreen extends StatefulWidget {
-  final String bookingID;
-  final String staffID;
-  const ScheduleHistoryScreen(
-      {super.key, this.bookingID = "", this.staffID = ""});
+  final String? bookingID;
+  final String? staffID;
+  bool isAdmin;
+  bool isUser;
+  ScheduleHistoryScreen(
+      {super.key,
+      this.bookingID,
+      this.staffID,
+      this.isAdmin = false,
+      this.isUser = false});
 
   @override
   State<ScheduleHistoryScreen> createState() => _ScheduleHistoryScreenState();
@@ -15,15 +22,17 @@ class ScheduleHistoryScreen extends StatefulWidget {
 
 class _ScheduleHistoryScreenState extends State<ScheduleHistoryScreen> {
   late ScheduleHistoryController _ctrl;
-  late String _selectedBookingId;
-  late String _selectedStaffId;
+  String? _selectedBookingId;
+  String? _selectedStaffId;
 
   @override
   void initState() {
     super.initState();
-    _ctrl = Get.put(ScheduleHistoryController());
     _selectedBookingId = widget.bookingID;
     _selectedStaffId = widget.staffID;
+    _ctrl = Get.put(ScheduleHistoryController(
+        sBID: _selectedBookingId, sSID: _selectedStaffId));
+    ;
   }
 
   Future<void> _selectDateRange(BuildContext context) async {
@@ -116,12 +125,12 @@ class _ScheduleHistoryScreenState extends State<ScheduleHistoryScreen> {
 
   void _applyFilters() {
     if (_ctrl.startDate != null && _ctrl.endDate != null) {
-      if (_selectedBookingId.isNotEmpty) {
-        _ctrl.setBookingId(_selectedBookingId);
-      }
-      if (_selectedStaffId.isNotEmpty) {
-        _ctrl.setStaffId(_selectedStaffId);
-      }
+      // if (_selectedBookingId.isNotEmpty) {
+      //   _ctrl.setBookingId(_selectedBookingId);
+      // }
+      // if (_selectedStaffId.isNotEmpty) {
+      _ctrl.setStaffId(_selectedStaffId);
+      // }
       _ctrl.fetchSchedules();
     }
   }
@@ -323,34 +332,39 @@ class _ScheduleHistoryScreenState extends State<ScheduleHistoryScreen> {
                               );
                             }
 
-                            return ScheduleListCard(
-                              booking: ctrl.schedules[index],
-                              makeClick: false,
-                            );
+                            return Schedulelogcard(
+                                booking: ctrl.schedules[index],
+                                makeClick: false,
+                                role: (_selectedStaffId != "" &&
+                                        _selectedStaffId != null)
+                                    ? CardRole.staff
+                                    : (widget.isUser)
+                                        ? CardRole.user
+                                        : CardRole.admin);
                           },
                         ),
                 ),
 
                 // ── Pagination Info ──
-                if (ctrl.schedules.isNotEmpty)
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFF9FAFB),
-                      border: Border(
-                        top: BorderSide(color: Color(0xFFEEEEEE), width: 1),
-                      ),
-                    ),
-                    child: Text(
-                      'Page ${ctrl.currentPage} of ${ctrl.totalPages} • ${ctrl.schedules.length} items',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Color(0xFF888888),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
+                // if (ctrl.schedules.isNotEmpty)
+                //   Container(
+                //     padding: const EdgeInsets.all(12),
+                //     decoration: const BoxDecoration(
+                //       color: Color(0xFFF9FAFB),
+                //       border: Border(
+                //         top: BorderSide(color: Color(0xFFEEEEEE), width: 1),
+                //       ),
+                //     ),
+                //     child: Text(
+                //       'Page ${ctrl.currentPage} of ${ctrl.totalPages} • ${ctrl.schedules.length} items',
+                //       textAlign: TextAlign.center,
+                //       style: const TextStyle(
+                //         fontSize: 12,
+                //         color: Color(0xFF888888),
+                //         fontWeight: FontWeight.w500,
+                //       ),
+                //     ),
+                //   ),
               ],
             );
           },

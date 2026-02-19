@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:cleanby_maria/Screens/User/UserHomeScreen/UserHomeScreen.dart';
 import 'package:cleanby_maria/main.dart';
 import 'package:cleanby_maria/Screens/AuthenticationScreen/OtpVerificationScreen.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -23,8 +25,7 @@ class AuthenticationController extends GetxController {
     }
 
     // Basic email validation
-    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-    if (!emailRegex.hasMatch(emailController.text)) {
+    if (!emailController.text.isEmail) {
       Fluttertoast.showToast(msg: 'Please enter a valid email');
       return;
     }
@@ -164,8 +165,9 @@ class AuthenticationController extends GetxController {
           await prefs.setString("user_name", data['user']['name'] ?? "User");
           await prefs.setString("email", email);
           await prefs.setString("LOGIN", "IN");
-
           authToken = accessToken;
+          userID = data['user']['id'];
+          setFcmToken(data['user']['id']);
           return {
             "success": true,
             "accessToken": data['access_token'],
@@ -185,6 +187,23 @@ class AuthenticationController extends GetxController {
       print("Request error: $e");
       return {"success": false, "message": "An error occurred: $e"};
     }
+  }
+
+  setFcmToken(String userID) async {
+    FirebaseMessaging fcm = FirebaseMessaging.instance;
+    String token = await fcm.getToken() ?? "";
+
+    try {
+      if (token == "") return;
+      final resposen = await http.patch(Uri.parse(baseUrl + "/users/fcm-token"),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $authToken',
+          },
+          body: jsonEncode({"userid": "", "fcmToken": token}));
+
+      log("FCM TOKEN --> ${resposen.statusCode} -> ${resposen.body}");
+    } finally {}
   }
 
   Future<void> handleLogin() async {

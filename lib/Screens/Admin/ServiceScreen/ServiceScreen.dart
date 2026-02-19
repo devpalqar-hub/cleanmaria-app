@@ -69,7 +69,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
         ),
 
         body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          padding: EdgeInsets.symmetric(horizontal: 12.w),
           child: GetBuilder<ServiceController>(
             builder: (_) {
               return Column(

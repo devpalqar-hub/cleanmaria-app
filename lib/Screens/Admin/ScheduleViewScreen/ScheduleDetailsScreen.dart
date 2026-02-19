@@ -62,25 +62,27 @@ class ScheduleDetailsScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text(
-          "Booking Details",
+          (schedule != null) ? "Schedule Details" : "Booking Details",
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: InkWell(
-                onTap: () {
-                  Get.to(() => ScheduleHistoryScreen(
-                        bookingID: bookingID,
-                      ));
-                },
-                child: Image.asset(
-                  "assets/v2/schedules.png",
-                  width: 24,
-                  height: 24,
-                  color: Color(0xff17A5C6),
-                )),
-          ),
+          if (!isStaff)
+            Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: InkWell(
+                  onTap: () {
+                    Get.to(() => ScheduleHistoryScreen(
+                          bookingID: bookingID,
+                          isAdmin: isAdmin,
+                        ));
+                  },
+                  child: Image.asset(
+                    "assets/v2/schedules.png",
+                    width: 24,
+                    height: 24,
+                    color: Color(0xff17A5C6),
+                  )),
+            ),
         ],
       ),
       body: GetBuilder<ScheduleDetailsController>(builder: (__) {
@@ -107,8 +109,9 @@ class ScheduleDetailsScreen extends StatelessWidget {
                     // 2 ── Service Info
                     ServiceInfoSection(
                       serviceType: ctrl.bookingDetail!.service!.name!,
-                      date:
-                          "${DateFormat("EEEE, MMMM yyyy").format(DateTime.parse(ctrl.bookingDetail!.date!))}",
+                      date: (schedule != null)
+                          ? "${DateFormat("EEEE, dd MMMM yyyy").format(DateTime.parse(ctrl.schedule!.startTime!).toLocal())}"
+                          : "${DateFormat("EEEE, dd MMMM yyyy").format(DateTime.parse(ctrl.bookingDetail!.date!).toLocal())}",
                       timeRange: ctrl.getBookingTime(),
                       address: ctrl.getBookinAddress(),
                       entryCode: (ctrl.bookingDetail!.bookingAddress!
@@ -128,7 +131,7 @@ class ScheduleDetailsScreen extends StatelessWidget {
                       ProfessionalCard(
                         name: schedule!.staff!.name!,
                         subname: schedule!.staff!.email!,
-                        id: "",
+                        id: ctrl.schedule!.staff!.id!,
                       ),
                       SizedBox(height: 20),
                     ],
@@ -139,7 +142,7 @@ class ScheduleDetailsScreen extends StatelessWidget {
                       ProfessionalCard(
                         name: ctrl.bookingDetail!.customer!.name!,
                         subname: ctrl.bookingDetail!.customer!.phone!,
-                        id: "",
+                        id: ctrl.bookingDetail!.customer!.id!,
                       ),
                       SizedBox(height: 20),
                     ],
@@ -149,6 +152,8 @@ class ScheduleDetailsScreen extends StatelessWidget {
                     const SizedBox(height: 10),
                     PaymentSummaryCard(
                       bookings: ctrl.bookingDetail!,
+                      isAdmin: isAdmin,
+                      bookingId: bookingID,
                     ),
                     const SizedBox(height: 24),
                   ],

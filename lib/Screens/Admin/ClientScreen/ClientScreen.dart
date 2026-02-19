@@ -185,7 +185,7 @@ class _BookingListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final name = booking.customer?.name ?? "N/A";
     final initials = name.isNotEmpty
-        ? name.split(" ").map((e) => e[0]).take(2).join()
+        ? name.trim().split(" ").map((e) => e[0]).take(2).join()
         : "NA";
 
     return InkWell(

@@ -1,7 +1,8 @@
+import 'package:cleanby_maria/Screens/User/bookings/Controller/UserBookingController.dart';
+import 'package:cleanby_maria/Screens/User/bookings/Views/UserBookingCard.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../services/booking_service.dart';
-import '../booking_details/booking_details_screen.dart';
+import 'package:intl/intl.dart';
 
 class BookingScreen extends StatefulWidget {
   const BookingScreen({super.key});
@@ -11,90 +12,78 @@ class BookingScreen extends StatefulWidget {
 }
 
 class _BookingScreenState extends State<BookingScreen> {
-
   int selectedTab = 0;
   final Color primaryGreen = const Color(0xFF2F7F6F);
 
-  late Future bookingsFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    bookingsFuture = BookingService.getBookings();
-  }
+  UserBookingcontroller ctrl = Get.put(UserBookingcontroller());
 
   @override
   Widget build(BuildContext context) {
+    ctrl.fetchUserBooking();
     return Scaffold(
-        backgroundColor: const Color(0xFFF8F8F8),
-
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.black),
-            onPressed: () => Get.back(),
-          ),
-          title: const Text(
-            "My Bookings",
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-          ),
-          centerTitle: true,
+      backgroundColor: const Color(0xFFF8F8F8),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: const Text(
+          "My Bookings",
+          style: TextStyle(
+              color: Colors.black, fontWeight: FontWeight.w600, fontSize: 18),
         ),
+        // centerTitle: true,
+      ),
+      body: SafeArea(
+        child: GetBuilder<UserBookingcontroller>(builder: (context) {
+          return (ctrl.isLoading)
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : Column(
+                  children: [
+                    const SizedBox(height: 12),
 
-        body: Column(
-            children: [
+                    /// TOP TABS
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(horizontal: 16),
+                    //   child: Row(
+                    //     children: [
+                    //       _tabButton("Upcoming", 0),
+                    //       _tabButton("Completed", 1),
+                    //       _tabButton("Cancelled", 2),
+                    //     ],
+                    //   ),
+                    // ),
 
-            const SizedBox(height: 12),
+                    /// API LIST
+                    Expanded(
+                      child: ListView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        itemCount: ctrl.myBookings.length,
+                        itemBuilder: (_, i) {
+                          var item = ctrl.myBookings[i];
 
-        /// TOP TABS
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            children: [
-              _tabButton("Upcoming", 0),
-              _tabButton("Completed", 1),
-              _tabButton("Cancelled", 2),
-            ],
-          ),
-        ),
-
-        const SizedBox(height: 16),
-
-        /// API LIST
-        Expanded(
-            child: FutureBuilder(
-                future: bookingsFuture,
-                builder: (context, snapshot) {
-
-                  if (!snapshot.hasData) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-
-                  var bookings = snapshot.data as List;
-
-                  return ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemCount: bookings.length,
-                    itemBuilder: (_, i) {
-                      var item = bookings[i];
-
-                      return _bookingCard(
-                        iconBg: const Color(0xFFE8F5F2),
-                        icon: Icons.calendar_today,
-                        title: item["service"] ?? "",
-                        subtitle: item["date"] ?? "",
-                        price: "\$${item["price"] ?? 0}",
-                        status: item["status"] ?? "",
-                        statusColor: Colors.green,
-                      );
-                    },
-                  );
-                },
-            ),
-        ),
-            ],
-        ),
+                          return UserBookingCard(
+                            booking: item,
+                          );
+                          //  _bookingCard(
+                          //   iconBg: const Color(0xFFE8F5F2),
+                          //   icon: Icons.calendar_today,
+                          //   title: item.service!.name ?? "",
+                          //   subtitle: DateFormat("yyyy-MM-dd")
+                          //           .format(DateTime.parse(item.date!)) ??
+                          //       "",
+                          //   price: "\$${item.price ?? 0}",
+                          //   status:
+                          //       item.status!.replaceAll("_", " ").toUpperCase() ?? "",
+                          //   statusColor: Colors.green,
+                          // );
+                        },
+                      ),
+                    )
+                  ],
+                );
+        }),
+      ),
     );
   }
 
@@ -124,53 +113,4 @@ class _BookingScreenState extends State<BookingScreen> {
         ),
       ),
     );
-  }
-
-  /// BOOKING CARD
-  Widget _bookingCard({
-    required Color iconBg,
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required String price,
-    required String status,
-    required Color statusColor,
-  }) {
-    return GestureDetector(
-      onTap: () {
-        Get.to(() => const BookingDetailsScreen());
-      },
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                color: iconBg,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(icon, size: 18, color: primaryGreen),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(title,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 14)),
-            ),
-            Text(price),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-
-
+  }}

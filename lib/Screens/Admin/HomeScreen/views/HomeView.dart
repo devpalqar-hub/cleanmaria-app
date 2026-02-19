@@ -1,14 +1,18 @@
+import 'package:cleanby_maria/Screens/Admin/HomeScreen/views/MessageIconButton.dart';
 import 'package:cleanby_maria/Screens/AuthenticationScreen/AutheticationScreen.dart';
 import 'package:cleanby_maria/Screens/Admin/HomeScreen/Services/homeController.dart';
 import 'package:cleanby_maria/Screens/Admin/HomeScreen/views/Graphcard.dart';
 import 'package:cleanby_maria/Screens/Admin/HomeScreen/views/cancellationcard.dart';
 import 'package:cleanby_maria/Screens/Admin/HomeScreen/views/detailcard.dart';
 import 'package:cleanby_maria/Screens/Admin/HomeScreen/views/overview.dart';
+import 'package:cleanby_maria/Screens/Chats/Controller/ChatController.dart';
+import 'package:cleanby_maria/Screens/Chats/messages_screen.dart';
 import 'package:cleanby_maria/Screens/staff/Views/profileSettingsCard.dart';
 import 'package:cleanby_maria/Src/appText.dart';
 import 'package:cleanby_maria/Src/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -21,75 +25,80 @@ class HomeContent extends StatefulWidget {
 
 class _HomeContentState extends State<HomeContent> {
   HomeController hCtrl = Get.put(HomeController());
-@override
-void didChangeDependencies() {
-  super.didChangeDependencies();
-  
-  hCtrl.fetchCancelBooking();
-}
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
- @override
-Widget build(BuildContext context) {
-  return GetBuilder<HomeController>(builder: (_) {
-    return Column(
-      children: [
-        // Fixed Top Bar
-        Container(
-          padding: EdgeInsets.fromLTRB(14.w, 40.h, 14.w, 0),
-          color: Colors.white, // Optional: to ensure it doesn't overlap with scroll background
-          child: _buildTopBar(),
-        ),
+    hCtrl.fetchCancelBooking();
+  }
 
-        // Scrollable Content
-        Expanded(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(12.w, 20.h, 12.w, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildGreetingAndDropdown(),
-                  OverViewCard(),
-                  SizedBox(height: 20.h),
-                  appText.primaryText(
-                    text: "Performance Analysis",
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  SizedBox(height: 10.h),
-                  _buildDateRangePicker(),
-                  SizedBox(height: 15.h),
-                  detailcardScreen(),
-                  SizedBox(height: 30.h),
-                  LineChartWidget(),
-                  SizedBox(height: 15.h),
-                  if (hCtrl.history.isNotEmpty)
+  @override
+  Widget build(BuildContext context) {
+    return GetBuilder<HomeController>(builder: (_) {
+      return Column(
+        children: [
+          // Fixed Top Bar
+          Container(
+            padding: EdgeInsets.fromLTRB(14.w, 40.h, 14.w, 0),
+            color: Colors
+                .white, // Optional: to ensure it doesn't overlap with scroll background
+            child: _buildTopBar(),
+          ),
+
+          // Scrollable Content
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(12.w, 20.h, 12.w, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildGreetingAndDropdown(),
+                    OverViewCard(),
+                    SizedBox(height: 20.h),
                     appText.primaryText(
-                      text: "Cancellation",
+                      text: "Performance Analysis",
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
                     ),
-                  if (hCtrl.history.isNotEmpty)
-                    SizedBox(height: 10.w),
-                  if (hCtrl.history.isNotEmpty)
-                    Cancellationcard(),
-                ],
+                    SizedBox(height: 10.h),
+                    _buildDateRangePicker(),
+                    SizedBox(height: 15.h),
+                    detailcardScreen(),
+                    SizedBox(height: 30.h),
+                    LineChartWidget(),
+                    SizedBox(height: 15.h),
+                    // if (hCtrl.history.isNotEmpty)
+                    //   appText.primaryText(
+                    //     text: "Cancellation",
+                    //     fontSize: 16.sp,
+                    //     fontWeight: FontWeight.w600,
+                    //   ),
+                    // if (hCtrl.history.isNotEmpty) SizedBox(height: 10.w),
+                    // if (hCtrl.history.isNotEmpty)
+                    //   Cancellationcard(),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      ],
-    );
-  });
-}
-
+        ],
+      );
+    });
+  }
 
   Widget _buildTopBar() {
     return Row(
       children: [
         Image.asset("assets/bname.png", height: 50.h, width: 115.w),
+        Spacer(),
+        GetBuilder<Chatcontroller>(builder: (__) {
+          return MessageIconButton(
+            unreadCount: __.unReadMessage,
+          );
+        }),
         SizedBox(
-          width: 190.w,
+          width: 10,
         ),
         GestureDetector(
           onTap: () =>
@@ -181,48 +190,46 @@ Widget build(BuildContext context) {
         appText.primaryText(
             text: label, fontSize: 12.sp, fontWeight: FontWeight.w500),
         SpacerH(5.w),
-       
-           Container(
-            width: 125.w,
-            height: 45.h,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(6.w),
-              border: Border.all(color: Colors.grey.shade300),
-            ),
-            child: TextField(
-              controller: controller,
-              textAlignVertical: TextAlignVertical.top,
-             readOnly: true,
-              textAlign: TextAlign.start,
-              style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600),
-              decoration: InputDecoration(
-                  isDense: true,
-                  //isCollapsed: true,
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.only(
-                    left: 10.w,
-                    right: 10.w,
-                  ),
-                  suffix: InkWell(
-                    onTap: () {
-                hCtrl.selectDate(context, controller); // Open date picker
-              },
-                    child: Icon(
-                      Icons.calendar_month,
-                      size: 15.sp,
-                      color: Colors.black54,
-                    ),
-                  )
-                  // prefixIcon: IconButton(
-                  //   onPressed: () => hCtrl.selectDate(context, controller),
-                  //   icon: Icon(Icons.calendar_month_outlined, size: 20.sp),
-                  // ),
-                  ),
-            ),
+        Container(
+          width: 125.w,
+          height: 45.h,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(6.w),
+            border: Border.all(color: Colors.grey.shade300),
           ),
-      
+          child: TextField(
+            controller: controller,
+            textAlignVertical: TextAlignVertical.top,
+            readOnly: true,
+            textAlign: TextAlign.start,
+            style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600),
+            decoration: InputDecoration(
+                isDense: true,
+                //isCollapsed: true,
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.only(
+                  left: 10.w,
+                  right: 10.w,
+                ),
+                suffix: InkWell(
+                  onTap: () {
+                    hCtrl.selectDate(context, controller); // Open date picker
+                  },
+                  child: Icon(
+                    Icons.calendar_month,
+                    size: 15.sp,
+                    color: Colors.black54,
+                  ),
+                )
+                // prefixIcon: IconButton(
+                //   onPressed: () => hCtrl.selectDate(context, controller),
+                //   icon: Icon(Icons.calendar_month_outlined, size: 20.sp),
+                // ),
+                ),
+          ),
+        ),
       ],
     );
   }
@@ -283,9 +290,7 @@ Widget build(BuildContext context) {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-
               SizedBox(height: 25.h),
-
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(

@@ -1,6 +1,7 @@
 import 'package:cleanby_maria/Screens/User/new_booking/Controllers/CreateBookingController.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -14,12 +15,14 @@ class DateTimeScreen extends StatefulWidget {
   String duration = "";
   String serviceID = "";
   int maxDays = 15;
+  DateTime? startDate;
   DateTimeScreen(
       {super.key,
       this.isForReschedule = false,
       this.zipcode = "",
       this.bookingID = "",
       this.duration = "",
+      this.startDate,
       this.serviceID = "",
       this.maxDays = 15});
 
@@ -32,14 +35,15 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
   late DateTime selectedDate;
   late DateTime displayMonth;
   late DateTime minimumDate;
-
   late DateTime maximumDate;
 
   @override
   void initState() {
     super.initState();
+    minimumDate =
+        (widget.startDate != null) ? widget.startDate! : DateTime.now();
+    maximumDate = minimumDate.add(Duration(days: widget.maxDays));
     minimumDate = DateTime.now().add(Duration(days: 2));
-    maximumDate = DateTime.now().add(Duration(days: widget.maxDays));
     selectedDate = minimumDate;
     displayMonth = DateTime(minimumDate.year, minimumDate.month, 1);
   }
@@ -104,6 +108,11 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    String nextServiceDate = "";
+    if (widget.startDate != null) {
+      nextServiceDate =
+          "( " + DateFormat("yyyy-MM-dd").format(widget.startDate!) + " ) ";
+    }
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -140,7 +149,7 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Text(
-                    "reschedule your upcoming service date of the booking",
+                    "reschedule your upcoming service date ${nextServiceDate}of the booking",
                     style: TextStyle(
                         fontStyle: FontStyle.italic,
                         color: Color(0xFF17A5C6),
@@ -424,6 +433,10 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
                       ),
                     ),
                     onPressed: () {
+                      if (ctrl.selectedTimeSlot == null) {
+                        Fluttertoast.showToast(msg: "Please select timeslot");
+                        return;
+                      }
                       if (!widget.isForReschedule) {
                         ctrl.selectedDate = selectedDate;
                         Get.to(() => ReviewPayScreen());

@@ -7,6 +7,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 void showSettingsBottomSheet(
     BuildContext context, String name, String emailID) {
   showModalBottomSheet(
@@ -170,8 +171,11 @@ void showSettingsBottomSheet(
 
                     Fluttertoast.showToast(msg: "Session Expired");
                     pref.setString("LOGIN", "OUT");
+
                     Get.offAll(() => AuthenticationScreen(),
                         transition: Transition.rightToLeft);
+                    Get.deleteAll();
+
                     // Add your logout logic here
                   },
                   style: ElevatedButton.styleFrom(

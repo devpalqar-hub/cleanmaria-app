@@ -9,6 +9,17 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class ScheduleHistoryController extends GetxController {
+  ScheduleHistoryController({String? sBID, String? sSID}) {
+    selectedBookingId = sBID;
+    selectedStaffId = sSID;
+    scrollController = ScrollController();
+    scrollController.addListener(_onScroll);
+    // Set default date range: tomorrow to 45 days from today
+    startDate = DateTime.now().add(const Duration(days: 1));
+    endDate = DateTime.now().add(const Duration(days: 45));
+    update();
+    fetchSchedules();
+  }
   // Data
   List<ScheduleItemModel> schedules = [];
 
@@ -34,13 +45,8 @@ class ScheduleHistoryController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    scrollController = ScrollController();
-    scrollController.addListener(_onScroll);
-    // Set default date range: tomorrow to 45 days from today
-    startDate = DateTime.now().add(const Duration(days: 1));
-    endDate = DateTime.now().add(const Duration(days: 45));
+
     // Load initial data
-    fetchSchedules();
   }
 
   @override

@@ -5,15 +5,16 @@ class Staff {
   final String phone;
   final String status;
   final int priority;
+  final String assignedZone;
 
-  Staff({
-    required this.id,
-    required this.name,
-    required this.email,
-    required this.phone,
-    required this.status,
-    required this.priority,
-  });
+  Staff(
+      {required this.id,
+      required this.name,
+      required this.email,
+      required this.phone,
+      required this.status,
+      required this.priority,
+      this.assignedZone = ""});
 
   factory Staff.fromJson(Map<String, dynamic> json) {
     return Staff(
@@ -22,6 +23,8 @@ class Staff {
       email: json['email'] ?? '',
       phone: json['phone']?.toString() ?? '',
       status: json['status'] ?? '',
+      assignedZone:
+          json["staffZone"] == null ? "" : json["staffZone"]["zone"]["name"],
       priority: (json['priority'] is int)
           ? json['priority']
           : int.tryParse(json['priority']?.toString() ?? '') ?? 0,

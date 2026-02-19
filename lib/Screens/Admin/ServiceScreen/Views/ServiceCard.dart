@@ -10,113 +10,143 @@ class ServiceCard extends StatelessWidget {
   const ServiceCard({super.key, required this.service});
 
   @override
-  @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 10.h),
-      padding: EdgeInsets.all(16.w),
+      margin: EdgeInsets.symmetric(vertical: 2.h),
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
       decoration: BoxDecoration(
-        color: const Color(0xFFF9FAFB),
-        borderRadius: BorderRadius.circular(18.r),
-        border: Border.all(
-          color: const Color(0xFFE5E7EB),
-          width: 1,
-        ),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(color: const Color(0xFFEEEEEE), width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // ── Row 1: Name  +  Duration chip  +  Edit ──────────────────────
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
                 child: Text(
                   service.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.poppins(
-                    fontSize: 14.sp,
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.w600,
                     color: const Color(0xFF111827),
                   ),
                 ),
               ),
-              Row(
-                children: [
-                  Container(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF3F4F6),
-                      borderRadius: BorderRadius.circular(10.r),
-                    ),
-                    child: Text(
+              // Duration chip
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 4.h),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF3F4F6),
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.timer_outlined,
+                        size: 11.sp, color: const Color(0xFF9CA3AF)),
+                    SizedBox(width: 3.w),
+                    Text(
                       "${service.durationMinutes.toInt()}m",
                       style: GoogleFonts.poppins(
-                        fontSize: 14.sp,
+                        fontSize: 11.sp,
                         fontWeight: FontWeight.w500,
                         color: const Color(0xFF6B7280),
                       ),
                     ),
+                  ],
+                ),
+              ),
+              SizedBox(width: 6.w),
+              // Edit button
+              GestureDetector(
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(20.r)),
+                    ),
+                    builder: (context) =>
+                        EditServiceBottomSheet(service: service),
+                  );
+                },
+                child: Container(
+                  padding: EdgeInsets.all(6.w),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF9FAFB),
+                    borderRadius: BorderRadius.circular(8.r),
+                    border: Border.all(color: const Color(0xFFE5E7EB)),
                   ),
-                  SizedBox(width: 8.w),
-                  IconButton(
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                    icon: const Icon(Icons.edit, color: Color(0xFF6B7280)),
-                    onPressed: () {
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.vertical(top: Radius.circular(20.r)),
-                        ),
-                        builder: (context) =>
-                            EditServiceBottomSheet(service: service),
-                      );
-                    },
+                  child: Icon(Icons.edit_outlined,
+                      size: 14.sp, color: const Color(0xFF6B7280)),
+                ),
+              ),
+            ],
+          ),
+
+          SizedBox(height: 10.h),
+
+          // ── Row 2: Base price  +  Rate chips ────────────────────────────
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Base price
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Base price",
+                    style: GoogleFonts.poppins(
+                      fontSize: 10.sp,
+                      color: const Color(0xFF9CA3AF),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  SizedBox(height: 2.h),
+                  Text(
+                    "\$${service.basePrice}",
+                    style: GoogleFonts.poppins(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w700,
+                      color: const Color(0xFF111827),
+                      height: 1.1,
+                    ),
                   ),
                 ],
-              )
-            ],
-          ),
-          SizedBox(height: 10.h),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                "\$${service.basePrice}/",
-                style: GoogleFonts.poppins(
-                  fontSize: 22.sp,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF2D3748),
+              ),
+
+              // Spacer + vertical rule
+              SizedBox(width: 14.w),
+              Container(
+                width: 1,
+                height: 36.h,
+                color: const Color(0xFFE5E7EB),
+              ),
+              SizedBox(width: 14.w),
+
+              // Rate chips
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _rateChip("BATH", service.bathroomRate),
+                    _rateChip("ROOM", service.roomRate),
+                    _rateChip("SQFT", service.squareFootPrice),
+                  ],
                 ),
               ),
-              SizedBox(width: 8.w),
-              Padding(
-                padding: EdgeInsets.only(bottom: 6.h),
-                child: Text(
-                  "base price",
-                  style: GoogleFonts.poppins(
-                    fontSize: 14.sp,
-                    color: const Color(0xFF9CA3AF),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 10.h),
-          Divider(
-            thickness: 1,
-            color: const Color(0xFFE5E7EB),
-          ),
-          SizedBox(height: 10.h),
-          Row(
-            children: [
-              _bottomColumn("BATH", service.bathroomRate),
-              _verticalDivider(),
-              _bottomColumn("ROOM", service.roomRate),
-              _verticalDivider(),
-              _bottomColumn("SQFT", service.squareFootPrice),
             ],
           ),
         ],
@@ -124,40 +154,29 @@ class ServiceCard extends StatelessWidget {
     );
   }
 
-  Widget _bottomColumn(String label, dynamic value) {
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: GoogleFonts.poppins(
-              fontSize: 11.sp,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 1.2,
-              color: const Color(0xFFD1D5DB),
-            ),
+  Widget _rateChip(String label, dynamic value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          label,
+          style: GoogleFonts.poppins(
+            fontSize: 9.sp,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.8,
+            color: const Color(0xFFD1D5DB),
           ),
-          SizedBox(height: 8.h),
-          Text(
-            "\$$value",
-            style: GoogleFonts.poppins(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w600,
-              color: const Color(0xFF374151),
-            ),
+        ),
+        SizedBox(height: 3.h),
+        Text(
+          "\$$value",
+          style: GoogleFonts.poppins(
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w600,
+            color: const Color(0xFF374151),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _verticalDivider() {
-    return Container(
-      width: 1,
-      height: 40.h,
-      margin: EdgeInsets.symmetric(horizontal: 12.w),
-      color: const Color(0xFFE5E7EB),
+        ),
+      ],
     );
   }
 }

@@ -1,4 +1,4 @@
-package parasya.cleanmaria.app.cleanby_maria
+package com.maria.cleaning.admin
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -136,7 +136,12 @@ class RegionDetailsScreen extends StatelessWidget {
                         context: context,
                         title: p["code"] ?? "",
                         onDelete: () {
-                          // Delete pincode logic
+                          _showDeletePincodeConfirmation(
+                            context,
+                            p["code"] ?? "",
+                            zone.id,
+                            ctrl,
+                          );
                         },
                       ))
                 else
@@ -208,6 +213,7 @@ class RegionDetailsScreen extends StatelessWidget {
                         context: context,
                         title: s["staff"]?['name'] ?? s["name"] ?? "Unknown",
                         subtitle: s["staff"]?['email'] ?? s["email"] ?? "",
+                        isStaff: true,
                         onDelete: () {
                           // Delete staff logic
                         },
@@ -286,6 +292,59 @@ class RegionDetailsScreen extends StatelessWidget {
     );
   }
 
+  void _showDeletePincodeConfirmation(
+    BuildContext context,
+    String zipcode,
+    String zoneId,
+    RegionDetailsController ctrl,
+  ) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        title: Text(
+          "Delete Pincode?",
+          style: GoogleFonts.inter(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        content: Text(
+          "Are you sure you want to delete pincode $zipcode from this zone?",
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            color: Colors.grey.shade700,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(
+              "Cancel",
+              style: GoogleFonts.inter(
+                color: Colors.grey.shade700,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(ctx);
+              await ctrl.deletePincode(zipcode, zoneId);
+            },
+            child: Text(
+              "Delete",
+              style: GoogleFonts.inter(
+                color: Colors.red,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _showStatusConfirmation(
     BuildContext context,
     String zoneId,
@@ -342,12 +401,12 @@ class RegionDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _cardItem({
-    required BuildContext context,
-    required String title,
-    String? subtitle,
-    required VoidCallback onDelete,
-  }) {
+  Widget _cardItem(
+      {required BuildContext context,
+      required String title,
+      String? subtitle,
+      required VoidCallback onDelete,
+      bool isStaff = false}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -382,21 +441,22 @@ class RegionDetailsScreen extends StatelessWidget {
               ],
             ),
           ),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                onPressed: onDelete,
-                icon: const Icon(
-                  Icons.delete,
-                  size: 16,
-                  color: Colors.red,
+          if (!isStaff)
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  onPressed: onDelete,
+                  icon: const Icon(
+                    Icons.delete,
+                    size: 16,
+                    color: Colors.red,
+                  ),
+                  padding: const EdgeInsets.all(6),
+                  constraints: const BoxConstraints(),
                 ),
-                padding: const EdgeInsets.all(6),
-                constraints: const BoxConstraints(),
-              ),
-            ],
-          ),
+              ],
+            ),
         ],
       ),
     );

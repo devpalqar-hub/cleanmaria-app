@@ -222,6 +222,62 @@ class RegionDetailsController extends GetxController {
     }
   }
 
+  // Delete pincode from zone
+  Future<bool> deletePincode(String zipcode, String zoneId) async {
+    isLoading = true;
+    update();
+
+    try {
+      final url = Uri.parse('$baseUrl/zones/pincodes/$zipcode');
+
+      final headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $authToken',
+      };
+
+      print('[DELETE PINCODE] URL: $url');
+
+      final response = await http.delete(
+        url,
+        headers: headers,
+      );
+
+      print('[DELETE PINCODE] Status: ${response.statusCode}');
+
+      if (response.statusCode == 200 ||
+          response.statusCode == 201 ||
+          response.statusCode == 204) {
+        Fluttertoast.showToast(
+          msg: 'Pincode deleted successfully',
+          backgroundColor: Colors.green.shade400,
+          textColor: Colors.white,
+        );
+        await fetchZoneDetails(zoneId);
+        _refreshZoneList();
+        return true;
+      } else {
+        final errorData = jsonDecode(response.body);
+        Fluttertoast.showToast(
+          msg: errorData['message'] ?? 'Failed to delete pincode',
+          backgroundColor: Colors.red.shade400,
+          textColor: Colors.white,
+        );
+        return false;
+      }
+    } catch (e) {
+      print('[DELETE PINCODE] Error: $e');
+      Fluttertoast.showToast(
+        msg: 'Error: ${e.toString()}',
+        backgroundColor: Colors.red.shade400,
+        textColor: Colors.white,
+      );
+      return false;
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
+
   // Delete/disable zone
   Future<bool> deleteZone(String zoneId) async {
     isLoading = true;

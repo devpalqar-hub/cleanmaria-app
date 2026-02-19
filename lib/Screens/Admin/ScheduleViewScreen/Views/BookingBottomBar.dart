@@ -39,8 +39,10 @@ class BottomActionBar extends StatelessWidget {
       {'display': 'In Progress', 'value': 'in_progress'},
       {'display': 'Completed', 'value': 'completed'},
       {'display': 'Cancelled', 'value': 'canceled'},
-      {'display': 'Payment Success', 'value': 'payment_success'},
-      {'display': 'Payment Failed', 'value': 'payment_failed'},
+      if (booking.paymentMethod == "offline")
+        {'display': 'Payment Success', 'value': 'payment_success'},
+      if (booking.paymentMethod == "offline")
+        {'display': 'Payment Failed', 'value': 'payment_failed'},
     ];
 
     final availableStatuses = isAdmin ? allStatuses : staffStatuses;
@@ -186,7 +188,7 @@ class BottomActionBar extends StatelessWidget {
         child: Row(
           children: [
             // Change Status (only show if schedule exists)
-            if (schedule != null)
+            if (schedule != null && !isUser)
               Expanded(
                 child: _ActionButton(
                   label: 'Change Status',
@@ -196,45 +198,53 @@ class BottomActionBar extends StatelessWidget {
                   onTap: () => _showChangeStatus(context),
                 ),
               ),
-            if (schedule != null) const SizedBox(width: 10),
+            if (schedule != null && !isUser) const SizedBox(width: 10),
 
             // Reschedule
-            Expanded(
-              child: _ActionButton(
-                label: 'Reschedule',
-                icon: Icons.calendar_month_outlined,
-                textColor: AppColors.dark,
-                borderColor: AppColors.divider,
-                onTap: () {
-                  String duration =
-                      ((booking!.areaSize! * booking!.service!.duration!) / 500)
-                          .round()
-                          .toString();
-                  Get.to(
-                    () => DateTimeScreen(
-                      bookingID: booking.id!,
-                      isForReschedule: true,
-                      zipcode: booking.bookingAddress!.address!.zip!,
-                      serviceID: booking!.service!.id!,
-                      duration: duration,
-                      maxDays: (booking.reccuingType == "Bi-Weekly") ? 15 : 7,
-                    ),
-                  );
-                },
-              ),
-            ),
-            const SizedBox(width: 10),
+            if (!isStaff)
+              if (schedule == null || schedule!.status != "rescheduled")
+                Expanded(
+                  child: _ActionButton(
+                    label: 'Reschedule',
+                    icon: Icons.calendar_month_outlined,
+                    textColor: AppColors.dark,
+                    borderColor: AppColors.divider,
+                    onTap: () {
+                      String duration =
+                          ((booking!.areaSize! * booking!.service!.duration!) /
+                                  500)
+                              .round()
+                              .toString();
+                      Get.to(
+                        () => DateTimeScreen(
+                          bookingID: booking.id!,
+                          isForReschedule: true,
+                          zipcode: booking.bookingAddress!.address!.zip!,
+                          serviceID: booking!.service!.id!,
+                          duration: duration,
+                          startDate: (booking.nextSchedule != null)
+                              ? booking.nextSchedule!.startDate!.toLocal()
+                              : null,
+                          maxDays:
+                              (booking.reccuingType == "Bi-Weekly") ? 15 : 7,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+            if (!isStaff) const SizedBox(width: 10),
 
             // Cancel Booking
-            Expanded(
-              child: _ActionButton(
-                label: 'Cancel',
-                icon: Icons.close_rounded,
-                textColor: AppColors.red,
-                borderColor: AppColors.red.withOpacity(0.3),
-                onTap: () => _showCancelConfirm(context),
+            if (!isStaff)
+              Expanded(
+                child: _ActionButton(
+                  label: 'Cancel',
+                  icon: Icons.close_rounded,
+                  textColor: AppColors.red,
+                  borderColor: AppColors.red.withOpacity(0.3),
+                  onTap: () => _showCancelConfirm(context),
+                ),
               ),
-            ),
           ],
         ),
       ),
