@@ -192,7 +192,7 @@ class StaffController extends GetxController {
       update();
 
       print(response.body);
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200) { 
         Fluttertoast.showToast(msg: "Staff deleted successfully");
         fetchStaffList();
       } else {

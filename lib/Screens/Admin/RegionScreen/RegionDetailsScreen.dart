@@ -89,7 +89,7 @@ class RegionDetailsScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Pincodes",
+                      "Zipcodes",
                       style: GoogleFonts.inter(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -148,7 +148,7 @@ class RegionDetailsScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: Text(
-                      "No pincodes available",
+                      "No zipcode available",
                       style: GoogleFonts.inter(
                         fontSize: 12,
                         color: Colors.grey,
@@ -303,14 +303,14 @@ class RegionDetailsScreen extends StatelessWidget {
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         title: Text(
-          "Delete Pincode?",
+          "Delete Zipcode?",
           style: GoogleFonts.inter(
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
         ),
         content: Text(
-          "Are you sure you want to delete pincode $zipcode from this zone?",
+          "Are you sure you want to delete zipcode $zipcode from this zone?",
           style: GoogleFonts.inter(
             fontSize: 12,
             color: Colors.grey.shade700,

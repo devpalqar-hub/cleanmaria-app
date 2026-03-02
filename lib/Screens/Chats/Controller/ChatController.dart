@@ -80,7 +80,9 @@ class Chatcontroller extends GetxController with WidgetsBindingObserver {
 
   Future<void> startWebsocketConnection() async {
     socket = io(
-      "wss://staging.cleanmaria.com/chat",
+      baseUrl
+          .replaceAll("https", "wss")
+          .replaceAll("api", "chat"), //  "wss://staging.cleanmaria.com/chat",
       OptionBuilder()
           .setTransports(['websocket', 'polling'])
           .setAuth({"Authorization": "Bearer $authToken"})

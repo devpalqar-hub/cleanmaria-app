@@ -33,14 +33,15 @@ class StatusBanner extends StatelessWidget {
             ),
           ),
           const Spacer(),
-          Text(
-            'Starts in $startsIn',
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w400,
-              color: AppColors.teal,
+          if (startsIn != "Completed")
+            Text(
+              'Starts in $startsIn',
+              style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w400,
+                color: AppColors.teal,
+              ),
             ),
-          ),
         ],
       ),
     );

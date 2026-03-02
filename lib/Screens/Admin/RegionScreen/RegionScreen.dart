@@ -88,7 +88,7 @@ class RegionScreen extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             Text(
-              "${zone.count.pincodes} pincodes · "
+              "${zone.count.pincodes} zipcodes · "
               "${zone.count.staff} staff · "
               "${zone.count.bookings} bookings",
               style: const TextStyle(
