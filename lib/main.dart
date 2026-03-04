@@ -3,6 +3,7 @@ import 'package:cleanby_maria/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,9 +12,11 @@ import 'Screens/AuthenticationScreen/AutheticationScreen.dart';
 import 'Screens/Admin/HomeScreen/HomeScreen.dart';
 import 'Screens/staff/DashBoardScreen.dart';
 
-String baseUrl = (true)
-    ? "https://app.cleanmaria.com/api"
-    : "https://staging.cleanmaria.com/api";
+String baseUrl = 
+//(true)
+  //  ? "https://app.cleanmaria.com/api"
+   // :
+     "https://staging.cleanmaria.com/api";
 
 String login = "";
 String? userType = "";
@@ -29,6 +32,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+  Stripe.publishableKey = "pk_test_51T7C6QP4luZZsffNKAiL6g6LFvgi5iJP2ve84c2jtrTw0iz4GhW93PmtDOH4QkeTJPHrq8LmaaCmSFgcfHYJpT7q004AQZUuUO"; 
+  await Stripe.instance.applySettings(); 
 
   await messaging.requestPermission(
     alert: true,

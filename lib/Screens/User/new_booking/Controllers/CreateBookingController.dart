@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer' show log;
 
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/Service/BookingController.dart';
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/Service/BookingDetailsContoller.dart';
@@ -9,6 +10,7 @@ import 'package:cleanby_maria/Screens/User/new_booking/Models/UserPlanModel.dart
 import 'package:cleanby_maria/Screens/User/new_booking/Models/UserServiceModel.dart';
 import 'package:cleanby_maria/Screens/User/new_booking/Models/UserTimeSlotModel.dart';
 import 'package:cleanby_maria/main.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:get/route_manager.dart';
@@ -202,118 +204,183 @@ class CreateBookingController extends GetxController {
     } else {
       final decoded = jsonDecode(response.body);
 
-      // return ONLY message field
+    
       Fluttertoast.showToast(msg: "Failed to reschedule the booking");
     }
     isRescheduleloading = false;
     update();
   }
 
-  createBoooking() async {
-    if (selectedService == null ||
-        selectedPlan == null ||
-        selectedTimeSlot == null ||
-        selectedDate == null) {
-      Fluttertoast.showToast(msg: "Please complete all required fields");
-      return;
-    }
-
-    isCreatingBooking = true;
-    update();
-
-    try {
-      // Determine payment method for API
-      String apiPaymentMethod = paymentMethod == 'card' ? 'online' : 'offline';
-
-      // Prepare booking data based on admin status
-      Map<String, dynamic> bookingData = {
-        "serviceId": selectedService!.id,
-        "type": selectedPlan!.title == "One Time" ? "one_time" : "recurring",
-        "no_of_rooms": numberOfBedrooms,
-        "no_of_bathrooms": numberOfBathrooms,
-        "propertyType": propertyType,
-        "materialProvided": materialProvide,
-        "areaSize": squareFeet.toInt(),
-        "isEco": ecoCleaning,
-        "price": customPrice ?? selectedPlan!.finalPrice ?? 0,
-        "paymentMethod": apiPaymentMethod,
-        if (selectedPlan!.recurringTypeId != "notASubcriptionTypeId")
-          "recurringTypeId": selectedPlan!.recurringTypeId,
-        "address": {
-          "street": address,
-          "landmark": "",
-          "addressLine1": address,
-          "addressLine2": "",
-          "city": city,
-          "zip": zipcode,
-          "specialInstructions": specialInstructions
-        },
-        "date": DateFormat("yyyy-MM-dd").format(selectedDate!),
-        "time": selectedTimeSlot!.time,
-      };
-
-      print(bookingData);
-
-      // Add customer details (admin provides these, regular users use their own account)
-      //  if (isAdmin) {
-      bookingData["name"] = "$customerFirstName $customerLastName".trim();
-      bookingData["email"] = customerEmail;
-      bookingData["phone"] = customerPhone;
-      //  }
-
-      final response = await post(
-        Uri.parse('$baseUrl/bookings'),
-        headers: {
-          'Content-Type': 'application/json',
-          if (!isAdmin) 'Authorization': 'Bearer $authToken',
-        },
-        body: jsonEncode(bookingData),
-      );
-      print(response.body);
-      print(response.statusCode);
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final data = json.decode(response.body);
-        final bookingId = data['data']['booking']['id'];
-
-        Fluttertoast.showToast(
-            msg: data['message'] ?? "Booking successfully confirmed!");
-
-        // Navigate to ScheduleDetailsScreen based on user type
-
-        Get.back();
-        Get.back();
-        Get.back();
-        Get.back();
-        Get.back();
-
-        if (isAdmin) {
-          BookingsController bctrl = Get.put(BookingsController());
-          bctrl.fetchBookings(bctrl.status, bctrl.selectedtype);
-        }
-        Get.to(() => ScheduleDetailsScreen(
-              bookingID: bookingId,
-              isAdmin: isAdmin,
-              isUser: !isAdmin,
-              isStaff: false,
-            ));
-      } else {
-        final error = json.decode(response.body);
-        Fluttertoast.showToast(
-            msg: error['message'] ??
-                "Failed to create booking. Please try again.");
-      }
-    } catch (e) {
-      Fluttertoast.showToast(msg: "Error creating booking: ${e.toString()}");
-      print("Booking error: $e");
-    } finally {
-      isCreatingBooking = false;
-      update();
-    }
+createBoooking() async {
+  if (selectedService == null ||
+      selectedPlan == null ||
+      selectedTimeSlot == null ||
+      selectedDate == null) {
+    Fluttertoast.showToast(msg: "Please complete all required fields");
+    return;
   }
 
+  isCreatingBooking = true;
+  update();
+
+  try {
+    String apiPaymentMethod =
+        paymentMethod == 'card' ? 'online' : 'offline';
+
+    Map<String, dynamic> bookingData = {
+      "serviceId": selectedService!.id,
+      "type": selectedPlan!.title == "One Time"
+          ? "one_time"
+          : "recurring",
+      "no_of_rooms": numberOfBedrooms,
+      "no_of_bathrooms": numberOfBathrooms,
+      "propertyType": propertyType,
+      "materialProvided": materialProvide,
+      "areaSize": squareFeet.toInt(),
+      "isEco": ecoCleaning,
+      "price": customPrice ?? selectedPlan!.finalPrice ?? 0,
+      "paymentMethod": apiPaymentMethod,
+      "platform": "mobile",
+      if (selectedPlan!.recurringTypeId != "notASubcriptionTypeId")
+        "recurringTypeId": selectedPlan!.recurringTypeId,
+      "address": {
+        "street": address,
+        "landmark": "",
+        "addressLine1": address,
+        "addressLine2": "",
+        "city": city,
+        "zip": zipcode,
+        "specialInstructions": specialInstructions
+      },
+      "date": DateFormat("yyyy-MM-dd").format(selectedDate!),
+      "time": selectedTimeSlot!.time,
+      "name": "$customerFirstName $customerLastName".trim(),
+      "email": customerEmail,
+      "phone": customerPhone,
+    };
+
+    
+    print(jsonEncode(bookingData));
+
+    final response = await post(
+      Uri.parse('$baseUrl/bookings'),
+      headers: {
+        'Content-Type': 'application/json',
+        if (!isAdmin) 'Authorization': 'Bearer $authToken',
+      },
+      body: jsonEncode(bookingData),
+    );
+
+    log("BOOKING RESPONSE");
+    log("Status Code: ${response.statusCode}");
+
+    final responseData = json.decode(response.body);
+    log(const JsonEncoder.withIndent('  ').convert(responseData));
+
+    if (response.statusCode == 200 ||
+        response.statusCode == 201) {
+      final bookingId = responseData['data']?['booking']?['id'];
+
+      Fluttertoast.showToast(
+          msg: responseData['message'] ??
+              "Booking successfully created!");
+
+      
+        if (apiPaymentMethod == 'online') {
+  final stripeData = responseData['data']?['stripe'];
+
+  log("Stripe Data: $stripeData");
+
+  final clientSecret = stripeData?['clientSecret'];
+
+ 
+
+  if (clientSecret == null ||
+      clientSecret.toString().isEmpty) {
+    Fluttertoast.showToast(
+      msg: "Payment initialization failed (clientSecret missing)",
+    );
+    return;
+  }
+
+ 
+
+  await _handleStripePayment(
+    clientSecret.toString(),
+    bookingId,
+  );
+
+  return;
+}
+
+   
+      Get.back();
+      Get.back();
+      Get.back();
+      Get.back();
+      Get.back();
+
+      Get.to(() => ScheduleDetailsScreen(
+            bookingID: bookingId,
+            isAdmin: isAdmin,
+            isUser: !isAdmin,
+            isStaff: false,
+          ));
+    } else {
+      Fluttertoast.showToast(
+          msg: responseData['message'] ??
+              "Failed to create booking");
+    }
+  } catch (e) {
+  
+    print(e.toString());
+    Fluttertoast.showToast(
+        msg: "Error creating booking");
+  } finally {
+    isCreatingBooking = false;
+    update();
+  }
+}
+Future<void> _handleStripePayment(
+  String clientSecret,
+  String bookingId,
+) async {
+  print("=== Stripe Payment Debug ===");
+  print("Booking ID: $bookingId");
+  print("Client Secret: $clientSecret");
+
+  print("Initializing PaymentSheet...");
+  await Stripe.instance.initPaymentSheet(
+    paymentSheetParameters: SetupPaymentSheetParameters(
+      paymentIntentClientSecret: clientSecret,
+      merchantDisplayName: 'Cleanby Maria',
+      allowsDelayedPaymentMethods: true,
+      // Optional: enable Google Pay / Apple Pay if needed
+    ),
+  );
+  print("PaymentSheet Initialized successfully");
+
+  print("Presenting PaymentSheet...");
+  await Stripe.instance.presentPaymentSheet();
+  print("Payment Successful for booking ID: $bookingId");
+
+
+      Get.back();
+      Get.back();
+      Get.back();
+      Get.back();
+      Get.back();
+
+  Get.to(() => ScheduleDetailsScreen(
+        bookingID: bookingId,
+        isAdmin: isAdmin,
+        isUser: !isAdmin,
+        isStaff: false,
+      ));
+}
   @override
   void onInit() {
-    // TODO: implement onInit
+    
     super.onInit();
     fetchServies();
   }

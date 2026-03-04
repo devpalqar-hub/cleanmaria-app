@@ -59,12 +59,15 @@ class ScheduleDetailsScreen extends StatelessWidget {
     ctrl = Get.put(ScheduleDetailsController(bookingID, schedule));
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
+      
+       appBar: AppBar(
+      
         backgroundColor: Colors.white,
         title: Text(
           (schedule != null) ? "Schedule Details" : "Booking Details",
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
         ),
+        
         actions: [
           if (!isStaff)
             Padding(
