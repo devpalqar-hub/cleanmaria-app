@@ -1,3 +1,4 @@
+import 'package:cleanby_maria/Screens/User/new_booking/service_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,7 +15,6 @@ class ReviewPayScreen extends StatefulWidget {
 }
 
 class _ReviewPayScreenState extends State<ReviewPayScreen> {
-  static const Color primaryGreen = Color(0xFF2F7F6F);
   final CreateBookingController ctrl = Get.find();
 
   @override
@@ -170,12 +170,12 @@ class _ReviewPayScreenState extends State<ReviewPayScreen> {
                       ),
                       SizedBox(height: 12),
 
-                       _paymentOption(
+                      _paymentOption(
                         icon: Icons.credit_card,
-                         title: "Card Payment",
-                         subtitle: "Pay securely with credit/debit card",
-                         value: "card",
-                     ),
+                        title: "Card Payment",
+                        subtitle: "Pay securely with credit/debit card",
+                        value: "card",
+                      ),
 
                       _paymentOption(
                         icon: Icons.money,

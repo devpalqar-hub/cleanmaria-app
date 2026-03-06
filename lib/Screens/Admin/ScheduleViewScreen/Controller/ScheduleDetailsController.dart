@@ -114,6 +114,7 @@ class ScheduleDetailsController extends GetxController {
       body: jsonEncode({'status': status}),
     );
     print(response.body + "$status");
+    log(response.body);
     isLoading = false;
     if (response.statusCode == 200 || response.statusCode == 201) {
       if (schedule != null) {

@@ -33,7 +33,7 @@ class StatusBanner extends StatelessWidget {
             ),
           ),
           const Spacer(),
-          if (startsIn != "Completed")
+          if (startsIn != "Completed" && status == "SCHEDULED")
             Text(
               'Starts in $startsIn',
               style: const TextStyle(

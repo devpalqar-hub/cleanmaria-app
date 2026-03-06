@@ -1,4 +1,5 @@
 import 'package:cleanby_maria/Screens/User/new_booking/Controllers/CreateBookingController.dart';
+import 'package:cleanby_maria/Screens/User/new_booking/service_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -31,7 +32,6 @@ class DateTimeScreen extends StatefulWidget {
 }
 
 class _DateTimeScreenState extends State<DateTimeScreen> {
-  static const Color primaryGreen = Color(0xFF2F7F6F);
   late DateTime selectedDate;
   late DateTime displayMonth;
   late DateTime minimumDate;

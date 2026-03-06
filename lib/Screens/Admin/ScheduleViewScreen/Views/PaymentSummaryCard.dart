@@ -8,11 +8,13 @@ class PaymentSummaryCard extends StatelessWidget {
   final BookingDetailModel bookings;
   final bool isAdmin;
   final String bookingId;
+  final bool isUser;
 
   const PaymentSummaryCard({
     super.key,
     required this.bookings,
     this.isAdmin = false,
+    this.isUser = false,
     required this.bookingId,
   });
 
@@ -124,7 +126,7 @@ class PaymentSummaryCard extends StatelessWidget {
                 ),
               ),
               Spacer(),
-              if (isAdmin)
+              if (isAdmin || isUser)
                 InkWell(
                   onTap: () => _showPaymentMethodOptions(Get.context!),
                   child: Text(

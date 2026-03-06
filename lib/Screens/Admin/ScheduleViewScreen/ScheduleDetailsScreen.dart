@@ -59,15 +59,12 @@ class ScheduleDetailsScreen extends StatelessWidget {
     ctrl = Get.put(ScheduleDetailsController(bookingID, schedule));
     return Scaffold(
       backgroundColor: Colors.white,
-      
-       appBar: AppBar(
-      
+      appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text(
           (schedule != null) ? "Schedule Details" : "Booking Details",
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
         ),
-        
         actions: [
           if (!isStaff)
             Padding(
@@ -143,9 +140,9 @@ class ScheduleDetailsScreen extends StatelessWidget {
                       _SectionLabel(label: 'CUSTOMER DETAILS'),
                       SizedBox(height: 10),
                       ProfessionalCard(
-                        name: ctrl.bookingDetail!.customer!.name!,
-                        subname: ctrl.bookingDetail!.customer!.phone!,
-                        id: ctrl.bookingDetail!.customer!.id!,
+                        name: ctrl.bookingDetail!.customer!.name ?? "",
+                        subname: ctrl.bookingDetail!.customer!.phone ?? "N/A",
+                        id: ctrl.bookingDetail!.customer!.id ?? "",
                       ),
                       SizedBox(height: 20),
                     ],
@@ -156,6 +153,7 @@ class ScheduleDetailsScreen extends StatelessWidget {
                     PaymentSummaryCard(
                       bookings: ctrl.bookingDetail!,
                       isAdmin: isAdmin,
+                      isUser: isUser,
                       bookingId: bookingID,
                     ),
                     const SizedBox(height: 24),

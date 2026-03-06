@@ -184,8 +184,15 @@ class _BookingListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final name = booking.customer?.name ?? "N/A";
-    final initials = name.isNotEmpty
-        ? name.trim().split(" ").map((e) => e[0]).take(2).join()
+
+    final initials = name.trim().isNotEmpty
+        ? name
+            .trim()
+            .split(RegExp(r'\s+')) // split by any whitespace
+            .where((e) => e.isNotEmpty) // remove empty parts
+            .map((e) => e[0])
+            .take(2)
+            .join()
         : "NA";
 
     return InkWell(

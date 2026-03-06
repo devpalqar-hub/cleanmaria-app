@@ -12,11 +12,9 @@ import 'Screens/AuthenticationScreen/AutheticationScreen.dart';
 import 'Screens/Admin/HomeScreen/HomeScreen.dart';
 import 'Screens/staff/DashBoardScreen.dart';
 
-String baseUrl = 
-//(true)
-  //  ? "https://app.cleanmaria.com/api"
-   // :
-     "https://staging.cleanmaria.com/api";
+String baseUrl = (true)
+    ? "https://app.cleanmaria.com/api"
+    : "https://staging.cleanmaria.com/api";
 
 String login = "";
 String? userType = "";
@@ -33,8 +31,9 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-  Stripe.publishableKey = "pk_test_51T7C6QP4luZZsffNKAiL6g6LFvgi5iJP2ve84c2jtrTw0iz4GhW93PmtDOH4QkeTJPHrq8LmaaCmSFgcfHYJpT7q004AQZUuUO"; 
-  await Stripe.instance.applySettings(); 
+  Stripe.publishableKey =
+      "pk_live_51RAUvhP9226bv2cd0Y1OBkuPfdGc4NtitdM80c4aivqzY4ho2VXavRCRgZ46ERMnY5DDtrh1Zezd3cvezj6qw7Tc00ET17iKsC"; //  "pk_test_51T7C6QP4luZZsffNKAiL6g6LFvgi5iJP2ve84c2jtrTw0iz4GhW93PmtDOH4QkeTJPHrq8LmaaCmSFgcfHYJpT7q004AQZUuUO";
+  await Stripe.instance.applySettings();
 
   await messaging.requestPermission(
     alert: true,
@@ -111,3 +110,4 @@ class SplashScreen extends StatelessWidget {
     );
   }
 }
+

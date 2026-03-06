@@ -28,7 +28,7 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
-  int indexnum = 0;
+  int indexnum = 1;
   @override
   void initState() {
     super.initState();

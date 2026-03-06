@@ -1,3 +1,4 @@
+import 'package:cleanby_maria/Screens/User/new_booking/service_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,7 +14,6 @@ class LocationScreen extends StatefulWidget {
 }
 
 class _LocationScreenState extends State<LocationScreen> {
-  static const Color primaryGreen = Color(0xFF2F7F6F);
   final _formKey = GlobalKey<FormState>();
   final CreateBookingController ctrl = Get.find();
 

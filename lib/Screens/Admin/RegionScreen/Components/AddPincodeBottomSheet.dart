@@ -44,7 +44,7 @@ class _AddPincodeBottomSheetState extends State<AddPincodeBottomSheet> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Add Pincode',
+                      'Add Zipcode',
                       style: GoogleFonts.inter(
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
@@ -73,7 +73,7 @@ class _AddPincodeBottomSheetState extends State<AddPincodeBottomSheet> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Pincode *',
+                      'Zipcode *',
                       style: GoogleFonts.inter(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -172,7 +172,7 @@ class _AddPincodeBottomSheetState extends State<AddPincodeBottomSheet> {
                             ),
                           )
                         : Text(
-                            'Add Pincode',
+                            'Add Zipcode',
                             style: GoogleFonts.inter(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
