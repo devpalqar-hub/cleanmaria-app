@@ -37,6 +37,31 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
   late DateTime minimumDate;
   late DateTime maximumDate;
 
+  // Bulletproof Month & Day translation helpers
+  final List<String> _fullMonths = [
+    'january',
+    'february',
+    'march',
+    'april',
+    'may',
+    'june',
+    'july',
+    'august',
+    'september',
+    'october',
+    'november',
+    'december'
+  ];
+  final List<String> _shortDays = [
+    'mon',
+    'tue',
+    'wed',
+    'thu',
+    'fri',
+    'sat',
+    'sun'
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -123,7 +148,9 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
           onPressed: () => Get.back(),
         ),
         title: Text(
-          (widget.isForReschedule) ? "Reschedule Booking" : "New Booking",
+          (widget.isForReschedule)
+              ? "Reschedule Booking".tr
+              : "New Booking".tr, // ✅ Added .tr
           style: GoogleFonts.inter(
               color: Colors.black, fontWeight: FontWeight.w600),
         ),
@@ -134,12 +161,13 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (!widget.isForReschedule) _progress("Step 4 of 4"),
+              if (!widget.isForReschedule)
+                _progress("Step 4 of 4".tr), // ✅ Added .tr
 
               Padding(
                 padding: EdgeInsets.all(16),
                 child: Text(
-                  "Select date & time",
+                  "Select date & time".tr, // ✅ Added .tr
                   style: GoogleFonts.inter(
                       fontSize: 16, fontWeight: FontWeight.w600),
                 ),
@@ -149,7 +177,9 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Text(
-                    "reschedule your upcoming service date ${nextServiceDate}of the booking",
+                    "reschedule your upcoming service date ".tr +
+                        nextServiceDate +
+                        "of the booking".tr, // ✅ Added .tr to parts
                     style: TextStyle(
                         fontStyle: FontStyle.italic,
                         color: Color(0xFF17A5C6),
@@ -166,7 +196,7 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      DateFormat('MMMM yyyy').format(displayMonth),
+                      "${_fullMonths[displayMonth.month - 1].tr} ${displayMonth.year}", // ✅ Bulletproof month translation
                       style: GoogleFonts.inter(
                         color: Colors.black,
                         fontSize: 14,
@@ -277,7 +307,8 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                DateFormat('EEE').format(date),
+                                _shortDays[date.weekday - 1]
+                                    .tr, // ✅ Bulletproof day translation
                                 style: GoogleFonts.inter(
                                   color:
                                       isSelected ? Colors.white : Colors.grey,
@@ -319,7 +350,7 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
-                  "Available slots",
+                  "Available slots".tr, // ✅ Added .tr
                   style: GoogleFonts.inter(color: Colors.grey, fontSize: 14),
                 ),
               ),
@@ -336,7 +367,7 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
                             CircularProgressIndicator(color: primaryGreen),
                             SizedBox(height: 16),
                             Text(
-                              "Loading time slots...",
+                              "Loading time slots...".tr, // ✅ Added .tr
                               style: GoogleFonts.inter(color: Colors.grey),
                             ),
                           ],
@@ -352,6 +383,12 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
                             [for (var data in ___.timeSlots) data].map((time) {
                           final isSelected = ___.selectedTimeSlot == time;
                           final isAvailable = time.isAvailable ?? false;
+
+                          // Safely translate AM/PM if it comes back inside the string
+                          String displayTime = (time.time ?? "")
+                              .replaceAll("AM", "AM".tr)
+                              .replaceAll("PM", "PM".tr);
+
                           return GestureDetector(
                             onTap: isAvailable
                                 ? () {
@@ -384,7 +421,7 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(
-                                      time.time ?? "",
+                                      displayTime, // ✅ Applied translated string
                                       style: GoogleFonts.inter(
                                         fontSize: 12.sp,
                                         color: isSelected
@@ -434,7 +471,8 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
                     ),
                     onPressed: () {
                       if (ctrl.selectedTimeSlot == null) {
-                        Fluttertoast.showToast(msg: "Please select timeslot");
+                        Fluttertoast.showToast(
+                            msg: "Please select timeslot".tr); // ✅ Added .tr
                         return;
                       }
                       if (!widget.isForReschedule) {
@@ -450,8 +488,8 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
                             color: Colors.white, size: 24)
                         : Text(
                             (widget.isForReschedule)
-                                ? " Reschedule"
-                                : "Continue",
+                                ? " Reschedule".tr // ✅ Added .tr
+                                : "Continue".tr, // ✅ Added .tr
                             style: GoogleFonts.inter(
                               color: Colors.white,
                               fontWeight: FontWeight.w600,
@@ -475,7 +513,7 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            text,
+            text, // text argument already has .tr applied when passed in
             style: GoogleFonts.inter(color: Colors.grey, fontSize: 14),
           ),
           const SizedBox(height: 8),

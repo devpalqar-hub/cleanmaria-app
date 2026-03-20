@@ -151,9 +151,9 @@ class _ScheduleHistoryScreenState extends State<ScheduleHistoryScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         scrolledUnderElevation: 0,
-        title: const Text(
-          'Schedule History',
-          style: TextStyle(
+        title: Text(
+          'Schedule History'.tr, // ✅ Added .tr and removed const
+          style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
             color: Color(0xFF0D0D0D),
@@ -163,9 +163,9 @@ class _ScheduleHistoryScreenState extends State<ScheduleHistoryScreen> {
           // Reset Filters Button
           TextButton(
             onPressed: _resetFilters,
-            child: const Text(
-              'Reset',
-              style: TextStyle(
+            child: Text(
+              'Reset'.tr, // ✅ Added .tr and removed const
+              style: const TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
                 color: Color(0xFF18B9C5),
@@ -215,9 +215,10 @@ class _ScheduleHistoryScreenState extends State<ScheduleHistoryScreen> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(
-                                    'Date Range',
-                                    style: TextStyle(
+                                  Text(
+                                    'Date Range'
+                                        .tr, // ✅ Added .tr and removed const
+                                    style: const TextStyle(
                                       fontSize: 10,
                                       color: Color(0xFFAAAAAA),
                                       fontWeight: FontWeight.w500,
@@ -228,7 +229,7 @@ class _ScheduleHistoryScreenState extends State<ScheduleHistoryScreen> {
                                     ctrl.startDate != null &&
                                             ctrl.endDate != null
                                         ? '${ctrl.formattedStartDate} - ${ctrl.formattedEndDate}'
-                                        : 'Select date range',
+                                        : 'Select date range'.tr, // ✅ Added .tr
                                     style: TextStyle(
                                       fontSize: 13,
                                       fontWeight: FontWeight.w600,
@@ -274,9 +275,10 @@ class _ScheduleHistoryScreenState extends State<ScheduleHistoryScreen> {
                                         Colors.white),
                                   ),
                                 )
-                              : const Text(
-                                  'Apply Filters',
-                                  style: TextStyle(
+                              : Text(
+                                  'Apply Filters'
+                                      .tr, // ✅ Added .tr and removed const
+                                  style: const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -319,9 +321,10 @@ class _ScheduleHistoryScreenState extends State<ScheduleHistoryScreen> {
                                         ),
                                       ),
                                       const SizedBox(height: 8),
-                                      const Text(
-                                        'Loading more...',
-                                        style: TextStyle(
+                                      Text(
+                                        'Loading more...'
+                                            .tr, // ✅ Added .tr and removed const
+                                        style: const TextStyle(
                                           fontSize: 12,
                                           color: Color(0xFF888888),
                                         ),
@@ -393,19 +396,20 @@ class _ScheduleHistoryScreenState extends State<ScheduleHistoryScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            const Text(
-              'No Schedules Found',
-              style: TextStyle(
+            Text(
+              'No Schedules Found'.tr, // ✅ Added .tr and removed const
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 color: Color(0xFF0D0D0D),
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Try adjusting your filters\nor date range',
+            Text(
+              'Try adjusting your filters\nor date range'
+                  .tr, // ✅ Added .tr and removed const
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 13,
                 color: Color(0xFF888888),
                 height: 1.5,

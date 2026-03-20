@@ -14,8 +14,8 @@ class MessagesScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text(
-          "Messages",
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
+          "Messages".tr, // ✅ Added .tr
+          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
         ),
       ),
       body: SafeArea(
@@ -27,7 +27,7 @@ class MessagesScreen extends StatelessWidget {
               //   padding: const EdgeInsets.symmetric(horizontal: 16),
               //   child: TextField(
               //     decoration: InputDecoration(
-              //       hintText: "Search messages...",
+              //       hintText: "Search messages...".tr, // ✅ Added .tr
               //       prefixIcon: const Icon(Icons.search),
               //       filled: true,
               //       fillColor: const Color(0xFFF3F3F3),
@@ -101,7 +101,12 @@ class MessagesScreen extends StatelessWidget {
                   Text(name,
                       style: const TextStyle(fontWeight: FontWeight.bold)),
                   const SizedBox(height: 4),
-                  Text(message, style: const TextStyle(color: Colors.grey)),
+                  Text(
+                    message,
+                    style: const TextStyle(color: Colors.grey),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ],
               ),
             ),

@@ -17,6 +17,31 @@ class ReviewPayScreen extends StatefulWidget {
 class _ReviewPayScreenState extends State<ReviewPayScreen> {
   final CreateBookingController ctrl = Get.find();
 
+  // Bulletproof Month & Day translation helpers
+  final List<String> _fullMonths = [
+    'january',
+    'february',
+    'march',
+    'april',
+    'may',
+    'june',
+    'july',
+    'august',
+    'september',
+    'october',
+    'november',
+    'december'
+  ];
+  final List<String> _fullDays = [
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday',
+    'sunday'
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,7 +70,7 @@ class _ReviewPayScreenState extends State<ReviewPayScreen> {
                     ? LoadingAnimationWidget.staggeredDotsWave(
                         color: Colors.white, size: 24)
                     : Text(
-                        "Confirm & Pay",
+                        "Confirm & Pay".tr, // ✅ Added .tr
                         style: GoogleFonts.inter(
                             color: Colors.white, fontWeight: FontWeight.w600),
                       ),
@@ -62,7 +87,7 @@ class _ReviewPayScreenState extends State<ReviewPayScreen> {
           onPressed: () => Get.back(),
         ),
         title: Text(
-          "New Booking",
+          "New Booking".tr, // ✅ Added .tr
           style: GoogleFonts.inter(
               color: Colors.black, fontWeight: FontWeight.w600),
         ),
@@ -70,10 +95,26 @@ class _ReviewPayScreenState extends State<ReviewPayScreen> {
       ),
       body: SafeArea(
         child: GetBuilder<CreateBookingController>(builder: (_) {
+          // --- Format Date Safely for Translation ---
+          String timeStr = (ctrl.selectedTimeSlot?.time ?? 'Not selected'.tr)
+              .replaceAll("AM", "AM".tr)
+              .replaceAll("PM", "PM".tr);
+
+          String displayDateTime = timeStr;
+
+          if (ctrl.selectedDate != null) {
+            String dayName = _fullDays[ctrl.selectedDate!.weekday - 1].tr;
+            String monthName = _fullMonths[ctrl.selectedDate!.month - 1].tr;
+            String dateStr =
+                "$dayName, $monthName ${ctrl.selectedDate!.day}, ${ctrl.selectedDate!.year}";
+            displayDateTime = "$dateStr ${'at'.tr} $timeStr";
+          }
+          // ------------------------------------------
+
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              progress("Step 4 of 4"),
+              progress("Step 4 of 4".tr), // ✅ Added .tr
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
@@ -82,7 +123,7 @@ class _ReviewPayScreenState extends State<ReviewPayScreen> {
                       Padding(
                         padding: EdgeInsets.all(16),
                         child: Text(
-                          "Review & Pay",
+                          "Review & Pay".tr, // ✅ Added .tr
                           style: GoogleFonts.inter(
                               fontSize: 18, fontWeight: FontWeight.w600),
                         ),
@@ -90,27 +131,30 @@ class _ReviewPayScreenState extends State<ReviewPayScreen> {
 
                       // Service Summary
                       _sectionCard(
-                        title: "Service Details",
+                        title: "Service Details".tr, // ✅ Added .tr
                         children: [
                           _infoRow(
                             Icons.cleaning_services,
-                            ctrl.selectedService?.name ?? "Service",
-                            "${ctrl.selectedPlan?.title ?? 'Plan'} • ${ctrl.propertyType}",
+                            ctrl.selectedService?.name?.tr ??
+                                "Service".tr, // ✅ Added .tr
+                            "${ctrl.selectedPlan?.title?.tr ?? 'Plan'.tr} • ${ctrl.propertyType.tr}", // ✅ Added .tr
                           ),
                           SizedBox(height: 12),
                           _infoRow(
                             Icons.home_outlined,
-                            "Property Details",
-                            "${ctrl.numberOfBedrooms} BR • ${ctrl.numberOfBathrooms} BA • ${ctrl.squareFeet.toInt()} sq ft",
+                            "Property Details".tr, // ✅ Added .tr
+                            "${ctrl.numberOfBedrooms} ${"BR".tr} • ${ctrl.numberOfBathrooms} ${"BA".tr} • ${ctrl.squareFeet.toInt()} ${"sq ft".tr}", // ✅ Added .tr
                           ),
                           if (ctrl.ecoCleaning || ctrl.materialProvide) ...[
                             SizedBox(height: 12),
                             _infoRow(
                               Icons.eco_outlined,
-                              "Additional Options",
+                              "Additional Options".tr, // ✅ Added .tr
                               [
-                                if (ctrl.ecoCleaning) "Eco Cleaning",
-                                if (ctrl.materialProvide) "Materials Provided"
+                                if (ctrl.ecoCleaning)
+                                  "Eco Cleaning".tr, // ✅ Added .tr
+                                if (ctrl.materialProvide)
+                                  "Materials Provided".tr // ✅ Added .tr
                               ].join(" • "),
                             ),
                           ],
@@ -121,14 +165,12 @@ class _ReviewPayScreenState extends State<ReviewPayScreen> {
 
                       // Date & Time
                       _sectionCard(
-                        title: "Schedule",
+                        title: "Schedule".tr, // ✅ Added .tr
                         children: [
                           _infoRow(
                             Icons.schedule,
-                            "Date & Time",
-                            ctrl.selectedDate != null
-                                ? "${DateFormat('EEEE, MMMM d, yyyy').format(ctrl.selectedDate!)} at ${ctrl.selectedTimeSlot?.time ?? 'Not selected'}"
-                                : "${ctrl.selectedTimeSlot?.time ?? 'Not selected'}",
+                            "Date & Time".tr, // ✅ Added .tr
+                            displayDateTime, // ✅ Used safely formatted and translated date
                           ),
                         ],
                       ),
@@ -137,18 +179,20 @@ class _ReviewPayScreenState extends State<ReviewPayScreen> {
 
                       // Location
                       _sectionCard(
-                        title: "Location",
+                        title: "Location".tr, // ✅ Added .tr
                         children: [
                           _infoRow(
                             Icons.location_on_outlined,
-                            ctrl.address.isEmpty ? "Address" : ctrl.address,
+                            ctrl.address.isEmpty
+                                ? "Address".tr
+                                : ctrl.address, // ✅ Added .tr
                             "${ctrl.city}, ${ctrl.zipcode}",
                           ),
                           if (ctrl.specialInstructions.isNotEmpty) ...[
                             SizedBox(height: 12),
                             _infoRow(
                               Icons.info_outline,
-                              "Special Instructions",
+                              "Special Instructions".tr, // ✅ Added .tr
                               ctrl.specialInstructions,
                             ),
                           ],
@@ -161,7 +205,7 @@ class _ReviewPayScreenState extends State<ReviewPayScreen> {
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 16),
                         child: Text(
-                          "Payment Method",
+                          "Payment Method".tr, // ✅ Added .tr
                           style: GoogleFonts.inter(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
@@ -172,15 +216,17 @@ class _ReviewPayScreenState extends State<ReviewPayScreen> {
 
                       _paymentOption(
                         icon: Icons.credit_card,
-                        title: "Card Payment",
-                        subtitle: "Pay securely with credit/debit card",
+                        title: "Card Payment".tr, // ✅ Added .tr
+                        subtitle: "Pay securely with credit/debit card"
+                            .tr, // ✅ Added .tr
                         value: "card",
                       ),
 
                       _paymentOption(
                         icon: Icons.money,
-                        title: "Cash/Vellom",
-                        subtitle: "Pay after service completion",
+                        title: "Cash/Vellom".tr, // ✅ Added .tr
+                        subtitle:
+                            "Pay after service completion".tr, // ✅ Added .tr
                         value: "cash",
                       ),
 
@@ -195,7 +241,7 @@ class _ReviewPayScreenState extends State<ReviewPayScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "Price Summary",
+                                  "Price Summary".tr, // ✅ Added .tr
                                   style: GoogleFonts.inter(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
@@ -210,7 +256,7 @@ class _ReviewPayScreenState extends State<ReviewPayScreen> {
                                       borderRadius: BorderRadius.circular(6),
                                     ),
                                     child: Text(
-                                      "ADMIN",
+                                      "ADMIN".tr, // ✅ Added .tr
                                       style: GoogleFonts.inter(
                                         fontSize: 10,
                                         fontWeight: FontWeight.w600,
@@ -223,7 +269,7 @@ class _ReviewPayScreenState extends State<ReviewPayScreen> {
                             SizedBox(height: 12),
                             if (ctrl.isAdmin) ...[
                               Text(
-                                "Base Price",
+                                "Base Price".tr, // ✅ Added .tr
                                 style: GoogleFonts.inter(
                                   fontSize: 12,
                                   color: Colors.grey.shade600,
@@ -239,7 +285,7 @@ class _ReviewPayScreenState extends State<ReviewPayScreen> {
                               ),
                               SizedBox(height: 12),
                               Text(
-                                "Custom Price (editable)*",
+                                "Custom Price (editable)*".tr, // ✅ Added .tr
                                 style: GoogleFonts.inter(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
@@ -256,7 +302,8 @@ class _ReviewPayScreenState extends State<ReviewPayScreen> {
                                     decimal: true),
                                 decoration: InputDecoration(
                                   prefixText: '\$ ',
-                                  hintText: 'Enter custom price',
+                                  hintText:
+                                      'Enter custom price'.tr, // ✅ Added .tr
                                   hintStyle: GoogleFonts.inter(
                                     color: Colors.grey,
                                     fontSize: 14,
@@ -285,7 +332,7 @@ class _ReviewPayScreenState extends State<ReviewPayScreen> {
                               Divider(height: 24),
                             ],
                             _priceRow(
-                              "Total",
+                              "Total".tr, // ✅ Added .tr
                               "\$${(ctrl.customPrice ?? ctrl.selectedPlan?.finalPrice ?? 0).toStringAsFixed(2)}",
                               bold: true,
                             ),
@@ -316,7 +363,8 @@ class _ReviewPayScreenState extends State<ReviewPayScreen> {
                               SizedBox(width: 8),
                               Expanded(
                                 child: Text(
-                                  "By confirming, you agree to our cancellation policy. You can cancel up to 24 hours before service for free.",
+                                  "By confirming, you agree to our cancellation policy. You can cancel up to 24 hours before service for free."
+                                      .tr, // ✅ Added .tr
                                   style: GoogleFonts.inter(
                                     fontSize: 12,
                                     color: primaryGreen,
@@ -357,7 +405,7 @@ class _ReviewPayScreenState extends State<ReviewPayScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              title,
+              title, // text argument already has .tr applied when passed in
               style: GoogleFonts.inter(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
@@ -513,7 +561,7 @@ class _ReviewPayScreenState extends State<ReviewPayScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            label,
+            label, // Already translated when passed in
             style: GoogleFonts.inter(
               fontSize: 14,
               fontWeight: bold ? FontWeight.w600 : FontWeight.w400,

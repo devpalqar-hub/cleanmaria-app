@@ -2,8 +2,7 @@ import 'package:cleanby_maria/Screens/Admin/ScheduleViewScreen/ScheduleHistorySc
 import 'package:cleanby_maria/Screens/Chats/Controller/ChatController.dart';
 import 'package:cleanby_maria/Screens/Chats/messages_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/get.dart'; // ✅ Simplified GetX import for .tr
 import '../home/home_screen.dart';
 import '../bookings/booking_screen.dart';
 
@@ -31,16 +30,16 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffF9FAFB),
+      backgroundColor: const Color(0xffF9FAFB),
       body: IndexedStack(
         index: _currentIndex,
         children: _screens,
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Color(0xffF9FAFB),
+        backgroundColor: const Color(0xffF9FAFB),
         currentIndex: _currentIndex,
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: Color(0xFF18B1C5),
+        selectedItemColor: const Color(0xFF18B1C5),
         unselectedItemColor: Colors.grey,
         onTap: (index) {
           setState(() {
@@ -56,7 +55,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                     ? const Color(0xff17A5C6)
                     : const Color(0xff9DB2CE),
               ),
-              label: "Home"),
+              label: "Home".tr), // ✅ Added .tr
           BottomNavigationBarItem(
               icon: Image.asset(
                 "assets/v2/bookings.png",
@@ -65,13 +64,13 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                     ? const Color(0xff17A5C6)
                     : const Color(0xff9DB2CE),
               ),
-              label: "Bookings"),
+              label: "Bookings".tr), // ✅ Added .tr
           BottomNavigationBarItem(
-              icon: Icon(
+              icon: const Icon(
                 Icons.chat_bubble_outline,
                 size: 22,
               ),
-              label: "Inbox"),
+              label: "Inbox".tr), // ✅ Added .tr
           BottomNavigationBarItem(
               icon: Image.asset(
                 "assets/v2/schedules.png",
@@ -80,7 +79,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                     ? const Color(0xff17A5C6)
                     : const Color(0xff9DB2CE),
               ),
-              label: "Subscription"),
+              label: "Subscription".tr), // ✅ Added .tr
         ],
       ),
     );

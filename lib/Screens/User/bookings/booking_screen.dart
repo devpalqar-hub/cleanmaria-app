@@ -25,9 +25,9 @@ class _BookingScreenState extends State<BookingScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text(
-          "My Bookings",
-          style: TextStyle(
+        title: Text(
+          "My Bookings".tr, // ✅ Added .tr
+          style: const TextStyle(
               color: Colors.black, fontWeight: FontWeight.w600, fontSize: 18),
         ),
         // centerTitle: true,
@@ -35,7 +35,7 @@ class _BookingScreenState extends State<BookingScreen> {
       body: SafeArea(
         child: GetBuilder<UserBookingcontroller>(builder: (context) {
           return (ctrl.isLoading)
-              ? Center(
+              ? const Center(
                   child: CircularProgressIndicator(),
                 )
               : Column(
@@ -47,9 +47,9 @@ class _BookingScreenState extends State<BookingScreen> {
                     //   padding: const EdgeInsets.symmetric(horizontal: 16),
                     //   child: Row(
                     //     children: [
-                    //       _tabButton("Upcoming", 0),
-                    //       _tabButton("Completed", 1),
-                    //       _tabButton("Cancelled", 2),
+                    //       _tabButton("Upcoming".tr, 0), // ✅ Added .tr for future use
+                    //       _tabButton("Completed".tr, 1), // ✅ Added .tr for future use
+                    //       _tabButton("Cancelled".tr, 2), // ✅ Added .tr for future use
                     //     ],
                     //   ),
                     // ),
@@ -113,4 +113,5 @@ class _BookingScreenState extends State<BookingScreen> {
         ),
       ),
     );
-  }}
+  }
+}

@@ -22,7 +22,8 @@ class CreateBookingScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       bottomNavigationBar: SafeArea(
-        child: bottomButton("Continue", () {
+        child: bottomButton("Continue".tr, () {
+          // ✅ Added .tr
           // ✅ FIXED (NO const)
           ctrl.fetchPlans();
           Get.to(() => PlanSelectionScreen());
@@ -36,7 +37,7 @@ class CreateBookingScreen extends StatelessWidget {
           onPressed: () => Get.back(),
         ),
         title: Text(
-          "New Booking",
+          "New Booking".tr, // ✅ Added .tr
           style: GoogleFonts.inter(
               color: Colors.black, fontWeight: FontWeight.w600),
         ),
@@ -52,7 +53,7 @@ class CreateBookingScreen extends StatelessWidget {
                   CircularProgressIndicator(color: primaryGreen),
                   SizedBox(height: 16),
                   Text(
-                    "Loading services...",
+                    "Loading services...".tr, // ✅ Added .tr
                     style: GoogleFonts.inter(color: Colors.grey),
                   ),
                 ],
@@ -62,7 +63,7 @@ class CreateBookingScreen extends StatelessWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              progress("Step 1 of 4"),
+              progress("Step 1 of 4".tr), // ✅ Added .tr
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
@@ -71,7 +72,7 @@ class CreateBookingScreen extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.all(16),
                         child: Text(
-                          "Choose a service",
+                          "Choose a service".tr, // ✅ Added .tr
                           style: GoogleFonts.inter(
                               fontSize: 18, fontWeight: FontWeight.w600),
                         ),
@@ -91,7 +92,7 @@ class CreateBookingScreen extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.fromLTRB(16, 24, 16, 16),
                         child: Text(
-                          "Property Details",
+                          "Property Details".tr, // ✅ Added .tr
                           style: GoogleFonts.inter(
                               fontSize: 18, fontWeight: FontWeight.w600),
                         ),
@@ -99,7 +100,7 @@ class CreateBookingScreen extends StatelessWidget {
 
                       // Number of Bedrooms
                       _sliderField(
-                        label: "Number of Bedrooms",
+                        label: "Number of Bedrooms".tr, // ✅ Added .tr
                         value: __.numberOfBedrooms.toDouble(),
                         min: 1,
                         max: 10,
@@ -112,7 +113,7 @@ class CreateBookingScreen extends StatelessWidget {
 
                       // Number of Bathrooms
                       _counterField(
-                        label: "Number of Bathrooms",
+                        label: "Number of Bathrooms".tr, // ✅ Added .tr
                         value: __.numberOfBathrooms,
                         onIncrement: () {
                           if (__.numberOfBathrooms < 10) {
@@ -150,7 +151,7 @@ class CreateBookingScreen extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.fromLTRB(16, 24, 16, 16),
                         child: Text(
-                          "Additional Options",
+                          "Additional Options".tr, // ✅ Added .tr
                           style: GoogleFonts.inter(
                               fontSize: 18, fontWeight: FontWeight.w600),
                         ),
@@ -158,9 +159,10 @@ class CreateBookingScreen extends StatelessWidget {
 
                       // Eco Cleaning
                       _optionTile(
-                        title: "Eco-Friendly Cleaning",
+                        title: "Eco-Friendly Cleaning".tr, // ✅ Added .tr
                         subtitle:
-                            "Use environmentally friendly cleaning products",
+                            "Use environmentally friendly cleaning products"
+                                .tr, // ✅ Added .tr
                         value: __.ecoCleaning,
                         onChanged: (value) {
                           if (__.materialProvide) {
@@ -173,9 +175,10 @@ class CreateBookingScreen extends StatelessWidget {
 
                       // Material Provide
                       _optionTile(
-                        title: "Material Provide",
+                        title: "Material Provide".tr, // ✅ Added .tr
                         subtitle:
-                            "We provide all cleaning materials and equipment",
+                            "We provide all cleaning materials and equipment"
+                                .tr, // ✅ Added .tr
                         value: __.materialProvide,
                         onChanged: (value) {
                           if (__.ecoCleaning) {
@@ -220,11 +223,15 @@ class CreateBookingScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(service.name!,
+                  Text(
+                      service.name?.tr ??
+                          "", // ✅ Added .tr for dynamic service name
                       style: GoogleFonts.inter(
                           fontWeight: FontWeight.w600, fontSize: 14)),
                   SizedBox(height: 6),
-                  Text(service.description ?? "",
+                  Text(
+                      service.description?.tr ??
+                          "", // ✅ Added .tr for dynamic description
                       style: const TextStyle(color: Colors.grey, fontSize: 12)),
                 ],
               ),
@@ -255,7 +262,7 @@ class CreateBookingScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                label,
+                label, // Already translated when passed in
                 style: GoogleFonts.inter(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -312,7 +319,7 @@ class CreateBookingScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              label,
+              label, // Already translated when passed in
               style: GoogleFonts.inter(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
@@ -374,7 +381,7 @@ class CreateBookingScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Property Type",
+            "Property Type".tr, // ✅ Added .tr
             style: GoogleFonts.inter(
               fontSize: 14,
               fontWeight: FontWeight.w600,
@@ -404,7 +411,7 @@ class CreateBookingScreen extends StatelessWidget {
                       ),
                       child: Center(
                         child: Text(
-                          type,
+                          type.tr, // ✅ Added .tr to translate "Apartment", "Studio", "House"
                           style: GoogleFonts.inter(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
@@ -429,9 +436,9 @@ class CreateBookingScreen extends StatelessWidget {
   }) {
     String displayValue;
     if (value >= 6500) {
-      displayValue = "6500+ sq ft";
+      displayValue = "6500+ ${"sq ft".tr}"; // ✅ Added .tr to 'sq ft'
     } else {
-      displayValue = "${value.toInt()} sq ft";
+      displayValue = "${value.toInt()} ${"sq ft".tr}"; // ✅ Added .tr to 'sq ft'
     }
 
     return Padding(
@@ -443,7 +450,7 @@ class CreateBookingScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Size (Square Feet)",
+                "Size (Square Feet)".tr, // ✅ Added .tr
                 style: GoogleFonts.inter(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -528,7 +535,7 @@ class CreateBookingScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title,
+                    title, // Already translated when passed in
                     style: GoogleFonts.inter(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -536,7 +543,7 @@ class CreateBookingScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    subtitle,
+                    subtitle, // Already translated when passed in
                     style: GoogleFonts.inter(
                       fontSize: 12,
                       color: Colors.grey,

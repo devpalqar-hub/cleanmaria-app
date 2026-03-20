@@ -22,7 +22,8 @@ class _LocationScreenState extends State<LocationScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       bottomNavigationBar: SafeArea(
-        child: bottomButton("Continue", () {
+        child: bottomButton("Continue".tr, () {
+          // ✅ Added .tr
           if (_formKey.currentState!.validate()) {
             _formKey.currentState!.save();
             Get.to(() => DateTimeScreen());
@@ -37,7 +38,7 @@ class _LocationScreenState extends State<LocationScreen> {
           onPressed: () => Get.back(),
         ),
         title: Text(
-          "New Booking",
+          "New Booking".tr, // ✅ Added .tr
           style: GoogleFonts.inter(
               color: Colors.black, fontWeight: FontWeight.w600),
         ),
@@ -49,7 +50,7 @@ class _LocationScreenState extends State<LocationScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              progress("Step 3 of 4"),
+              progress("Step 3 of 4".tr), // ✅ Added .tr
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
@@ -59,7 +60,7 @@ class _LocationScreenState extends State<LocationScreen> {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Text(
-                            "Customer Information",
+                            "Customer Information".tr, // ✅ Added .tr
                             style: GoogleFonts.inter(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
@@ -69,11 +70,12 @@ class _LocationScreenState extends State<LocationScreen> {
                         ),
                         SizedBox(height: 8),
                         _buildTextField(
-                          label: "First Name*",
-                          hint: "Enter customer's first name",
+                          label: "First Name*".tr, // ✅ Added .tr
+                          hint: "Enter customer's first name".tr, // ✅ Added .tr
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter customer\'s first name';
+                              return 'Please enter customer\'s first name'
+                                  .tr; // ✅ Added .tr
                             }
                             return null;
                           },
@@ -81,11 +83,12 @@ class _LocationScreenState extends State<LocationScreen> {
                               ctrl.customerFirstName = value ?? '',
                         ),
                         _buildTextField(
-                          label: "Last Name*",
-                          hint: "Enter customer's last name",
+                          label: "Last Name*".tr, // ✅ Added .tr
+                          hint: "Enter customer's last name".tr, // ✅ Added .tr
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter customer\'s last name';
+                              return 'Please enter customer\'s last name'
+                                  .tr; // ✅ Added .tr
                             }
                             return null;
                           },
@@ -93,30 +96,35 @@ class _LocationScreenState extends State<LocationScreen> {
                               ctrl.customerLastName = value ?? '',
                         ),
                         _buildTextField(
-                          label: "Email*",
-                          hint: "customer@example.com",
+                          label: "Email*".tr, // ✅ Added .tr
+                          hint: "customer@example.com".tr, // ✅ Added .tr
                           keyboardType: TextInputType.emailAddress,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter customer\'s email';
+                              return 'Please enter customer\'s email'
+                                  .tr; // ✅ Added .tr
                             }
                             if (!GetUtils.isEmail(value)) {
-                              return 'Please enter a valid email';
+                              return 'Please enter a valid email'
+                                  .tr; // ✅ Added .tr
                             }
                             return null;
                           },
                           onSaved: (value) => ctrl.customerEmail = value ?? '',
                         ),
                         _buildTextField(
-                          label: "Phone*",
-                          hint: "Enter customer's phone number",
+                          label: "Phone*".tr, // ✅ Added .tr
+                          hint:
+                              "Enter customer's phone number".tr, // ✅ Added .tr
                           keyboardType: TextInputType.phone,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter customer\'s phone number';
+                              return 'Please enter customer\'s phone number'
+                                  .tr; // ✅ Added .tr
                             }
                             if (value.length < 10) {
-                              return 'Please enter a valid phone number';
+                              return 'Please enter a valid phone number'
+                                  .tr; // ✅ Added .tr
                             }
                             return null;
                           },
@@ -130,45 +138,50 @@ class _LocationScreenState extends State<LocationScreen> {
                         SizedBox(height: 8),
                       ],
                       _buildTextField(
-                        label: "Address*",
-                        hint: "123 Main St, Apt 4B",
+                        label: "Address*".tr, // ✅ Added .tr
+                        hint: "123 Main St, Apt 4B".tr, // ✅ Added .tr
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter your address';
+                            return 'Please enter your address'
+                                .tr; // ✅ Added .tr
                           }
                           return null;
                         },
                         onSaved: (value) => ctrl.address = value ?? '',
                       ),
                       _buildTextField(
-                        label: "City*",
-                        hint: "Enter your city",
+                        label: "City*".tr, // ✅ Added .tr
+                        hint: "Enter your city".tr, // ✅ Added .tr
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter your city';
+                            return 'Please enter your city'.tr; // ✅ Added .tr
                           }
                           return null;
                         },
                         onSaved: (value) => ctrl.city = value ?? '',
                       ),
                       _buildTextField(
-                        label: "Zipcode*",
-                        hint: "12345",
+                        label: "Zipcode*".tr, // ✅ Added .tr
+                        hint:
+                            "12345", // Intentionally left un-translated (it's just a number)
                         keyboardType: TextInputType.number,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter your zipcode';
+                            return 'Please enter your zipcode'
+                                .tr; // ✅ Added .tr
                           }
                           if (value.length < 5) {
-                            return 'Please enter a valid zipcode';
+                            return 'Please enter a valid zipcode'
+                                .tr; // ✅ Added .tr
                           }
                           return null;
                         },
                         onSaved: (value) => ctrl.zipcode = value ?? '',
                       ),
                       _buildTextField(
-                        label: "Special Instructions",
-                        hint: "Gate code, parking info, pet details, etc.",
+                        label: "Special Instructions".tr, // ✅ Added .tr
+                        hint: "Gate code, parking info, pet details, etc."
+                            .tr, // ✅ Added .tr
                         maxLines: 4,
                         onSaved: (value) =>
                             ctrl.specialInstructions = value ?? '',
@@ -199,7 +212,7 @@ class _LocationScreenState extends State<LocationScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            label,
+            label, // Already has .tr passed into it
             style: GoogleFonts.inter(
               fontSize: 14,
               fontWeight: FontWeight.w600,
@@ -212,7 +225,7 @@ class _LocationScreenState extends State<LocationScreen> {
             validator: validator,
             onSaved: onSaved,
             decoration: InputDecoration(
-              hintText: hint,
+              hintText: hint, // Already has .tr passed into it
               hintStyle: GoogleFonts.inter(
                 color: Colors.grey,
                 fontSize: 14,

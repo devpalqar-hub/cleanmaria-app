@@ -413,6 +413,224 @@ class AppTranslations extends Translations {
           'thu': 'Jue',
           'fri': 'Vie',
           'sat': 'Sáb',
+
+          "My Bookings": "Mis reservas",
+
+          // Schedule Log Card
+          "Start": "Inicio",
+          "End": "Fin",
+
+          // Uppercase Statuses (In case backend returns uppercase strings)
+          "COMPLETED": "COMPLETADO",
+          "SCHEDULED": "PROGRAMADO",
+          "CANCELLED": "CANCELADO",
+          "PENDING": "PENDIENTE",
+
+          // Schedule History Screen
+          "Schedule History": "Historial de horarios",
+          "Reset": "Restablecer",
+          "Date Range": "Rango de fechas",
+          "Select date range": "Seleccionar rango de fechas",
+          "Apply Filters": "Aplicar filtros",
+          "Loading more...": "Cargando más...",
+          "No Schedules Found": "No se encontraron horarios",
+          "Try adjusting your filters\nor date range":
+              "Intente ajustar sus filtros\no el rango de fechas",
+
+          // Weekdays (3-letter)
+          'sun': 'Dom',
+          'mon': 'Lun',
+          'tue': 'Mar',
+          'wed': 'Mié',
+          'thu': 'Jue',
+          'fri': 'Vie',
+          'sat': 'Sáb',
+
+          // Months (3-letter)
+          'jan': 'Ene',
+          'feb': 'Feb',
+          'mar': 'Mar',
+          'apr': 'Abr',
+          'may': 'May',
+          'jun': 'Jun',
+          'jul': 'Jul',
+          'aug': 'Ago',
+          'sep': 'Sep',
+          'oct': 'Oct',
+          'nov': 'Nov',
+          'dec': 'Dic',
+
+          // Time formatting
+          "AM": "a. m.",
+          "PM": "p. m.",
+
+          // Service Types
+          "Post Renovation / Construction":
+              "Limpieza post-construcción / renovación",
+          "Move In Out Cleaning": "Limpieza de mudanza (entrada/salida)",
+          "Regular Cleaning": "Limpieza regular",
+          "Deep Cleaning": "Limpieza profunda",
+
+          // User Booking Card
+          "Date not set": "Fecha no establecida",
+          "Address not provided": "Dirección no proporcionada",
+          "Service": "Servicio",
+
+          // Full Weekdays
+          'monday': 'Lunes',
+          'tuesday': 'Martes',
+          'wednesday': 'Miércoles',
+          'thursday': 'Jueves',
+          'friday': 'Viernes',
+          'saturday': 'Sábado',
+          'sunday': 'Domingo',
+          // Bottom Navigation
+          "Home": "Inicio",
+          "Inbox": "Mensajes", // or "Bandeja de entrada" if you prefer
+          "Subscription": "Suscripción",
+
+          // Messages Screen
+          "Messages": "Mensajes",
+          "Search messages...": "Buscar mensajes...",
+
+          // Message Title Card (Legacy/Commented)
+          "Milk Donar": "Donante de leche",
+          "Milk Recipient": "Receptor de leche",
+          // Chat Screen
+          "Enter Message": "Escribe un mensaje...",
+
+          // Create Booking - Step 1
+          "Continue": "Continuar",
+          "New Booking": "Nueva reserva",
+          "Loading services...": "Cargando servicios...",
+          "Step 1 of 4": "Paso 1 de 4",
+          "Choose a service": "Elige un servicio",
+          "Property Details": "Detalles de la propiedad",
+          "Number of Bedrooms": "Número de habitaciones",
+          "Number of Bathrooms": "Número de baños",
+          "Property Type": "Tipo de propiedad",
+          "Apartment": "Apartamento",
+          "Studio": "Estudio",
+          "House": "Casa",
+          "Size (Square Feet)": "Tamaño (Pies cuadrados)",
+          "Additional Options": "Opciones adicionales",
+          "Eco-Friendly Cleaning": "Limpieza ecológica",
+          "Use environmentally friendly cleaning products":
+              "Usar productos de limpieza amigables con el medio ambiente",
+          "Material Provide": "Materiales proporcionados",
+          "We provide all cleaning materials and equipment":
+              "Proporcionamos todos los materiales y equipos de limpieza",
+          // Create Booking - Step 2 (Plan Selection)
+          "Plan Selection": "Selección de plan",
+          "Calculating prices...": "Calculando precios...",
+          "Step 2 of 4": "Paso 2 de 4",
+
+          // Common Plan Titles (Modify if your backend sends different strings)
+          "One-Time Cleaning": "Limpieza de una sola vez",
+          "Weekly Cleaning": "Limpieza semanal",
+          "Bi-Weekly Cleaning": "Limpieza quincenal",
+          "Monthly Cleaning": "Limpieza mensual",
+
+          // Create Booking - Step 3 (Location & Customer Info)
+          "Step 3 of 4": "Paso 3 de 4",
+          "Customer Information": "Información del cliente",
+          "First Name*": "Nombre*",
+          "Enter customer's first name": "Ingrese el nombre del cliente",
+          "Please enter customer's first name":
+              "Por favor ingrese el nombre del cliente",
+          "Last Name*": "Apellido*",
+          "Enter customer's last name": "Ingrese el apellido del cliente",
+          "Please enter customer's last name":
+              "Por favor ingrese el apellido del cliente",
+          "Email*": "Correo electrónico*",
+          "customer@example.com": "cliente@ejemplo.com",
+          "Please enter customer's email":
+              "Por favor ingrese el correo electrónico del cliente",
+          "Please enter a valid email":
+              "Por favor ingrese un correo electrónico válido",
+          "Phone*": "Teléfono*",
+          "Enter customer's phone number":
+              "Ingrese el número de teléfono del cliente",
+          "Please enter customer's phone number":
+              "Por favor ingrese el número de teléfono del cliente",
+          "Please enter a valid phone number":
+              "Por favor ingrese un número de teléfono válido",
+          "Address*": "Dirección*",
+          "123 Main St, Apt 4B": "Calle Principal 123, Apt 4B",
+          "Please enter your address": "Por favor ingrese su dirección",
+          "City*": "Ciudad*",
+          "Enter your city": "Ingrese su ciudad",
+          "Please enter your city": "Por favor ingrese su ciudad",
+          "Zipcode*": "Código postal*",
+          "Please enter your zipcode": "Por favor ingrese su código postal",
+          "Please enter a valid zipcode":
+              "Por favor ingrese un código postal válido",
+          "Special Instructions": "Instrucciones especiales",
+          "Gate code, parking info, pet details, etc.":
+              "Código de puerta, información de estacionamiento, detalles de mascotas, etc.",
+
+          // Create Booking - Step 4 (Date & Time)
+          "Step 4 of 4": "Paso 4 de 4",
+          "Select date & time": "Seleccionar fecha y hora",
+          "Reschedule Booking": "Reprogramar reserva",
+          "reschedule your upcoming service date ":
+              "reprogramar la próxima fecha de servicio ",
+          "of the booking": "de la reserva",
+          "Available slots": "Horarios disponibles",
+          "Loading time slots...": "Cargando horarios...",
+          "Please select timeslot": "Por favor seleccione un horario",
+          " Reschedule": " Reprogramar",
+
+          // Full Months
+          'january': 'Enero',
+          'february': 'Febrero',
+          'march': 'Marzo',
+          'april': 'Abril',
+          'may': 'Mayo',
+          'june': 'Junio',
+          'july': 'Julio',
+          'august': 'Agosto',
+          'september': 'Septiembre',
+          'october': 'Octubre',
+          'november': 'Noviembre',
+          'december': 'Diciembre',
+
+          // Create Booking - Final Step (Review & Pay)
+          "Confirm & Pay": "Confirmar y pagar",
+          "Review & Pay": "Revisar y pagar",
+          "Service Details": "Detalles del servicio",
+          "Plan": "Plan",
+          "BR": "Hab", // Bedrooms abbreviation
+          "BA": "Baños", // Bathrooms abbreviation
+          "Materials Provided": "Materiales proporcionados",
+          "Schedule": "Horario",
+          "Date & Time": "Fecha y hora",
+          "Not selected": "No seleccionado",
+          "at":
+              "a las", // Joins the date and time (e.g. "January 1 at 10:00 AM")
+          "Location": "Ubicación",
+          "Address": "Dirección",
+          "Payment Method": "Método de pago",
+          "Card Payment": "Pago con tarjeta",
+          "Pay securely with credit/debit card":
+              "Pague de forma segura con tarjeta de crédito/débito",
+          "Cash/Vellom": "Efectivo/Vellom",
+          "Pay after service completion": "Pagar al finalizar el servicio",
+          "Price Summary": "Resumen de precios",
+          "ADMIN": "ADMINISTRADOR",
+          "Base Price": "Precio base",
+          "Custom Price (editable)*": "Precio personalizado (editable)*",
+          "Enter custom price": "Ingrese el precio personalizado",
+          "Total": "Total",
+          "By confirming, you agree to our cancellation policy. You can cancel up to 24 hours before service for free.":
+              "Al confirmar, aceptas nuestra política de cancelación. Puedes cancelar hasta 24 horas antes del servicio de forma gratuita.",
+          // Home Screen
+          "Have a good day,": "Que tengas un buen día,",
+          "Book a cleaning": "Reserva una limpieza",
+          "Schedule your next professional home cleaning in seconds.":
+              "Programa tu próxima limpieza profesional del hogar en segundos.",
+          "+ New Booking": "+ Nueva reserva",
+          "Upcoming": "Próximos",
         },
       };
 }

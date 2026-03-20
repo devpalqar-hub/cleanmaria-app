@@ -3,8 +3,7 @@ import 'package:cleanby_maria/Screens/Chats/Controller/ChatController.dart';
 import 'package:cleanby_maria/Screens/User/new_booking/service_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get.dart'; // ✅ Simplified import for .tr
 
 class MessageTypeCard extends StatelessWidget {
   MessageTypeCard({super.key});
@@ -40,7 +39,7 @@ class MessageTypeCard extends StatelessWidget {
                   border: InputBorder.none,
                   isCollapsed: true,
                   hintStyle: TextStyle(fontSize: 13),
-                  hintText: "Enter Message",
+                  hintText: "Enter Message".tr, // ✅ Added .tr
                   isDense: true,
                 ),
               ),

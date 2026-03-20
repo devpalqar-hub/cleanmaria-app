@@ -3,12 +3,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:get/get.dart'; // ✅ Added import for .tr
 
 class MessageCard extends StatelessWidget {
   bool isSented;
   bool isRead;
   String messageTime;
   String message;
+
   MessageCard({
     super.key,
     required this.isSented,
@@ -16,6 +18,18 @@ class MessageCard extends StatelessWidget {
     required this.messageTime,
     required this.message,
   });
+
+  // ✅ Added helper to safely format and translate the time
+  String get _formattedTime {
+    try {
+      DateTime date = DateTime.parse(messageTime);
+      String timePart = DateFormat("hh:mm").format(date);
+      String amPm = DateFormat("a").format(date).tr; // Translates AM/PM
+      return "$timePart $amPm";
+    } catch (_) {
+      return "";
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,9 +63,7 @@ class MessageCard extends StatelessWidget {
               (isSented) ? MainAxisAlignment.end : MainAxisAlignment.start,
           children: [
             Text(
-              DateFormat(
-                "hh:mm a",
-              ).format(DateTime.parse(messageTime)),
+              _formattedTime, // ✅ Applied the translated time here
               style: TextStyle(fontSize: 10),
             ),
             SizedBox(width: 5),

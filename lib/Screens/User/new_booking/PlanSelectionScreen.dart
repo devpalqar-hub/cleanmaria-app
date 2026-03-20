@@ -4,9 +4,7 @@ import 'package:cleanby_maria/Screens/User/new_booking/components/BookingUtils.d
 import 'package:cleanby_maria/Screens/User/new_booking/location_screen.dart';
 import 'package:cleanby_maria/Screens/User/new_booking/service_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:get/get.dart'; // ✅ Simplified GetX import for .tr
 import 'package:google_fonts/google_fonts.dart';
 
 class PlanSelectionScreen extends StatelessWidget {
@@ -17,7 +15,8 @@ class PlanSelectionScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       bottomNavigationBar: SafeArea(
-        child: bottomButton("Continue", () {
+        child: bottomButton("Continue".tr, () {
+          // ✅ Added .tr
           // ✅ FIXED (NO const)
           Get.to(() => LocationScreen());
         }),
@@ -30,7 +29,7 @@ class PlanSelectionScreen extends StatelessWidget {
           onPressed: () => Get.back(),
         ),
         title: Text(
-          "Plan Selection",
+          "Plan Selection".tr, // ✅ Added .tr
           style: GoogleFonts.inter(
               color: Colors.black, fontWeight: FontWeight.w600),
         ),
@@ -45,7 +44,7 @@ class PlanSelectionScreen extends StatelessWidget {
                 CircularProgressIndicator(color: primaryGreen),
                 SizedBox(height: 16),
                 Text(
-                  "Calculating prices...",
+                  "Calculating prices...".tr, // ✅ Added .tr
                   style: GoogleFonts.inter(color: Colors.grey),
                 ),
               ],
@@ -54,7 +53,7 @@ class PlanSelectionScreen extends StatelessWidget {
         }
         return Column(
           children: [
-            progress("Step 2 of 4"),
+            progress("Step 2 of 4".tr), // ✅ Added .tr
             Expanded(
                 child: SingleChildScrollView(
               child: Column(
@@ -101,11 +100,15 @@ Widget serviceCard({
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(service.title!,
+                Text(
+                    service.title?.tr ??
+                        "", // ✅ Added .tr for dynamic plan titles (e.g., "Weekly")
                     style: GoogleFonts.inter(
                         fontWeight: FontWeight.w600, fontSize: 14)),
                 SizedBox(height: 6),
-                Text(service.description ?? "",
+                Text(
+                    service.description?.tr ??
+                        "", // ✅ Added .tr for dynamic description
                     style: const TextStyle(color: Colors.grey, fontSize: 12)),
               ],
             ),

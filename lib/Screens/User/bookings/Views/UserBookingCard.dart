@@ -18,12 +18,29 @@ class UserBookingCard extends StatelessWidget {
 
   // Format date and time from the booking date string
   String get _formattedDateTime {
-    if (booking.date == null) return 'Date not set';
+    if (booking.date == null) return 'Date not set'.tr; // ✅ Added .tr
     try {
       final dateTime = DateTime.parse(booking.date!);
-      return DateFormat('EEEE, h:mm a').format(dateTime);
+
+      // Bulletproof full weekday translation (1 = Monday, 7 = Sunday)
+      List<String> weekKeys = [
+        'monday',
+        'tuesday',
+        'wednesday',
+        'thursday',
+        'friday',
+        'saturday',
+        'sunday'
+      ];
+      String dayName = weekKeys[dateTime.weekday - 1].tr;
+
+      // Time and AM/PM translation
+      String timePart = DateFormat('h:mm').format(dateTime);
+      String amPm = DateFormat('a').format(dateTime).tr;
+
+      return '$dayName, $timePart $amPm';
     } catch (_) {
-      return booking.date ?? 'Date not set';
+      return booking.date ?? 'Date not set'.tr; // ✅ Added .tr
     }
   }
 
@@ -41,7 +58,7 @@ class UserBookingCard extends StatelessWidget {
   // Format address
   String get _formattedAddress {
     final address = booking.bookingAddress?.address;
-    if (address == null) return 'Address not provided';
+    if (address == null) return 'Address not provided'.tr; // ✅ Added .tr
 
     final parts = <String>[];
     if (address.line1 != null && address.line1!.isNotEmpty) {
@@ -55,7 +72,9 @@ class UserBookingCard extends StatelessWidget {
       parts.add(address.city!);
     }
 
-    return parts.isEmpty ? 'Address not provided' : parts.join(', ');
+    return parts.isEmpty
+        ? 'Address not provided'.tr
+        : parts.join(', '); // ✅ Added .tr
   }
 
   @override
@@ -113,7 +132,9 @@ class UserBookingCard extends StatelessWidget {
                     children: [
                       // Service name
                       Text(
-                        booking.service?.name ?? 'Service',
+                        booking.service?.name?.tr ??
+                            'Service'
+                                .tr, // ✅ Added .tr for both service name and fallback
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,

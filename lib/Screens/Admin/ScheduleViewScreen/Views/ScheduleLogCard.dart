@@ -1,7 +1,7 @@
 import 'package:cleanby_maria/Screens/Admin/ScheduleViewScreen/Models/ScheduleItemModel.dart';
 import 'package:cleanby_maria/Screens/Admin/ScheduleViewScreen/ScheduleDetailsScreen.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_navigation/get_navigation.dart';
+import 'package:get/get.dart'; // ✅ Changed from get_navigation to full get for .tr extension
 import 'package:intl/intl.dart';
 
 enum CardRole { admin, staff, user }
@@ -98,7 +98,15 @@ class Schedulelogcard extends StatelessWidget {
   String _formatTime(String? raw) {
     if (raw == null) return '—';
     try {
-      return DateFormat('hh:mm a').format(DateTime.parse(raw));
+      DateTime date = DateTime.parse(raw);
+
+      // Get the time numbers (e.g., "10:30")
+      String timePart = DateFormat('hh:mm').format(date);
+
+      // Get the "AM" or "PM" and translate it
+      String amPmPart = DateFormat('a').format(date).tr;
+
+      return '$timePart $amPmPart';
     } catch (_) {
       return '—';
     }
@@ -107,13 +115,41 @@ class Schedulelogcard extends StatelessWidget {
   String get _formattedDate {
     if (booking.startTime == null) return '—';
     try {
-      return DateFormat('EEE, d MMM yyyy')
-          .format(DateTime.parse(booking.startTime!));
+      DateTime date = DateTime.parse(booking.startTime!);
+
+      // 1. Bulletproof Day translation (date.weekday: 1 = Monday, 7 = Sunday)
+      List<String> weekKeys = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+      String dayName = weekKeys[date.weekday - 1].tr;
+
+      // 2. Get the day number (e.g., "5")
+      String dayNum = DateFormat('d').format(date);
+
+      // 3. Bulletproof Month translation (date.month: 1 = January, 12 = December)
+      List<String> monthKeys = [
+        'jan',
+        'feb',
+        'mar',
+        'apr',
+        'may',
+        'jun',
+        'jul',
+        'aug',
+        'sep',
+        'oct',
+        'nov',
+        'dec'
+      ];
+      String monthName = monthKeys[date.month - 1].tr;
+
+      // 4. Get the year (e.g., "2026")
+      String year = DateFormat('yyyy').format(date);
+
+      // Combine them: "Dom, 5 Ene 2026"
+      return '$dayName, $dayNum $monthName $year';
     } catch (_) {
       return '—';
     }
   }
-
   // ── Navigation ─────────────────────────────────────────────────────────────
 
   void _onTap() {
@@ -174,7 +210,7 @@ class Schedulelogcard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                  booking.status ?? '—',
+                  booking.status?.tr ?? '—', // ✅ Added .tr here
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w800,
@@ -272,11 +308,13 @@ class _TimeBlock extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        _timeChip(label: 'Start', time: startTime, isPrimary: true),
+        _timeChip(
+            label: 'Start'.tr, time: startTime, isPrimary: true), // ✅ Added .tr
         const SizedBox(height: 5),
         Container(width: 1, height: 8, color: const Color(0xFFDDDDDD)),
         const SizedBox(height: 5),
-        _timeChip(label: 'End', time: endTime, isPrimary: false),
+        _timeChip(
+            label: 'End'.tr, time: endTime, isPrimary: false), // ✅ Added .tr
       ],
     );
   }

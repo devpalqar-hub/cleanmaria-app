@@ -3,8 +3,8 @@ import 'package:cleanby_maria/Screens/Chats/Controller/ChatController.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart' show Get;
+import 'package:get/get.dart'; // ✅ Adjusted for .tr
+// import 'package:get/get_core/src/get_main.dart' show Get;
 
 class MessageTitleCard extends StatelessWidget {
   MessageTitleCard({super.key});
@@ -42,7 +42,9 @@ class MessageTitleCard extends StatelessWidget {
             radius: 30,
             backgroundColor: AppColors.teal,
             child: Text(
-              ctrl.currentUserName.substring(0, 2),
+              ctrl.currentUserName.isNotEmpty
+                  ? ctrl.currentUserName.substring(0, 2).toUpperCase()
+                  : "",
               style: TextStyle(fontSize: 18, color: Colors.white),
             ),
           ),
@@ -61,7 +63,7 @@ class MessageTitleCard extends StatelessWidget {
                   ),
                 ),
                 // Text(
-                //   (ctrl.isDonar) ? "Milk Donar" : "Milk Recipient",
+                //   (ctrl.isDonar) ? "Milk Donar".tr : "Milk Recipient".tr, // ✅ Added .tr just in case
                 //   style: TextStyle(
                 //     fontWeight: FontWeight.w400,
                 //     fontSize: 12,
