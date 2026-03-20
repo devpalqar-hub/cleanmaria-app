@@ -32,7 +32,7 @@ class LineChartWidget extends StatelessWidget {
                             int index = value.toInt();
                             if (index >= 0 && index < hctrl.GraphData.length) {
                               return Text(
-                                hctrl.GraphData[index].month!,
+                                hctrl.GraphData[index].month!.tr,
                                 style: TextStyle(fontSize: 10.sp),
                               );
                             }
