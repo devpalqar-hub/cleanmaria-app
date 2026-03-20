@@ -9,8 +9,7 @@ import 'package:cleanby_maria/Screens/Admin/StaffScreen/StaffScreen.dart';
 import 'package:cleanby_maria/Screens/Chats/Controller/ChatController.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/get.dart'; // ✅ Simplified GetX import for .tr
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cleanby_maria/Screens/Admin/HomeScreen/Services/homeController.dart';
 import 'package:cleanby_maria/Screens/Admin/HomeScreen/views/Graphcard.dart';
@@ -28,7 +27,7 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
-  int indexnum = 1;
+  int indexnum = 0;
   @override
   void initState() {
     super.initState();
@@ -52,11 +51,14 @@ class _HomescreenState extends State<Homescreen> {
       body: _pages[indexnum],
       bottomNavigationBar: BottomNavigationBar(
         items: [
-          _buildBarItem("assets/v2/home.png", "Home", 0),
-          _buildBarItem("assets/v2/bookings.png", "Bookings", 1),
-          _buildBarItem("assets/v2/schedules.png", "Schedules", 2),
-          _buildBarItem("assets/v2/staff.png", "Staff", 3),
-          _buildBarItem("assets/v2/services.png", "Service", 4),
+          _buildBarItem("assets/v2/home.png", "Home".tr, 0), // ✅ Added .tr
+          _buildBarItem(
+              "assets/v2/bookings.png", "Bookings".tr, 1), // ✅ Added .tr
+          _buildBarItem(
+              "assets/v2/schedules.png", "Schedules".tr, 2), // ✅ Added .tr
+          _buildBarItem("assets/v2/staff.png", "Staff".tr, 3), // ✅ Added .tr
+          _buildBarItem(
+              "assets/v2/services.png", "Service".tr, 4), // ✅ Added .tr
         ],
         currentIndex: indexnum,
         showUnselectedLabels: true,
@@ -85,7 +87,7 @@ class _HomescreenState extends State<Homescreen> {
             : const Color(0xff9DB2CE),
         height: 22.h,
       ),
-      label: label,
+      label: label, // Already has .tr applied when passed in
     );
   }
 }

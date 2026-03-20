@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -277,26 +278,164 @@ Widget _buildSettingsOption({
 }
 
 void _showLanguageDialog(BuildContext context) {
-  Get.defaultDialog(
-    title: "select language".tr,
-    content: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ListTile(
-          title: Text("english".tr),
-          onTap: () async {
-            await changeLanguage(const Locale('en', 'US'));
-            Get.back();
-          },
+  // Get the current active language code to show the checkmark
+  final currentLang = Get.locale?.languageCode ?? 'en';
+
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: Colors.white,
+    isScrollControlled: true,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+    ),
+    builder: (context) {
+      return SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Small drag handle at the top
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // Title
+              Text(
+                "select_language".tr,
+                style: GoogleFonts.inter(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // English Option
+              _languageOption(
+                title: "English",
+                subtitle: "US English", // Optional, adds a nice touch
+                isSelected: currentLang == 'en',
+                onTap: () async {
+                  await changeLanguage(const Locale('en', 'US'));
+                  Get.back();
+                },
+              ),
+
+              const SizedBox(height: 12),
+
+              // Spanish Option
+              _languageOption(
+                title: "Español",
+                subtitle: "Spanish",
+                isSelected: currentLang == 'es',
+                onTap: () async {
+                  await changeLanguage(const Locale('es', 'ES'));
+                  Get.back();
+                },
+              ),
+            ],
+          ),
         ),
-        ListTile(
-          title: Text("spanish".tr),
-          onTap: () async {
-            await changeLanguage(const Locale('es', 'ES'));
-            Get.back();
-          },
+      );
+    },
+  );
+}
+
+// Helper widget for the language cards
+Widget _languageOption({
+  required String title,
+  required String subtitle,
+  required bool isSelected,
+  required VoidCallback onTap,
+}) {
+  return InkWell(
+    onTap: onTap,
+    borderRadius: BorderRadius.circular(16),
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      decoration: BoxDecoration(
+        color: isSelected
+            ? const Color(0xFF18B1C5).withOpacity(0.05)
+            : Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isSelected ? const Color(0xFF18B1C5) : Colors.grey.shade200,
+          width: isSelected ? 1.5 : 1,
         ),
-      ],
+      ),
+      child: Row(
+        children: [
+          // Circular icon background
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: isSelected
+                  ? const Color(0xFF18B1C5).withOpacity(0.1)
+                  : Colors.white,
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: isSelected ? Colors.transparent : Colors.grey.shade200,
+              ),
+            ),
+            child: Text(
+              title.substring(0, 1), // "E" for English/Español
+              style: GoogleFonts.inter(
+                fontWeight: FontWeight.w700,
+                color:
+                    isSelected ? const Color(0xFF18B1C5) : Colors.grey.shade600,
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+
+          // Text
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color:
+                        isSelected ? const Color(0xFF18B1C5) : Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  subtitle,
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    color: Colors.grey.shade500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Checkmark
+          if (isSelected)
+            const Icon(
+              Icons.check_circle_rounded,
+              color: Color(0xFF18B1C5),
+              size: 24,
+            )
+          else
+            Icon(
+              Icons.circle_outlined,
+              color: Colors.grey.shade300,
+              size: 24,
+            ),
+        ],
+      ),
     ),
   );
 }

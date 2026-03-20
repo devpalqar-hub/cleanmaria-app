@@ -23,26 +23,27 @@ class BottomActionBar extends StatelessWidget {
   });
 
   void _showChangeStatus(BuildContext context) {
+    // Keep 'value' as English for backend logic, apply .tr to 'display'
     final List<Map<String, String>> allStatuses = [
-      {'display': 'Scheduled', 'value': 'scheduled'},
-      {'display': 'In Progress', 'value': 'in_progress'},
-      {'display': 'Completed', 'value': 'completed'},
-      {'display': 'Missed', 'value': 'missed'},
-      {'display': 'Cancelled', 'value': 'canceled'},
-      {'display': 'Payment Failed', 'value': 'payment_failed'},
-      {'display': 'Refunded', 'value': 'refunded'},
-      {'display': 'Rescheduled', 'value': 'rescheduled'},
-      {'display': 'Payment Success', 'value': 'payment_success'},
+      {'display': 'Scheduled'.tr, 'value': 'scheduled'},
+      {'display': 'In Progress'.tr, 'value': 'in_progress'},
+      {'display': 'Completed'.tr, 'value': 'completed'},
+      {'display': 'Missed'.tr, 'value': 'missed'},
+      {'display': 'Cancelled'.tr, 'value': 'canceled'},
+      {'display': 'Payment Failed'.tr, 'value': 'payment_failed'},
+      {'display': 'Refunded'.tr, 'value': 'refunded'},
+      {'display': 'Rescheduled'.tr, 'value': 'rescheduled'},
+      {'display': 'Payment Success'.tr, 'value': 'payment_success'},
     ];
 
     final List<Map<String, String>> staffStatuses = [
-      {'display': 'In Progress', 'value': 'in_progress'},
-      {'display': 'Completed', 'value': 'completed'},
-      {'display': 'Cancelled', 'value': 'canceled'},
+      {'display': 'In Progress'.tr, 'value': 'in_progress'},
+      {'display': 'Completed'.tr, 'value': 'completed'},
+      {'display': 'Cancelled'.tr, 'value': 'canceled'},
       if (booking.paymentMethod == "offline")
-        {'display': 'Payment Success', 'value': 'payment_success'},
+        {'display': 'Payment Success'.tr, 'value': 'payment_success'},
       if (booking.paymentMethod == "offline")
-        {'display': 'Payment Failed', 'value': 'payment_failed'},
+        {'display': 'Payment Failed'.tr, 'value': 'payment_failed'},
     ];
 
     final availableStatuses = isAdmin ? allStatuses : staffStatuses;
@@ -70,8 +71,8 @@ class BottomActionBar extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              const Text('Change Status',
-                  style: TextStyle(
+              Text('Change Status'.tr, // ✅ Added .tr
+                  style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w800,
                       color: AppColors.dark)),
@@ -83,20 +84,20 @@ class BottomActionBar extends StatelessWidget {
                   return ListTile(
                     contentPadding: EdgeInsets.zero,
                     leading: Icon(
-                      value == 'scheduled'.tr
+                      value == 'scheduled'
                           ? Icons.schedule_rounded
-                          : value == 'in_progress'.tr
+                          : value == 'in_progress'
                               ? Icons.autorenew_rounded
-                              : value == 'completed'.tr
+                              : value == 'completed'
                                   ? Icons.check_circle_outline_rounded
-                                  : value == 'canceled'.tr
+                                  : value == 'canceled'
                                       ? Icons.cancel_outlined
-                                      : value == 'payment_success'.tr
+                                      : value == 'payment_success'
                                           ? Icons.payment_rounded
                                           : Icons.info_outline_rounded,
                       color: (value == 'canceled' || value == 'payment_failed')
                           ? AppColors.red
-                          : value == 'completed'.tr
+                          : value == 'completed'
                               ? Colors.green
                               : AppColors.teal,
                     ),
@@ -112,7 +113,7 @@ class BottomActionBar extends StatelessWidget {
                             schedule!.id!, value);
                         if (success) {
                           Fluttertoast.showToast(
-                           msg: '${'Status updated to'.tr} $display',
+                            msg: '${'Status updated to'.tr} $display',
                             toastLength: Toast.LENGTH_SHORT,
                             gravity: ToastGravity.BOTTOM,
                             backgroundColor: Colors.green,
@@ -145,20 +146,21 @@ class BottomActionBar extends StatelessWidget {
       builder: (ctx) => AlertDialog(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Cancel Booking?',
-            style:
-                TextStyle(fontWeight: FontWeight.w800, color: AppColors.dark)),
-        content: const Text(
-          'Are you sure you want to cancel this booking? This action cannot be undone.',
-          style: TextStyle(color: AppColors.grey, height: 1.5),
+        title: Text('Cancel Booking?'.tr, // ✅ Added .tr
+            style: const TextStyle(
+                fontWeight: FontWeight.w800, color: AppColors.dark)),
+        content: Text(
+          'Are you sure you want to cancel this booking? This action cannot be undone.'
+              .tr, // ✅ Added .tr
+          style: const TextStyle(color: AppColors.grey, height: 1.5),
         ),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.pop(ctx);
             },
-            child: const Text('Keep Booking',
-                style: TextStyle(
+            child: Text('Keep Booking'.tr,
+                style: const TextStyle(
                     color: AppColors.teal, fontWeight: FontWeight.w700)),
           ),
           TextButton(
@@ -167,8 +169,8 @@ class BottomActionBar extends StatelessWidget {
               ctrl.cancelBooking(booking.id!);
               Navigator.pop(ctx);
             },
-            child: const Text('Cancel',
-                style: TextStyle(
+            child: Text('Cancel'.tr,
+                style: const TextStyle(
                     color: AppColors.red, fontWeight: FontWeight.w700)),
           ),
         ],
@@ -191,7 +193,7 @@ class BottomActionBar extends StatelessWidget {
             if (schedule != null && !isUser)
               Expanded(
                 child: _ActionButton(
-                  label: 'Change Status',
+                  label: 'Change Status'.tr, // ✅ Added .tr
                   icon: Icons.swap_horiz_rounded,
                   textColor: AppColors.teal,
                   borderColor: AppColors.teal,
@@ -205,13 +207,13 @@ class BottomActionBar extends StatelessWidget {
               if (schedule == null || schedule!.status != "rescheduled")
                 Expanded(
                   child: _ActionButton(
-                    label: 'Reschedule',
+                    label: 'Reschedule'.tr, // ✅ Added .tr
                     icon: Icons.calendar_month_outlined,
                     textColor: AppColors.dark,
                     borderColor: AppColors.divider,
                     onTap: () {
                       String duration =
-                          ((booking!.areaSize! * booking!.service!.duration!) /
+                          ((booking.areaSize! * booking.service!.duration!) /
                                   500)
                               .round()
                               .toString();
@@ -220,7 +222,7 @@ class BottomActionBar extends StatelessWidget {
                           bookingID: booking.id!,
                           isForReschedule: true,
                           zipcode: booking.bookingAddress!.address!.zip!,
-                          serviceID: booking!.service!.id!,
+                          serviceID: booking.service!.id!,
                           duration: duration,
                           startDate: (booking.nextSchedule != null)
                               ? booking.nextSchedule!.startDate!.toLocal()
@@ -238,7 +240,7 @@ class BottomActionBar extends StatelessWidget {
             if (!isStaff)
               Expanded(
                 child: _ActionButton(
-                  label: 'Cancel',
+                  label: 'Cancel'.tr, // ✅ Added .tr
                   icon: Icons.close_rounded,
                   textColor: AppColors.red,
                   borderColor: AppColors.red.withOpacity(0.3),
@@ -283,7 +285,7 @@ class _ActionButton extends StatelessWidget {
             Icon(icon, size: 18, color: textColor),
             const SizedBox(height: 4),
             Text(
-              label,
+              label, // Already translated when passed in
               style: TextStyle(
                   fontSize: 10, fontWeight: FontWeight.w600, color: textColor),
               textAlign: TextAlign.center,

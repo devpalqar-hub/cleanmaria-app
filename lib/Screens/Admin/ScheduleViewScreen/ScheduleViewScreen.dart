@@ -95,7 +95,7 @@ class _ScheduleViewScreenState extends State<ScheduleViewScreen> {
             child: Row(
               children: [
                 Text(
-                  '${_months[ctrl.selectedMonth - 1]} ${ctrl.selectedYear}',
+                  '${_months[ctrl.selectedMonth - 1].tr} ${ctrl.selectedYear}',
                   style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
@@ -128,7 +128,28 @@ class _ScheduleViewScreenState extends State<ScheduleViewScreen> {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    DateFormat("dd MMMM, EEEE ").format(ctrl.selectedDate),
+                    "${DateFormat('dd').format(ctrl.selectedDate)} ${[
+                      'january',
+                      'february',
+                      'march',
+                      'april',
+                      'may',
+                      'june',
+                      'july',
+                      'august',
+                      'september',
+                      'october',
+                      'november',
+                      'december'
+                    ][ctrl.selectedDate.month - 1].tr}, ${[
+                      'monday',
+                      'tuesday',
+                      'wednesday',
+                      'thursday',
+                      'friday',
+                      'saturday',
+                      'sunday'
+                    ][ctrl.selectedDate.weekday - 1].tr} ",
                     style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w700,

@@ -34,7 +34,7 @@ class ServiceCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  service.name,
+                  service.name.tr,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.poppins(

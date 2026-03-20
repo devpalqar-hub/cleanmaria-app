@@ -242,7 +242,7 @@ class AppTranslations extends Translations {
           'Enable': 'Habilitar',
           'Disable': 'Deshabilitar',
           'Delete': 'Eliminar',
-           'Your clean home,\non demand.': 'Tu hogar limpio,\na demanda.',
+          'Your clean home,\non demand.': 'Tu hogar limpio,\na demanda.',
           'Sign in to manage your bookings':
               'Inicia sesión para gestionar tus reservas',
           'Welcome back 👋': 'Bienvenido de nuevo 👋',
@@ -254,7 +254,7 @@ class AppTranslations extends Translations {
           'secure & private': 'seguro y privado',
           'By continuing you agree to our\nTerms of Service & Privacy Policy':
               'Al continuar, acepta nuestros\nTérminos de servicio y Política de privacidad',
-              'Email cannot be empty': 'El correo electrónico no puede estar vacío',
+          'Email cannot be empty': 'El correo electrónico no puede estar vacío',
           'Please enter a valid email':
               'Por favor ingrese un correo electrónico válido',
           'OTP sent to your email': 'OTP enviado a su correo electrónico',
@@ -269,7 +269,7 @@ class AppTranslations extends Translations {
               'El correo y la contraseña no pueden estar vacíos',
           ' Invalid credentials ': 'Credenciales inválidas',
           'OTP sent successfully': 'OTP enviado con éxito',
-           "Check your inbox": "Revisa tu bandeja de entrada",
+          "Check your inbox": "Revisa tu bandeja de entrada",
           "We sent a 6-digit code to": "Hemos enviado un código de 6 dígitos a",
           "Enter your code": "Introduce tu código",
           "Type the 6-digit code sent to your email address.":
@@ -280,7 +280,7 @@ class AppTranslations extends Translations {
           "Verify OTP": "Verificar OTP",
           "This code expires in 10 minutes": "Este código expira en 10 minutos",
           "Please enter all 6 digits": "Por favor ingresa los 6 dígitos",
-           "Settings": "Configuración",
+          "Settings": "Configuración",
           "language": "Idioma",
           "Estimate Service": "Servicio de estimación",
           "Help Center": "Centro de ayuda",
@@ -640,6 +640,16 @@ class AppTranslations extends Translations {
               "Programa tu próxima limpieza profesional del hogar en segundos.",
           "+ New Booking": "+ Nueva reserva",
           "Upcoming": "Próximos",
+
+          // Action Bar & Status Updates
+          "In Progress": "En progreso",
+          "Rescheduled": "Reprogramado",
+          "Status updated to": "Estado actualizado a",
+          "Failed to update status": "Error al actualizar el estado",
+          "Cancel Booking?": "¿Cancelar reserva?",
+          "Are you sure you want to cancel this booking? This action cannot be undone.":
+              "¿Estás seguro de que deseas cancelar esta reserva? Esta acción no se puede deshacer.",
+          "Keep Booking": "Mantener reserva",
         },
       };
 }

@@ -131,7 +131,7 @@ class _HomeContentState extends State<HomeContent> {
             items: ["Last Week", "Last Month", "Last Year"].map((String value) {
               return DropdownMenuItem<String>(
                 value: value,
-                child: Text(value,
+                child: Text(value.tr,
                     style: TextStyle(
                         fontSize: 12.sp, fontWeight: FontWeight.w500)),
               );

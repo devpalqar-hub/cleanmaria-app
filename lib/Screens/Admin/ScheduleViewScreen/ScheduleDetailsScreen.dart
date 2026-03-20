@@ -106,15 +106,58 @@ class ScheduleDetailsScreen extends StatelessWidget {
                                   .difference(DateTime.now()))),
                     const SizedBox(height: 20),
                     ServiceInfoSection(
-                      serviceType: ctrl.bookingDetail!.service!.name!,
+                      serviceType: ctrl.bookingDetail!.service!.name?.tr ??
+                          "", // ✅ Translated
                       date: (schedule != null)
-                          ? "${DateFormat("EEEE, dd MMMM yyyy").format(DateTime.parse(ctrl.schedule!.startTime!).toLocal())}"
-                          : "${DateFormat("EEEE, dd MMMM yyyy").format(DateTime.parse(ctrl.bookingDetail!.date!).toLocal())}",
+                          ? "${[
+                              'monday',
+                              'tuesday',
+                              'wednesday',
+                              'thursday',
+                              'friday',
+                              'saturday',
+                              'sunday'
+                            ][DateTime.parse(ctrl.schedule!.startTime!).toLocal().weekday - 1].tr}, ${DateFormat('dd').format(DateTime.parse(ctrl.schedule!.startTime!).toLocal())} ${[
+                              'january',
+                              'february',
+                              'march',
+                              'april',
+                              'may',
+                              'june',
+                              'july',
+                              'august',
+                              'september',
+                              'october',
+                              'november',
+                              'december'
+                            ][DateTime.parse(ctrl.schedule!.startTime!).toLocal().month - 1].tr} ${DateTime.parse(ctrl.schedule!.startTime!).toLocal().year}"
+                          : "${[
+                              'monday',
+                              'tuesday',
+                              'wednesday',
+                              'thursday',
+                              'friday',
+                              'saturday',
+                              'sunday'
+                            ][DateTime.parse(ctrl.bookingDetail!.date!).toLocal().weekday - 1].tr}, ${DateFormat('dd').format(DateTime.parse(ctrl.bookingDetail!.date!).toLocal())} ${[
+                              'january',
+                              'february',
+                              'march',
+                              'april',
+                              'may',
+                              'june',
+                              'july',
+                              'august',
+                              'september',
+                              'october',
+                              'november',
+                              'december'
+                            ][DateTime.parse(ctrl.bookingDetail!.date!).toLocal().month - 1].tr} ${DateTime.parse(ctrl.bookingDetail!.date!).toLocal().year}",
                       timeRange: ctrl.getBookingTime(),
                       address: ctrl.getBookinAddress(),
                       entryCode: (ctrl.bookingDetail!.bookingAddress!
                               .specialInstructions ??
-                          "No Instruction".tr),
+                          "No Instruction".tr), // ✅ Translated
                     ),
                     const SizedBox(height: 20),
                     PropertyDetailsSection(property: ctrl.bookingDetail!),

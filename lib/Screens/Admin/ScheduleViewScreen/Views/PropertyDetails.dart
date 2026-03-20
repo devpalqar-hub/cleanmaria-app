@@ -22,7 +22,7 @@ class PropertyDetailsSection extends StatelessWidget {
           Row(
             children: [
               Text(
-                "${'PROPERTY DETAILS'.tr} ( ${property.propertyType} )",
+                "${'PROPERTY DETAILS'.tr} ( ${property.propertyType!.tr} )",
                 style: TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.w600,
