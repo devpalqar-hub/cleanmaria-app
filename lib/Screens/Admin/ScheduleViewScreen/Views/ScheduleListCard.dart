@@ -159,7 +159,7 @@ class ScheduleListCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
-                booking.status!,
+                booking.status!.replaceAll("_", " ").capitalize!.tr,
                 style: TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.w800,

@@ -290,9 +290,7 @@ class AppTranslations extends Translations {
           "english": "Inglés",
           "spanish": "Español",
           "Welcome back": "Bienvenido de nuevo",
-         'Select Staff *': 'Seleccionar personal *',
-          
-         
+          'Select Staff *': 'Seleccionar personal *',
 
           // Tabs
           "SUBSCRIPTION": "SUSCRIPCIÓN",
@@ -594,7 +592,7 @@ class AppTranslations extends Translations {
           "Available slots": "Horarios disponibles",
           "Loading time slots...": "Cargando horarios...",
           "Please select timeslot": "Por favor seleccione un horario",
-          " Reschedule": " Reprogramar",
+          "Reschedule": " Reprogramar",
 
           // Full Months
           'january': 'Enero',

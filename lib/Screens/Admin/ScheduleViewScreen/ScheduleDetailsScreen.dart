@@ -99,8 +99,9 @@ class ScheduleDetailsScreen extends StatelessWidget {
                     if (schedule != null)
                       StatusBanner(
                           status: schedule!.status!
-                              .toUpperCase()
-                              .replaceAll("_", " "),
+                              .replaceAll("_", " ")
+                              .capitalize!
+                              .tr,
                           startsIn: ctrl.formatDuration(
                               DateTime.parse(schedule!.startTime!)
                                   .difference(DateTime.now()))),
