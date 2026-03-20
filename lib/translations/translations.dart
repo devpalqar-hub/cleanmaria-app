@@ -242,6 +242,18 @@ class AppTranslations extends Translations {
           'Enable': 'Habilitar',
           'Disable': 'Deshabilitar',
           'Delete': 'Eliminar',
+           'Your clean home,\non demand.': 'Tu hogar limpio,\na demanda.',
+          'Sign in to manage your bookings':
+              'Inicia sesión para gestionar tus reservas',
+          'Welcome back 👋': 'Bienvenido de nuevo 👋',
+          'Enter your email to receive a one-time passcode.':
+              'Ingrese su correo electrónico para recibir un código de acceso único.',
+          'Email address': 'Correo electrónico',
+          'Enter your email': 'Ingrese su correo electrónico',
+          'Send OTP': 'Enviar OTP',
+          'secure & private': 'seguro y privado',
+          'By continuing you agree to our\nTerms of Service & Privacy Policy':
+              'Al continuar, acepta nuestros\nTérminos de servicio y Política de privacidad',
          
           
          
