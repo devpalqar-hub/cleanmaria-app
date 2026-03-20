@@ -11,6 +11,7 @@ import 'package:cleanby_maria/Screens/Admin/ScheduleViewScreen/Views/StatusBanne
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:get/utils.dart';
 import 'package:intl/intl.dart';
 
 // ═══════════════════════════════════════════════════════
@@ -62,7 +63,7 @@ class ScheduleDetailsScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text(
-          (schedule != null) ? "Schedule Details" : "Booking Details",
+          (schedule != null) ? "Schedule Details".tr : "Booking Details".tr,
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
         ),
         actions: [
@@ -95,7 +96,6 @@ class ScheduleDetailsScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 1 ── Status Banner
                     if (schedule != null)
                       StatusBanner(
                           status: schedule!.status!
@@ -105,8 +105,6 @@ class ScheduleDetailsScreen extends StatelessWidget {
                               DateTime.parse(schedule!.startTime!)
                                   .difference(DateTime.now()))),
                     const SizedBox(height: 20),
-
-                    // 2 ── Service Info
                     ServiceInfoSection(
                       serviceType: ctrl.bookingDetail!.service!.name!,
                       date: (schedule != null)
@@ -116,17 +114,13 @@ class ScheduleDetailsScreen extends StatelessWidget {
                       address: ctrl.getBookinAddress(),
                       entryCode: (ctrl.bookingDetail!.bookingAddress!
                               .specialInstructions ??
-                          "No Instruction"),
+                          "No Instruction".tr),
                     ),
                     const SizedBox(height: 20),
-
-                    // 3 ── Property Details
                     PropertyDetailsSection(property: ctrl.bookingDetail!),
                     const SizedBox(height: 20),
-
-                    // 4 ── Assigned Professional
                     if (schedule != null && isStaff == false) ...[
-                      _SectionLabel(label: 'ASSIGNED PROFESSIONAL'),
+                      _SectionLabel(label: 'ASSIGNED PROFESSIONAL'.tr),
                       SizedBox(height: 10),
                       ProfessionalCard(
                         name: schedule!.staff!.name!,
@@ -135,9 +129,8 @@ class ScheduleDetailsScreen extends StatelessWidget {
                       ),
                       SizedBox(height: 20),
                     ],
-
                     if (ctrl.bookingDetail != null && isUser == false) ...[
-                      _SectionLabel(label: 'CUSTOMER DETAILS'),
+                      _SectionLabel(label: 'CUSTOMER DETAILS'.tr),
                       SizedBox(height: 10),
                       ProfessionalCard(
                         name: ctrl.bookingDetail!.customer!.name ?? "",
@@ -146,9 +139,7 @@ class ScheduleDetailsScreen extends StatelessWidget {
                       ),
                       SizedBox(height: 20),
                     ],
-
-                    // 5 ── Payment Summary
-                    _SectionLabel(label: 'PAYMENT SUMMARY'),
+                    _SectionLabel(label: 'PAYMENT SUMMARY'.tr),
                     const SizedBox(height: 10),
                     PaymentSummaryCard(
                       bookings: ctrl.bookingDetail!,
@@ -180,8 +171,6 @@ class ScheduleDetailsScreen extends StatelessWidget {
   }
 }
 
-// ═══════════════════════════════════════════════════════
-// SHARED WIDGETS
 // ═══════════════════════════════════════════════════════
 
 class _SectionLabel extends StatelessWidget {

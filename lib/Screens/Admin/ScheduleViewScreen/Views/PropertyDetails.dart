@@ -22,7 +22,7 @@ class PropertyDetailsSection extends StatelessWidget {
           Row(
             children: [
               Text(
-                'PROPERTY DETAILS ( ${property.propertyType} )',
+                "${'PROPERTY DETAILS'.tr} ( ${property.propertyType} )",
                 style: TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.w600,
@@ -38,7 +38,9 @@ class PropertyDetailsSection extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                       color: AppColors.teal),
                   child: Text(
-                    (property.isEco == true) ? "Is Eco" : "Material Provided",
+                    (property.isEco == true)
+                        ? "Is Eco".tr
+                        : "Material Provided".tr,
                     style: TextStyle(
                         fontSize: 8,
                         color: Colors.white,

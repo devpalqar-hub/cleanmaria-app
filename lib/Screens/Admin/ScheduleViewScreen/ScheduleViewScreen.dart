@@ -4,6 +4,7 @@ import 'package:cleanby_maria/Screens/Admin/ScheduleViewScreen/Views/ScheduleLis
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:get/utils.dart';
 import 'package:intl/intl.dart';
 
 class ScheduleViewScreen extends StatefulWidget {
@@ -15,9 +16,6 @@ class ScheduleViewScreen extends StatefulWidget {
 }
 
 class _ScheduleViewScreenState extends State<ScheduleViewScreen> {
-  // int _currentMonth = 1; // January
-  // int _currentYear = 2026;
-
   static const List<String> _months = [
     'January',
     'February',
@@ -68,9 +66,9 @@ class _ScheduleViewScreenState extends State<ScheduleViewScreen> {
   }
 
   late Schedulecontroller ctrl;
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     ctrl = Get.put(Schedulecontroller(staffID: widget.staffID));
     ctrl.fetchHeatmapData();
@@ -84,12 +82,11 @@ class _ScheduleViewScreenState extends State<ScheduleViewScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text(
-          'Schedules',
+          'Schedules'.tr,
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
             color: Color(0xFF0D0D0D),
-            // letterSpacing: -0.5,
           ),
         ),
         actions: [
@@ -111,9 +108,7 @@ class _ScheduleViewScreenState extends State<ScheduleViewScreen> {
               ],
             ),
           ),
-          SizedBox(
-            width: 20,
-          )
+          SizedBox(width: 20)
         ],
       ),
       body: SafeArea(
@@ -125,12 +120,9 @@ class _ScheduleViewScreenState extends State<ScheduleViewScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: _buildCalendar(),
               ),
-
               const SizedBox(height: 8),
               const Divider(height: 1, color: Color(0xFFEEEEEE)),
               const SizedBox(height: 12),
-
-              // ── Day Label ───────────────────────────────
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Align(
@@ -146,10 +138,7 @@ class _ScheduleViewScreenState extends State<ScheduleViewScreen> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 12),
-
-              // ── Booking Cards ────────────────────────────
               if (ctrl.isScheduleLoading)
                 Center(
                   child: Column(
@@ -181,12 +170,9 @@ class _ScheduleViewScreenState extends State<ScheduleViewScreen> {
     );
   }
 
-  // ─── Calendar Grid ────────────────────────────────────────────────────────
-
   Widget _buildCalendar() {
     return Column(
       children: [
-        // Weekday headers
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: _weekDays
@@ -206,7 +192,6 @@ class _ScheduleViewScreenState extends State<ScheduleViewScreen> {
               .toList(),
         ),
         const SizedBox(height: 6),
-        // Day grid
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -287,8 +272,6 @@ class _ScheduleViewScreenState extends State<ScheduleViewScreen> {
     );
   }
 
-  // ─── Empty State ──────────────────────────────────────────────────────────
-
   Widget _buildEmptyState() {
     return Center(
       child: Column(
@@ -305,9 +288,9 @@ class _ScheduleViewScreenState extends State<ScheduleViewScreen> {
                 color: Color(0xFFBBBBBB), size: 28),
           ),
           const SizedBox(height: 16),
-          const Text(
-            'No bookings on this day',
-            style: TextStyle(
+          Text(
+            'No bookings on this day'.tr,
+            style: const TextStyle(
                 fontSize: 15,
                 color: Color(0xFF999999),
                 fontWeight: FontWeight.w500),

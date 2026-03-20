@@ -4,6 +4,7 @@ import 'package:cleanby_maria/main.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:get/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -69,10 +70,10 @@ class ServiceController extends GetxController {
         }
       } else {
         Fluttertoast.showToast(
-            msg: "Failed to fetch services (${response.statusCode})");
+            msg: "Failed to fetch services (${response.statusCode})".tr);
       }
     } catch (e) {
-      Fluttertoast.showToast(msg: "Error fetching services: $e");
+      Fluttertoast.showToast(msg: "Error fetching services: $e".tr);
     } finally {
       isLoading = false;
       update();
@@ -88,7 +89,7 @@ class ServiceController extends GetxController {
       roomRateController.text,
       squareFootPriceController.text
     ].any((field) => field.isEmpty)) {
-      Fluttertoast.showToast(msg: "Please fill all required fields");
+      Fluttertoast.showToast(msg: "Please fill all required fields".tr);
       return;
     }
 
@@ -120,16 +121,16 @@ class ServiceController extends GetxController {
       print("Response body: ${response.body}");
 
       if (response.statusCode == 201) {
-        Fluttertoast.showToast(msg: "Service created successfully");
+        Fluttertoast.showToast(msg: "Service created successfully".tr);
         Navigator.of(context).pop();
         clearText();
         await fetchServices();
       } else {
         Fluttertoast.showToast(
-            msg: "Error: Failed to create service (${response.statusCode})");
+            msg: "Error: Failed to create service (${response.statusCode})".tr);
       }
     } catch (e) {
-      Fluttertoast.showToast(msg: "Something went wrong: $e");
+      Fluttertoast.showToast(msg: "Something went wrong: $e".tr);
     } finally {
       isLoading = false;
       update();
@@ -145,7 +146,7 @@ class ServiceController extends GetxController {
       roomRateController.text,
       squareFootPriceController.text,
     ].any((f) => f.trim().isEmpty)) {
-      Fluttertoast.showToast(msg: 'Please fill all required fields');
+      Fluttertoast.showToast(msg: 'Please fill all required fields'.tr);
       return;
     }
 
@@ -172,18 +173,18 @@ class ServiceController extends GetxController {
       debugPrint('Response: ${response.body}');
 
       if (response.statusCode == 200) {
-        Fluttertoast.showToast(msg: 'Service updated successfully');
+        Fluttertoast.showToast(msg: 'Service updated successfully'.tr);
         Navigator.pop(context);
         await fetchServices();
       } else {
         print("Update failed: ${response.statusCode}");
         print("Response: ${response.body}");
         Fluttertoast.showToast(
-          msg: "Failed to update service: ${response.statusCode}",
+          msg: "Failed to update service: ${response.statusCode}".tr,
         );
       }
     } catch (e) {
-      Fluttertoast.showToast(msg: 'Error updating service: $e');
+      Fluttertoast.showToast(msg: 'Error updating service: $e'.tr);
     } finally {
       isLoading = false;
       update();

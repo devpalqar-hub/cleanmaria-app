@@ -3,6 +3,7 @@ import 'package:cleanby_maria/Screens/Admin/ServiceScreen/Views/CreateService.da
 import 'package:cleanby_maria/Screens/Admin/ServiceScreen/Views/ServiceCard.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -27,14 +28,14 @@ class _ServiceScreenState extends State<ServiceScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: const Color(0xFFF3F4F6), // exact grey background
+        backgroundColor: const Color(0xFFF3F4F6),
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
           automaticallyImplyLeading: false,
-          titleSpacing: 16, // exact left alignment
+          titleSpacing: 16,
           title: Text(
-            "Services",
+            "Services".tr,
             style: GoogleFonts.poppins(
               fontSize: 16.sp,
               fontWeight: FontWeight.w500,
@@ -67,7 +68,6 @@ class _ServiceScreenState extends State<ServiceScreen> {
             ),
           ],
         ),
-
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: 12.w),
           child: GetBuilder<ServiceController>(
@@ -79,7 +79,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
                     child: _.isLoading
                         ? const Center(child: CircularProgressIndicator())
                         : _.services.isEmpty
-                            ? const Center(child: Text("No services available"))
+                            ? Center(child: Text("No services available".tr))
                             : ListView.builder(
                                 padding:
                                     EdgeInsets.only(bottom: 100.h, top: 4.h),

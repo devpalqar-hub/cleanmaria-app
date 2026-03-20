@@ -2,6 +2,7 @@ import 'package:cleanby_maria/Screens/Admin/ServiceScreen/Model/Service%20Model.
 import 'package:cleanby_maria/Screens/Admin/ServiceScreen/Service/ServiceController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cleanby_maria/Src/appButton.dart';
@@ -20,11 +21,16 @@ class _EditServiceBottomSheetState extends State<EditServiceBottomSheet> {
     super.initState();
     final controller = Get.find<ServiceController>();
     controller.nameController.text = widget.service.name ?? '';
-    controller.durationController.text = widget.service.durationMinutes?.toString() ?? '';
-    controller.basePriceController.text = widget.service.basePrice?.toString() ?? '';
-    controller.bathroomRateController.text = widget.service.bathroomRate?.toString() ?? '';
-    controller.roomRateController.text = widget.service.roomRate?.toString() ?? '';
-    controller.squareFootPriceController.text = widget.service.squareFootPrice?.toString() ?? '';
+    controller.durationController.text =
+        widget.service.durationMinutes?.toString() ?? '';
+    controller.basePriceController.text =
+        widget.service.basePrice?.toString() ?? '';
+    controller.bathroomRateController.text =
+        widget.service.bathroomRate?.toString() ?? '';
+    controller.roomRateController.text =
+        widget.service.roomRate?.toString() ?? '';
+    controller.squareFootPriceController.text =
+        widget.service.squareFootPrice?.toString() ?? '';
   }
 
   @override
@@ -32,7 +38,8 @@ class _EditServiceBottomSheetState extends State<EditServiceBottomSheet> {
     return GetBuilder<ServiceController>(
       builder: (_) {
         return Padding(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: Container(
             padding: EdgeInsets.all(20.w),
             decoration: BoxDecoration(
@@ -55,35 +62,45 @@ class _EditServiceBottomSheetState extends State<EditServiceBottomSheet> {
                     ),
                   ),
                   Text(
-                    "Edit Service",
+                    "Edit Service".tr,
                     style: GoogleFonts.poppins(
                       fontSize: 18.sp,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   SizedBox(height: 20.h),
-                  _buildInputField("Service Name", "Enter service name", _.nameController),
-                  _buildInputField("Duration (minutes)", "Enter duration", _.durationController, isNumber: true),
-                  _buildInputField("Base Price", "Enter base price", _.basePriceController, isNumber: true),
-                  _buildInputField("Bathroom Rate", "Enter bathroom rate", _.bathroomRateController, isNumber: true),
-                  _buildInputField("Room Rate", "Enter room rate", _.roomRateController, isNumber: true),
-                  _buildInputField("Square Foot Price", "Enter square foot price", _.squareFootPriceController, isNumber: true),
+                  _buildInputField("Service Name".tr, "Enter service name".tr,
+                      _.nameController),
+                  _buildInputField("Duration (minutes)".tr, "Enter duration".tr,
+                      _.durationController,
+                      isNumber: true),
+                  _buildInputField("Base Price".tr, "Enter base price".tr,
+                      _.basePriceController,
+                      isNumber: true),
+                  _buildInputField("Bathroom Rate".tr, "Enter bathroom rate".tr,
+                      _.bathroomRateController,
+                      isNumber: true),
+                  _buildInputField("Room Rate".tr, "Enter room rate".tr,
+                      _.roomRateController,
+                      isNumber: true),
+                  _buildInputField("Square Foot Price".tr,
+                      "Enter square foot price".tr, _.squareFootPriceController,
+                      isNumber: true),
                   SizedBox(height: 20.h),
                   _.isLoading
                       ? const CircularProgressIndicator()
                       : AppButton(
-                          text: "Update Service",
+                          text: "Update Service".tr,
                           onPressed: () {
-                             print("Button pressed");
-                          _.updateService(widget.service.id, context)
-                          ; 
+                            print("Button pressed");
+                            _.updateService(widget.service.id, context);
                           },
                         ),
                   TextButton(
                     onPressed: () => Navigator.pop(context),
                     child: Center(
                       child: Text(
-                        "Cancel",
+                        "Cancel".tr,
                         style: TextStyle(fontSize: 14.sp, color: Colors.black),
                       ),
                     ),
@@ -108,7 +125,8 @@ class _EditServiceBottomSheetState extends State<EditServiceBottomSheet> {
       children: [
         Text(
           label,
-          style: GoogleFonts.poppins(fontSize: 14.sp, fontWeight: FontWeight.w600),
+          style:
+              GoogleFonts.poppins(fontSize: 14.sp, fontWeight: FontWeight.w600),
         ),
         SizedBox(height: 5.h),
         TextFormField(
@@ -122,7 +140,8 @@ class _EditServiceBottomSheetState extends State<EditServiceBottomSheet> {
               borderRadius: BorderRadius.circular(10.r),
               borderSide: BorderSide.none,
             ),
-            contentPadding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 12.h),
+            contentPadding:
+                EdgeInsets.symmetric(horizontal: 15.w, vertical: 12.h),
           ),
         ),
         SizedBox(height: 15.h),

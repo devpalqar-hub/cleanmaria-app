@@ -1,5 +1,6 @@
 import 'package:cleanby_maria/Screens/Admin/ScheduleViewScreen/ScheduleDetailsScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:get/utils.dart';
 
 class ServiceInfoSection extends StatelessWidget {
   final String serviceType;
@@ -29,8 +30,8 @@ class ServiceInfoSection extends StatelessWidget {
         const _ThinDivider(),
         _InfoRow(
           icon: Icons.location_on_outlined,
-          title: 'Location',
-          lines: [address, 'Instruction: $entryCode'],
+          title: 'Location'.tr,
+          lines: [address, "${'Instruction:'.tr} $entryCode"],
         ),
       ],
     );

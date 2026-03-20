@@ -3,6 +3,7 @@ import 'package:cleanby_maria/Screens/Admin/StaffScreen/Views/EditBottomsheet.da
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:get/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:cleanby_maria/Screens/Admin/StaffScreen/Models/StaffModel.dart';
@@ -57,7 +58,6 @@ class _StaffCardState extends State<StaffCard> {
       ),
       child: Row(
         children: [
-          /// Avatar
           CircleAvatar(
             radius: 22.r,
             backgroundColor: Colors.blue.shade100,
@@ -72,15 +72,11 @@ class _StaffCardState extends State<StaffCard> {
               ),
             ),
           ),
-
           SizedBox(width: 14.w),
-
-          /// Info Section
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                /// Name
                 Text(
                   name,
                   style: GoogleFonts.poppins(
@@ -89,10 +85,7 @@ class _StaffCardState extends State<StaffCard> {
                     color: Colors.black87,
                   ),
                 ),
-
                 SizedBox(height: 4.h),
-
-                /// Email
                 Text(
                   email,
                   style: GoogleFonts.poppins(
@@ -100,10 +93,7 @@ class _StaffCardState extends State<StaffCard> {
                     color: Colors.grey[700],
                   ),
                 ),
-
                 SizedBox(height: 6.h),
-
-                /// Priority
                 Row(
                   children: [
                     Icon(
@@ -113,7 +103,7 @@ class _StaffCardState extends State<StaffCard> {
                     ),
                     SizedBox(width: 5.w),
                     Text(
-                      "Priority: ${widget.staff.priority}",
+                      "Priority: ${widget.staff.priority}".tr,
                       style: GoogleFonts.poppins(
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w500,
@@ -125,10 +115,7 @@ class _StaffCardState extends State<StaffCard> {
               ],
             ),
           ),
-
           SizedBox(width: 8.w),
-
-          /// Status Badge
           Container(
             padding: EdgeInsets.symmetric(
               horizontal: 10.w,
@@ -148,7 +135,7 @@ class _StaffCardState extends State<StaffCard> {
                 ),
                 SizedBox(width: 4.w),
                 Text(
-                  isActive ? "Active" : "Disabled",
+                  isActive ? "Active".tr : "Disabled".tr,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 5.sp,
@@ -158,10 +145,7 @@ class _StaffCardState extends State<StaffCard> {
               ],
             ),
           ),
-
           SizedBox(width: 4.w),
-
-          /// Popup Menu (FIXED)
           SizedBox(
             width: 40.w,
             height: 40.h,
@@ -174,25 +158,25 @@ class _StaffCardState extends State<StaffCard> {
               padding: EdgeInsets.zero,
               onSelected: _handleMenuAction,
               itemBuilder: (context) => [
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: "Edit",
-                  child: Text("Edit"),
+                  child: Text("Edit".tr),
                 ),
                 if (!isActive)
-                  const PopupMenuItem(
+                  PopupMenuItem(
                     value: "Enable",
-                    child: Text("Enable"),
+                    child: Text("Enable".tr),
                   ),
                 if (isActive)
-                  const PopupMenuItem(
+                  PopupMenuItem(
                     value: "Disable",
-                    child: Text("Disable"),
+                    child: Text("Disable".tr),
                   ),
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: "Delete",
                   child: Text(
-                    "Delete",
-                    style: TextStyle(color: Colors.red),
+                    "Delete".tr,
+                    style: const TextStyle(color: Colors.red),
                   ),
                 ),
               ],
@@ -203,7 +187,6 @@ class _StaffCardState extends State<StaffCard> {
     );
   }
 
-  /// Handle Menu Actions
   void _handleMenuAction(String value) {
     switch (value) {
       case "Edit":
@@ -224,21 +207,21 @@ class _StaffCardState extends State<StaffCard> {
 
       case "Enable":
         _showConfirmation(
-          "Enable Staff",
+          "Enable Staff".tr,
           () => stCtrl.enableStaff(widget.staff.id),
         );
         break;
 
       case "Disable":
         _showConfirmation(
-          "Disable Staff",
+          "Disable Staff".tr,
           () => stCtrl.disableStaff(widget.staff.id),
         );
         break;
 
       case "Delete":
         _showConfirmation(
-          "Delete Staff",
+          "Delete Staff".tr,
           () => stCtrl.deleteStaff(widget.staff),
           isDelete: true,
         );
@@ -246,7 +229,6 @@ class _StaffCardState extends State<StaffCard> {
     }
   }
 
-  /// Confirmation Dialog
   void _showConfirmation(
     String title,
     VoidCallback onConfirm, {
@@ -257,12 +239,12 @@ class _StaffCardState extends State<StaffCard> {
       builder: (_) => AlertDialog(
         title: Text(title),
         content: Text(
-          "Are you sure you want to ${title.toLowerCase()}?",
+          "Are you sure you want to ${title.toLowerCase()}?".tr,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("Cancel"),
+            child: Text("Cancel".tr),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -273,7 +255,7 @@ class _StaffCardState extends State<StaffCard> {
               onConfirm();
             },
             child: Text(
-              isDelete ? "Delete" : "Confirm",
+              isDelete ? "Delete".tr : "Confirm".tr,
             ),
           ),
         ],

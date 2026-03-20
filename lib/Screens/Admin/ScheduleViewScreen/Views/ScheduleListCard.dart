@@ -84,8 +84,8 @@ class ScheduleListCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Text(
-                    'Start',
+                  Text(
+                    'Start'.tr,
                     style: TextStyle(
                       fontSize: 10,
                       color: Color(0xFFAAAAAA),

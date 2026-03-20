@@ -1,5 +1,6 @@
 import 'package:cleanby_maria/Screens/Admin/ScheduleViewScreen/ScheduleDetailsScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:get/utils.dart';
 
 class StatusBanner extends StatelessWidget {
   final String status;
@@ -35,7 +36,7 @@ class StatusBanner extends StatelessWidget {
           const Spacer(),
           if (startsIn != "Completed" && status == "SCHEDULED")
             Text(
-              'Starts in $startsIn',
+              '${'Starts in'.tr} $startsIn',
               style: const TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w400,

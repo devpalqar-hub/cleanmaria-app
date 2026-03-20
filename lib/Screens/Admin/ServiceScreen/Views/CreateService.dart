@@ -2,6 +2,7 @@ import 'package:cleanby_maria/Screens/Admin/ServiceScreen/Model/Service%20Model.
 import 'package:cleanby_maria/Screens/Admin/ServiceScreen/Service/ServiceController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cleanby_maria/Src/appButton.dart';
@@ -47,35 +48,35 @@ class _CreateServiceState extends State<CreateService> {
                     ),
                   ),
                   Text(
-                    "Create Service",
+                    "Create Service".tr,
                     style: GoogleFonts.poppins(
                       fontSize: 18.sp,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   SizedBox(height: 20.h),
-                  _buildInputField(
-                      "Service Name", "Enter service name", _.nameController),
-                  _buildInputField("Duration (minutes)", "Enter duration",
+                  _buildInputField("Service Name".tr, "Enter service name".tr,
+                      _.nameController),
+                  _buildInputField("Duration (minutes)".tr, "Enter duration".tr,
                       _.durationController,
                       isNumber: true),
-                  _buildInputField(
-                      "Base Price", "Enter base price", _.basePriceController,
+                  _buildInputField("Base Price".tr, "Enter base price".tr,
+                      _.basePriceController,
                       isNumber: true),
-                  _buildInputField("Bathroom Rate", "Enter bathroom rate",
+                  _buildInputField("Bathroom Rate".tr, "Enter bathroom rate".tr,
                       _.bathroomRateController,
                       isNumber: true),
-                  _buildInputField(
-                      "Room Rate", "Enter room rate", _.roomRateController,
+                  _buildInputField("Room Rate".tr, "Enter room rate".tr,
+                      _.roomRateController,
                       isNumber: true),
-                  _buildInputField("Square Foot Price",
-                      "Enter square foot price", _.squareFootPriceController,
+                  _buildInputField("Square Foot Price".tr,
+                      "Enter square foot price".tr, _.squareFootPriceController,
                       isNumber: true),
                   SizedBox(height: 20.h),
                   _.isLoading
                       ? const CircularProgressIndicator()
                       : AppButton(
-                          text: "Create Service",
+                          text: "Create Service".tr,
                           onPressed: () {
                             // final service = ServiceModel(
                             // name: _.nameController.text,
@@ -95,7 +96,7 @@ class _CreateServiceState extends State<CreateService> {
                   TextButton(
                     onPressed: () => Navigator.pop(context),
                     child: Center(
-                        child: Text("Get Back",
+                        child: Text("Get Back".tr,
                             style: TextStyle(
                                 fontSize: 14.sp, color: Colors.black))),
                   ),

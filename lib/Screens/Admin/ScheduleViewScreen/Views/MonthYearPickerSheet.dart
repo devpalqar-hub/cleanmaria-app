@@ -137,7 +137,7 @@ class _MonthYearPickerSheetState extends State<MonthYearPickerSheet> {
                     borderRadius: BorderRadius.circular(12)),
                 elevation: 0,
               ),
-              child: const Text('Confirm',
+              child:  Text('Confirm'.tr,
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
             ),
           ),

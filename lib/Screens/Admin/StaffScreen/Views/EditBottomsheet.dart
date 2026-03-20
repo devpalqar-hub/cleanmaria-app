@@ -1,6 +1,7 @@
 import 'package:cleanby_maria/Screens/Admin/StaffScreen/Service/Controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/state_manager.dart';
+import 'package:get/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cleanby_maria/Screens/Admin/StaffScreen/Models/StaffModel.dart';
@@ -35,8 +36,8 @@ class _EditStaffBottomSheetState extends State<EditStaffBottomSheet> {
     emailController = TextEditingController(text: widget.staff.email);
     phoneController = TextEditingController(text: widget.staff.phone ?? '');
     passwordController = TextEditingController();
-    priorityController = TextEditingController(text: widget.staff.priority.toString());
-
+    priorityController =
+        TextEditingController(text: widget.staff.priority.toString());
   }
 
   @override
@@ -54,7 +55,7 @@ class _EditStaffBottomSheetState extends State<EditStaffBottomSheet> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label,
+        Text(label.tr,
             style: GoogleFonts.poppins(
                 fontSize: 14.sp, fontWeight: FontWeight.w600)),
         SizedBox(height: 5.h),
@@ -62,7 +63,7 @@ class _EditStaffBottomSheetState extends State<EditStaffBottomSheet> {
           controller: controller,
           obscureText: obscure,
           decoration: InputDecoration(
-            hintText: hint ?? '',
+            hintText: hint != null ? hint.tr : '',
             filled: true,
             fillColor: Colors.grey[200],
             border: OutlineInputBorder(
@@ -101,7 +102,7 @@ class _EditStaffBottomSheetState extends State<EditStaffBottomSheet> {
                 SizedBox(height: 5.h),
                 Center(
                   child: Text(
-                    "Edit Staff",
+                    "Edit Staff".tr,
                     style: GoogleFonts.poppins(
                         fontSize: 18.sp, fontWeight: FontWeight.w700),
                   ),
@@ -110,7 +111,8 @@ class _EditStaffBottomSheetState extends State<EditStaffBottomSheet> {
                 _buildInputField("Staff Name", nameController),
                 _buildInputField("Email", emailController),
                 _buildInputField("Phone", phoneController),
-                _buildInputField("Priority", priorityController, hint: "Enter priority (e.g. 1)"),
+                _buildInputField("Priority", priorityController,
+                    hint: "Enter priority (e.g. 1)"),
 
                 // Uncomment below if password change is allowed
                 // _buildInputField("New Password", passwordController,
@@ -119,7 +121,7 @@ class _EditStaffBottomSheetState extends State<EditStaffBottomSheet> {
                 isLoading
                     ? const CircularProgressIndicator()
                     : AppButton(
-                        text: "Update Staff",
+                        text: "Update Staff".tr,
                         onPressed: () {
                           _.updateStaff({
                             "name": nameController.text.trim(),
@@ -128,7 +130,9 @@ class _EditStaffBottomSheetState extends State<EditStaffBottomSheet> {
                             "password": passwordController.text.isEmpty
                                 ? null
                                 : passwordController.text.trim(),
-                                 "priority": int.tryParse(priorityController.text.trim()) ?? 0,
+                            "priority":
+                                int.tryParse(priorityController.text.trim()) ??
+                                    0,
                           }, widget.staff.id, context);
                         },
                       ),
@@ -136,7 +140,7 @@ class _EditStaffBottomSheetState extends State<EditStaffBottomSheet> {
                   onPressed: () => Navigator.pop(context),
                   child: Center(
                     child: Text(
-                      "Cancel",
+                      "Cancel".tr,
                       style: TextStyle(fontSize: 14.sp, color: Colors.black),
                     ),
                   ),

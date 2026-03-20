@@ -2,6 +2,7 @@ import 'package:cleanby_maria/Screens/Admin/StaffScreen/Service/Controller.dart'
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
+import 'package:get/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cleanby_maria/Src/appButton.dart';
@@ -18,8 +19,6 @@ class _CreateStaffBottomSheetState extends State<CreateStaffBottomSheet> {
   void dispose() {
     super.dispose();
   }
- 
- // String? _selectedPriority;
 
   bool _obscurePassword = false;
 
@@ -30,7 +29,7 @@ class _CreateStaffBottomSheetState extends State<CreateStaffBottomSheet> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          label,
+          label.tr,
           style:
               GoogleFonts.poppins(fontSize: 14.sp, fontWeight: FontWeight.w600),
         ),
@@ -39,7 +38,7 @@ class _CreateStaffBottomSheetState extends State<CreateStaffBottomSheet> {
           controller: controller,
           obscureText: obscureText ? _obscurePassword : false,
           decoration: InputDecoration(
-            hintText: hint,
+            hintText: hint.tr,
             filled: true,
             fillColor: Colors.grey[200],
             border: OutlineInputBorder(
@@ -94,7 +93,7 @@ class _CreateStaffBottomSheetState extends State<CreateStaffBottomSheet> {
                 SizedBox(height: 5.h),
                 Center(
                   child: Text(
-                    "Create Staff",
+                    "Create Staff".tr,
                     style: GoogleFonts.poppins(
                         fontSize: 18.sp, fontWeight: FontWeight.w700),
                   ),
@@ -109,28 +108,30 @@ class _CreateStaffBottomSheetState extends State<CreateStaffBottomSheet> {
                 _buildInputField(
                     "Password", "Enter Password", _.passwordController,
                     obscureText: true),
-              _buildInputField(
+                _buildInputField(
                     "Priority", "Enter Priority", _.priorityController),
-                    
                 SizedBox(height: 20.h),
                 _.isLoading
                     ? const Center(child: CircularProgressIndicator())
                     : AppButton(
-                        text: "Create Staff",
+                        text: "Create Staff".tr,
                         onPressed: () {
                           {
-    final priority = _.priorityController.text.trim();
-if (priority.isEmpty) {
-  Fluttertoast.showToast(msg: "Please enter priority");
-  return;
-}
-_.createStaff(context, priority: priority);
-                          };},
+                            final priority = _.priorityController.text.trim();
+                            if (priority.isEmpty) {
+                              Fluttertoast.showToast(
+                                  msg: "Please enter priority".tr);
+                              return;
+                            }
+                            _.createStaff(context, priority: priority);
+                          }
+                          ;
+                        },
                       ),
                 TextButton(
                   onPressed: () => Navigator.pop(context),
                   child: Center(
-                      child: Text("Get Back",
+                      child: Text("Get Back".tr,
                           style:
                               TextStyle(fontSize: 14.sp, color: Colors.black))),
                 ),

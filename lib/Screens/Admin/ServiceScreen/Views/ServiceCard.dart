@@ -3,6 +3,7 @@ import 'package:cleanby_maria/Screens/Admin/ServiceScreen/Views/EditService.dart
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/utils.dart';
 
 class ServiceCard extends StatelessWidget {
   final ServiceModel service;
@@ -29,7 +30,6 @@ class ServiceCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Row 1: Name  +  Duration chip  +  Edit ──────────────────────
           Row(
             children: [
               Expanded(
@@ -44,7 +44,6 @@ class ServiceCard extends StatelessWidget {
                   ),
                 ),
               ),
-              // Duration chip
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 4.h),
                 decoration: BoxDecoration(
@@ -68,7 +67,6 @@ class ServiceCard extends StatelessWidget {
                 ),
               ),
               SizedBox(width: 6.w),
-              // Edit button
               GestureDetector(
                 onTap: () {
                   showModalBottomSheet(
@@ -95,19 +93,15 @@ class ServiceCard extends StatelessWidget {
               ),
             ],
           ),
-
           SizedBox(height: 10.h),
-
-          // ── Row 2: Base price  +  Rate chips ────────────────────────────
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Base price
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Base price",
+                    "Base price".tr,
                     style: GoogleFonts.poppins(
                       fontSize: 10.sp,
                       color: const Color(0xFF9CA3AF),
@@ -126,8 +120,6 @@ class ServiceCard extends StatelessWidget {
                   ),
                 ],
               ),
-
-              // Spacer + vertical rule
               SizedBox(width: 14.w),
               Container(
                 width: 1,
@@ -135,15 +127,13 @@ class ServiceCard extends StatelessWidget {
                 color: const Color(0xFFE5E7EB),
               ),
               SizedBox(width: 14.w),
-
-              // Rate chips
               Expanded(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _rateChip("BATH", service.bathroomRate),
-                    _rateChip("ROOM", service.roomRate),
-                    _rateChip("SQFT", service.squareFootPrice),
+                    _rateChip("BATH".tr, service.bathroomRate),
+                    _rateChip("ROOM".tr, service.roomRate),
+                    _rateChip("SQFT".tr, service.squareFootPrice),
                   ],
                 ),
               ),

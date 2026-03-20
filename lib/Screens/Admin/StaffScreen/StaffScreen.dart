@@ -5,6 +5,7 @@ import 'package:cleanby_maria/Screens/Admin/StaffScreen/Views/EditBottomsheet.da
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:get/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'Views/CreateBottomsheet.dart';
 
@@ -23,14 +24,12 @@ class _StaffScreenState extends State<StaffScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-
-        /// APP BAR
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
           titleSpacing: 16,
           title: Text(
-            "Staff",
+            "Staff".tr,
             style: GoogleFonts.poppins(
               fontSize: 16.sp,
               fontWeight: FontWeight.w500,
@@ -38,7 +37,6 @@ class _StaffScreenState extends State<StaffScreen> {
             ),
           ),
           actions: [
-            /// REGION
             Padding(
               padding: EdgeInsets.only(right: 16.w),
               child: InkWell(
@@ -55,8 +53,6 @@ class _StaffScreenState extends State<StaffScreen> {
                 ),
               ),
             ),
-
-            /// ADD STAFF
             Padding(
               padding: EdgeInsets.only(right: 16.w),
               child: InkWell(
@@ -80,8 +76,6 @@ class _StaffScreenState extends State<StaffScreen> {
             ),
           ],
         ),
-
-        /// BODY
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.w),
           child: GetBuilder<StaffController>(
@@ -95,7 +89,7 @@ class _StaffScreenState extends State<StaffScreen> {
               if (_.staffList.isEmpty) {
                 return Center(
                   child: Text(
-                    "No staff available",
+                    "No staff available".tr,
                     style: TextStyle(fontSize: 14.sp),
                   ),
                 );
@@ -104,37 +98,31 @@ class _StaffScreenState extends State<StaffScreen> {
               return Column(
                 children: [
                   SizedBox(height: 12.h),
-
-                  /// HEADER ROW
                   Row(
                     children: [
                       Expanded(
                         flex: 4,
                         child: Text(
-                          "NAME",
+                          "NAME".tr,
                           style: _headerStyle(),
                         ),
                       ),
-
                       Expanded(
                         flex: 2,
                         child: Text(
-                          "PRIORITY",
+                          "PRIORITY".tr,
                           textAlign: TextAlign.center,
                           style: _headerStyle(),
                         ),
                       ),
-
                       Expanded(
                         flex: 2,
                         child: Text(
-                          "STATUS",
+                          "STATUS".tr,
                           textAlign: TextAlign.center,
                           style: _headerStyle(),
                         ),
                       ),
-
-                      /// ACTION COLUMN
                       SizedBox(
                         width: 40.w,
                         child: Text(
@@ -145,12 +133,8 @@ class _StaffScreenState extends State<StaffScreen> {
                       ),
                     ],
                   ),
-
                   SizedBox(height: 8.h),
-
                   Divider(color: const Color(0xFFF1F1F1)),
-
-                  /// LIST
                   Expanded(
                     child: ListView.builder(
                       itemCount: _.staffList.length,
@@ -165,7 +149,6 @@ class _StaffScreenState extends State<StaffScreen> {
                               padding: EdgeInsets.symmetric(vertical: 12.h),
                               child: Row(
                                 children: [
-                                  /// NAME COLUMN
                                   Expanded(
                                     flex: 4,
                                     child: Row(
@@ -212,8 +195,6 @@ class _StaffScreenState extends State<StaffScreen> {
                                       ],
                                     ),
                                   ),
-
-                                  /// PRIORITY
                                   Expanded(
                                     flex: 2,
                                     child: Text(
@@ -225,8 +206,6 @@ class _StaffScreenState extends State<StaffScreen> {
                                       ),
                                     ),
                                   ),
-
-                                  /// STATUS
                                   Expanded(
                                     flex: 2,
                                     child: Center(
@@ -243,7 +222,7 @@ class _StaffScreenState extends State<StaffScreen> {
                                               BorderRadius.circular(14.r),
                                         ),
                                         child: Text(
-                                          staff.status,
+                                          staff.status.tr,
                                           style: TextStyle(
                                             fontSize: 11.sp,
                                             color: isActive
@@ -254,8 +233,6 @@ class _StaffScreenState extends State<StaffScreen> {
                                       ),
                                     ),
                                   ),
-
-                                  /// ACTION MENU (FIXED)
                                   SizedBox(
                                     width: 40.w,
                                     height: 40.h,
@@ -291,23 +268,23 @@ class _StaffScreenState extends State<StaffScreen> {
                                         }
                                       },
                                       itemBuilder: (_) => [
-                                        const PopupMenuItem(
+                                        PopupMenuItem(
                                           value: "Edit",
-                                          child: Text("Edit"),
+                                          child: Text("Edit".tr),
                                         ),
                                         if (!isActive)
-                                          const PopupMenuItem(
+                                          PopupMenuItem(
                                             value: "Enable",
-                                            child: Text("Enable"),
+                                            child: Text("Enable".tr),
                                           ),
                                         if (isActive)
-                                          const PopupMenuItem(
+                                          PopupMenuItem(
                                             value: "Disable",
-                                            child: Text("Disable"),
+                                            child: Text("Disable".tr),
                                           ),
-                                        const PopupMenuItem(
+                                        PopupMenuItem(
                                           value: "Delete",
-                                          child: Text("Delete"),
+                                          child: Text("Delete".tr),
                                         ),
                                       ],
                                     ),

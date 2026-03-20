@@ -47,7 +47,7 @@ class PaymentSummaryCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Service Charge',
+               Text('Service Charge'.tr,
                   style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
@@ -107,7 +107,7 @@ class PaymentSummaryCard extends StatelessWidget {
               const Icon(Icons.payment_outlined,
                   size: 18, color: AppColors.grey),
               const SizedBox(width: 8),
-              const Text('Payment Mode: ',
+               Text('Payment Mode: '.tr,
                   style: TextStyle(fontSize: 12, color: AppColors.grey)),
               Container(
                 padding:
@@ -130,7 +130,7 @@ class PaymentSummaryCard extends StatelessWidget {
                 InkWell(
                   onTap: () => _showPaymentMethodOptions(Get.context!),
                   child: Text(
-                    "Change",
+                    "Change".tr,
                     style: TextStyle(
                         fontSize: 12,
                         //   decoration: TextDecoration.underline,
@@ -147,7 +147,7 @@ class PaymentSummaryCard extends StatelessWidget {
 
   void _showPaymentMethodOptions(BuildContext context) {
     final String currentMethod =
-        bookings.paymentMethod?.toLowerCase() ?? 'offline';
+        bookings.paymentMethod?.toLowerCase() ?? 'offline'.tr;
 
     showModalBottomSheet(
       context: context,
@@ -160,8 +160,8 @@ class PaymentSummaryCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Change Payment Method',
+             Text(
+              'Change Payment Method'.tr,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
@@ -181,8 +181,8 @@ class PaymentSummaryCard extends StatelessWidget {
               _buildPaymentOptionTile(
                 context: context,
                 icon: Icons.credit_card,
-                title: 'Change to Online',
-                subtitle: 'Switch to online payment method',
+                title: 'Change to Online'.tr,
+                subtitle: 'Switch to online payment method'.tr,
                 onTap: () {
                   Navigator.of(context).pop();
                   _updatePaymentMethod('online');
@@ -192,8 +192,8 @@ class PaymentSummaryCard extends StatelessWidget {
               _buildPaymentOptionTile(
                 context: context,
                 icon: Icons.money_off,
-                title: 'Change to Offline',
-                subtitle: 'Switch to offline payment method',
+                title: 'Change to Offline'.tr,
+                subtitle: 'Switch to offline payment method'.tr,
                 onTap: () {
                   Navigator.of(context).pop();
                   _updatePaymentMethod('offline');
@@ -203,8 +203,8 @@ class PaymentSummaryCard extends StatelessWidget {
               _buildPaymentOptionTile(
                 context: context,
                 icon: Icons.account_balance,
-                title: 'Change Bank',
-                subtitle: 'Update bank account details',
+                title: 'Change Bank'.tr,
+                subtitle: 'Update bank account details'.tr,
                 onTap: () {
                   Navigator.of(context).pop();
                   _updatePaymentMethod('online');
@@ -214,9 +214,9 @@ class PaymentSummaryCard extends StatelessWidget {
             const SizedBox(height: 10),
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Center(
+              child:  Center(
                 child: Text(
-                  'Cancel',
+                  'Cancel'.tr,
                   style: TextStyle(color: AppColors.grey),
                 ),
               ),
@@ -304,16 +304,16 @@ class PaymentSummaryCard extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text(
-          'Edit Service Charge',
+        title:  Text(
+          'Edit Service Charge'.tr,
           style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Enter new price:',
+             Text(
+              'Enter new price:'.tr,
               style: TextStyle(fontSize: 14, color: AppColors.grey),
             ),
             const SizedBox(height: 12),
@@ -323,7 +323,7 @@ class PaymentSummaryCard extends StatelessWidget {
                   const TextInputType.numberWithOptions(decimal: true),
               decoration: InputDecoration(
                 prefixText: '\$ ',
-                hintText: 'Enter price',
+                hintText: 'Enter price'.tr,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -342,8 +342,8 @@ class PaymentSummaryCard extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text(
-              'Cancel',
+            child:  Text(
+              'Cancel'.tr,
               style: TextStyle(color: AppColors.grey),
             ),
           ),
@@ -358,8 +358,8 @@ class PaymentSummaryCard extends StatelessWidget {
               final newPrice = double.tryParse(priceController.text);
               if (newPrice == null || newPrice <= 0) {
                 Get.snackbar(
-                  'Invalid Price',
-                  'Please enter a valid price',
+                  'Invalid Price'.tr,
+                  'Please enter a valid price'.tr,
                   snackPosition: SnackPosition.BOTTOM,
                   backgroundColor: AppColors.red.withOpacity(0.9),
                   colorText: Colors.white,
@@ -371,8 +371,8 @@ class PaymentSummaryCard extends StatelessWidget {
               final controller = Get.find<ScheduleDetailsController>();
               await controller.updateBookingPrice(bookingId, newPrice);
             },
-            child: const Text(
-              'Update',
+            child:  Text(
+              'Update'.tr,
               style: TextStyle(color: Colors.white),
             ),
           ),
