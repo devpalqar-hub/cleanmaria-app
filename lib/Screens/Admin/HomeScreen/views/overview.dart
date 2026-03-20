@@ -26,7 +26,7 @@ class OverViewCard extends StatelessWidget {
               count: "\$ ${controller.totalEarnings.toStringAsFixed(2)}",
               imagePath: "assets/earnings.png",
               color: const Color(0xffFDFDE5),
-              subtitle: "Total Revenue",
+              subtitle: "Total Revenue".tr,
             ),
             SizedBox(width: 7.w),
             _overview(

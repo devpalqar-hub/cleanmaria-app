@@ -114,7 +114,9 @@ class _HomeContentState extends State<HomeContent> {
       children: [
         Expanded(
           child: appText.primaryText(
-            text: "Nice day, ${hCtrl.userName}",
+           text: "Nice day, @name".trParams({
+              'name': hCtrl.userName,
+            }),
             maxLines: 1,
             color: Colors.black87,
             fontSize: 16.sp,

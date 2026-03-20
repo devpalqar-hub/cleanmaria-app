@@ -290,7 +290,7 @@ class AppTranslations extends Translations {
           "english": "Inglés",
           "spanish": "Español",
           "Welcome back": "Bienvenido de nuevo",
-         
+         'Select Staff *': 'Seleccionar personal *',
           
          
 
@@ -335,11 +335,17 @@ class AppTranslations extends Translations {
           "Total Clients": "Total Clientes",
           "Total Revenue": "Total Ingresos",
           "Total Staff": "Total Personal",
-          "Add Zipcode": "Agregar código postal",
+          'Add Zipcode': 'Agregar código postal',
           "Zipcode Required": "Código postal *",
           "Zipcode Hint": "ej., 10001",
           "Active": "Activo",
           "Cancel": "Cancelar",
+          'Total Booking/Day': 'Reservas totales/día',
+          'Allocation': 'Asignación',
+          'Avg staff/Booking': 'Personal promedio/reserva',
+          'Cancellation': 'Cancelación',
+          'Cancelled/Booking': 'Canceladas/reserva',
+          'Nice day, @name': 'Buen día, @name',
           "Create New Region": "Crear nueva región",
           "Region Name Required": "Nombre de región *",
           "Region Code Required": "Código de región *",
@@ -350,6 +356,9 @@ class AppTranslations extends Translations {
           "Select Staff Required": "Seleccionar personal *",
           "No Staff Available": "No hay personal disponible",
           "Choose Staff Member": "Elegir un miembro del personal",
+          'Total Clients': 'Clientes totales',
+          'Total Revenue': 'Ingresos totales',
+          'Total Staff': 'Personal total',
 
           "language": "Idioma",
           "select_language": "Seleccionar idioma",
