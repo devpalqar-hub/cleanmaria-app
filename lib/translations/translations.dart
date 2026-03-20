@@ -78,7 +78,7 @@ class AppTranslations extends Translations {
           'No regions yet': 'No hay regiones aún',
           'Tap the + button to create your first region':
               'Toque el botón + para crear su primera región',
-               'Completed': 'Completado',
+          'Completed': 'Completado',
           'Booking canceled successfully': 'Reserva cancelada con éxito',
           'Failed to cancel booking': 'Error al cancelar la reserva',
           'Price updated successfully': 'Precio actualizado correctamente',
@@ -87,8 +87,8 @@ class AppTranslations extends Translations {
               'Método de pago actualizado correctamente',
           'Failed to update payment method':
               'Error al actualizar el método de pago',
-               'Failed to load schedules': 'Error al cargar los horarios',
-               'Failed to load the calender data':
+          'Failed to load schedules': 'Error al cargar los horarios',
+          'Failed to load the calender data':
               'Error al cargar los datos del calendario',
           'Failed to load the schedules': 'Error al cargar los horarios',
           'Select Month & Year': 'Seleccionar mes y año',
@@ -120,7 +120,7 @@ class AppTranslations extends Translations {
           'Change Bank': 'Cambiar banco',
           'Update bank account details':
               'Actualizar detalles de la cuenta bancaria',
-          
+
           'Edit Service Charge': 'Editar cargo por servicio',
           'Enter new price:': 'Ingrese nuevo precio:',
           'Enter price': 'Ingrese precio',
@@ -145,7 +145,7 @@ class AppTranslations extends Translations {
           'PAYMENT SUMMARY': 'RESUMEN DE PAGO',
           'Schedules': 'Horarios',
           'No bookings on this day': 'No hay reservas en este día',
-           'Failed to fetch services': 'Error al obtener servicios',
+          'Failed to fetch services': 'Error al obtener servicios',
           'Error fetching services': 'Error al obtener servicios',
           'Please fill all required fields':
               'Por favor complete todos los campos requeridos',
@@ -170,8 +170,8 @@ class AppTranslations extends Translations {
           'Square Foot Price': 'Precio por pie cuadrado',
           'Enter square foot price': 'Ingrese el precio por pie cuadrado',
           'Get Back': 'Volver',
-           'Edit Service': 'Editar servicio',
-           'Base price': 'Precio base',
+          'Edit Service': 'Editar servicio',
+          'Base price': 'Precio base',
           'BATH': 'BAÑO',
           'ROOM': 'HAB',
           'SQFT': 'PIE²',
@@ -242,9 +242,6 @@ class AppTranslations extends Translations {
           'Enable': 'Habilitar',
           'Disable': 'Deshabilitar',
           'Delete': 'Eliminar',
-         
-          
-         
 
           // Tabs
           "SUBSCRIPTION": "SUSCRIPCIÓN",
@@ -279,53 +276,43 @@ class AppTranslations extends Translations {
           "Payment Failed": "Pago fallido",
           "Nice day": "Buen día, {{name}}",
 
-  
-  "From date": "Desde fecha",
-  "To date": "Hasta fecha",
-  "Today": "Hoy",
-  "Settings": "Configuraciones",
-  "Logout": "Cerrar sesión",
-  "Total Clients": "Total Clientes",
-  "Total Revenue": "Total Ingresos",
-  "Total Staff": "Total Personal",
-  "Add Zipcode": "Agregar código postal",
-  "Zipcode Required": "Código postal *",
-  "Zipcode Hint": "ej., 10001",
-  "Active": "Activo",
-  "Cancel": "Cancelar",
- "Create New Region": "Crear nueva región",
-  "Region Name Required": "Nombre de región *",
-  "Region Code Required": "Código de región *",
-  "Create Region": "Crear región",
-  "Region Name Hint": "ej., Downtown Manhattan",
-  "Region Code Hint": "ej., NYC-DT-001",
-  "Assign Staff": "Asignar personal",
-  "Select Staff Required": "Seleccionar personal *",
-  "No Staff Available": "No hay personal disponible",
-  "Choose Staff Member": "Elegir un miembro del personal",
-  
+          "From date": "Desde fecha",
+          "To date": "Hasta fecha",
+          "Today": "Hoy",
+          "Settings": "Configuraciones",
+          "Logout": "Cerrar sesión",
+          "Total Clients": "Total Clientes",
+          "Total Revenue": "Total Ingresos",
+          "Total Staff": "Total Personal",
+          "Add Zipcode": "Agregar código postal",
+          "Zipcode Required": "Código postal *",
+          "Zipcode Hint": "ej., 10001",
+          "Active": "Activo",
+          "Cancel": "Cancelar",
+          "Create New Region": "Crear nueva región",
+          "Region Name Required": "Nombre de región *",
+          "Region Code Required": "Código de región *",
+          "Create Region": "Crear región",
+          "Region Name Hint": "ej., Downtown Manhattan",
+          "Region Code Hint": "ej., NYC-DT-001",
+          "Assign Staff": "Asignar personal",
+          "Select Staff Required": "Seleccionar personal *",
+          "No Staff Available": "No hay personal disponible",
+          "Choose Staff Member": "Elegir un miembro del personal",
 
-  "language": "Idioma",
-  "select_language": "Seleccionar idioma",
-  "english": "Inglés",
-  "spanish": "Español",
+          "language": "Idioma",
+          "select_language": "Seleccionar idioma",
+          "english": "Inglés",
+          "spanish": "Español",
 
- 
-  "Estimate Service": "Servicio de estimación",
-  "Help Center": "Centro de ayuda",
-  "logout": "Cerrar sesión",
-  "Session Expired": "Sesión expirada",
+          "Estimate Service": "Servicio de estimación",
+          "Help Center": "Centro de ayuda",
+          "logout": "Cerrar sesión",
+          "Session Expired": "Sesión expirada",
 
- 
+          "Performance Analysis": "Análisis de rendimiento",
 
-  
-  "Performance Analysis": "Análisis de rendimiento",
-
-  
-  "Unknown": "Desconocido",
- 
-
- 
+          "Unknown": "Desconocido",
 
           // Booking UI
           'price': 'Precio',
