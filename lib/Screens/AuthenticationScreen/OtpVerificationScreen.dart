@@ -26,13 +26,10 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   Timer? _timer;
   bool _canResend = false;
 
-  // ── Lifecycle ───────────────────────────────────────────────────────────────
-
   @override
   void initState() {
     super.initState();
     _startTimer();
-    // Rebuild border colour when any field gains/loses focus
     for (final node in _focusNodes) {
       node.addListener(() => setState(() {}));
     }
@@ -45,8 +42,6 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     for (final n in _focusNodes) n.dispose();
     super.dispose();
   }
-
-  // ── Timer ───────────────────────────────────────────────────────────────────
 
   void _startTimer() {
     _canResend = false;
@@ -62,8 +57,6 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     });
   }
 
-  // ── Actions ─────────────────────────────────────────────────────────────────
-
   String _getOTP() => _otpControllers.map((c) => c.text).join();
 
   void _handleVerifyOTP() {
@@ -71,7 +64,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     if (otp.length == 6) {
       _authController.handleVerifyOTP(widget.email, otp);
     } else {
-      Fluttertoast.showToast(msg: 'Please enter all 6 digits');
+      Fluttertoast.showToast(msg: 'Please enter all 6 digits'.tr);
     }
   }
 
@@ -82,8 +75,6 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     _focusNodes[0].requestFocus();
     _startTimer();
   }
-
-  // ── Build ───────────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
@@ -99,12 +90,10 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       resizeToAvoidBottomInset: true,
       body: Column(
         children: [
-          // ── Top hero (teal) ───────────────────────────────────────────────
           Expanded(
             flex: 4,
             child: Stack(
               children: [
-                // Teal background
                 Positioned.fill(
                   child: Container(
                     decoration: const BoxDecoration(
@@ -116,8 +105,6 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                     ),
                   ),
                 ),
-
-                // Decorative circle — top right
                 Positioned(
                   top: -50,
                   right: -50,
@@ -130,8 +117,6 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                     ),
                   ),
                 ),
-
-                // Decorative circle — bottom left
                 Positioned(
                   bottom: -20,
                   left: -40,
@@ -144,13 +129,10 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                     ),
                   ),
                 ),
-
-                // Back button + hero content
                 SafeArea(
                   bottom: false,
                   child: Column(
                     children: [
-                      // Back button
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Padding(
@@ -162,14 +144,11 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                           ),
                         ),
                       ),
-
-                      // Centered icon + text
                       Expanded(
                         child: Center(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              // Mail icon bubble
                               Container(
                                 width: 72.w,
                                 height: 72.h,
@@ -183,11 +162,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                                   color: Colors.white,
                                 ),
                               ),
-
                               SizedBox(height: 18.h),
-
                               Text(
-                                "Check your inbox",
+                                "Check your inbox".tr,
                                 style: TextStyle(
                                   fontSize: 22.sp,
                                   fontWeight: FontWeight.w700,
@@ -195,20 +172,15 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                                   letterSpacing: -0.4,
                                 ),
                               ),
-
                               SizedBox(height: 8.h),
-
                               Text(
-                                "We sent a 6-digit code to",
+                                "We sent a 6-digit code to".tr,
                                 style: TextStyle(
                                   fontSize: 13.sp,
                                   color: Colors.white.withOpacity(0.72),
                                 ),
                               ),
-
                               SizedBox(height: 4.h),
-
-                              // Email pill
                               Container(
                                 padding: EdgeInsets.symmetric(
                                     horizontal: 14.w, vertical: 6.h),
@@ -229,7 +201,6 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                           ),
                         ),
                       ),
-
                       SizedBox(height: 10.h),
                     ],
                   ),
@@ -237,8 +208,6 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
               ],
             ),
           ),
-
-          // ── Bottom form (white) ───────────────────────────────────────────
           Expanded(
             flex: 5,
             child: SingleChildScrollView(
@@ -249,9 +218,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: 36.h),
-
                     Text(
-                      "Enter your code",
+                      "Enter your code".tr,
                       style: TextStyle(
                         fontSize: 22.sp,
                         fontWeight: FontWeight.w700,
@@ -259,34 +227,26 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         letterSpacing: -0.4,
                       ),
                     ),
-
                     SizedBox(height: 6.h),
-
                     Text(
-                      "Type the 6-digit code sent to your email address.",
+                      "Type the 6-digit code sent to your email address.".tr,
                       style: TextStyle(
                         fontSize: 13.sp,
                         color: const Color(0xFF999999),
                         height: 1.5,
                       ),
                     ),
-
                     SizedBox(height: 32.h),
-
-                    // OTP fields
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: List.generate(6, (i) => _buildOTPField(i)),
                     ),
-
                     SizedBox(height: 20.h),
-
-                    // Resend row
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "Didn't receive the code? ",
+                          "Didn't receive the code? ".tr,
                           style: TextStyle(
                             fontSize: 13.sp,
                             color: const Color(0xFF999999),
@@ -296,8 +256,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                           onTap: _handleResendOTP,
                           child: Text(
                             _canResend
-                                ? "Resend now"
-                                : "Resend in ${_resendTimer}s",
+                                ? "Resend now".tr
+                                : "Resend in ${_resendTimer}s".tr,
                             style: TextStyle(
                               fontSize: 13.sp,
                               fontWeight: FontWeight.w600,
@@ -309,13 +269,10 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         ),
                       ],
                     ),
-
                     SizedBox(height: 32.h),
-
-                    // Verify button
                     Obx(
                       () => AppButton(
-                        text: "Verify OTP",
+                        text: "Verify OTP".tr,
                         onPressed: _handleVerifyOTP,
                         isLoading: _authController.isLoading.value,
                         width: double.infinity,
@@ -324,10 +281,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-
                     SizedBox(height: 28.h),
-
-                    // Security note
                     Center(
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -336,7 +290,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                               size: 12, color: const Color(0xFFCCCCCC)),
                           SizedBox(width: 5.w),
                           Text(
-                            "This code expires in 10 minutes",
+                            "This code expires in 10 minutes".tr,
                             style: TextStyle(
                               fontSize: 11.sp,
                               color: const Color(0xFFCCCCCC),
@@ -345,7 +299,6 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         ],
                       ),
                     ),
-
                     SizedBox(height: 16.h),
                   ],
                 ),
@@ -356,8 +309,6 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       ),
     );
   }
-
-  // ── OTP single field ────────────────────────────────────────────────────────
 
   Widget _buildOTPField(int index) {
     final isFocused = _focusNodes[index].hasFocus;
@@ -409,11 +360,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
           if (value.isNotEmpty && index < 5) {
             _focusNodes[index + 1].requestFocus();
           }
-          // Handle backspace — move focus back
           if (value.isEmpty && index > 0) {
             _focusNodes[index - 1].requestFocus();
           }
-          // Auto-submit when last digit entered
           if (index == 5 && value.isNotEmpty) {
             _focusNodes[index].unfocus();
           }

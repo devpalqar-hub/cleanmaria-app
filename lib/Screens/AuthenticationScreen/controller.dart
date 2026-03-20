@@ -7,6 +7,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:get/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,13 +21,12 @@ class AuthenticationController extends GetxController {
 
   Future<void> handleSendOTP() async {
     if (emailController.text.isEmpty) {
-      Fluttertoast.showToast(msg: 'Email cannot be empty');
+      Fluttertoast.showToast(msg: 'Email cannot be empty'.tr);
       return;
     }
 
-    // Basic email validation
     if (!emailController.text.isEmail) {
-      Fluttertoast.showToast(msg: 'Please enter a valid email');
+      Fluttertoast.showToast(msg: 'Please enter a valid email'.tr);
       return;
     }
 
@@ -37,15 +37,15 @@ class AuthenticationController extends GetxController {
       print(response);
 
       if (response['success']) {
-        Fluttertoast.showToast(msg: 'OTP sent to your email');
+        Fluttertoast.showToast(msg: 'OTP sent to your email'.tr);
         Get.to(() => OtpVerificationScreen(email: emailController.text),
             transition: Transition.rightToLeft);
       } else {
         Fluttertoast.showToast(
-            msg: response['message'] ?? 'Failed to send OTP');
+            msg: (response['message'] ?? 'Failed to send OTP'.tr));
       }
     } catch (e) {
-      Fluttertoast.showToast(msg: 'An error occurred: $e');
+      Fluttertoast.showToast(msg: 'An error occurred: $e'.tr);
     } finally {
       isLoading.value = false;
     }
@@ -59,13 +59,13 @@ class AuthenticationController extends GetxController {
       print(response);
 
       if (response['success']) {
-        Fluttertoast.showToast(msg: 'OTP resent to your email');
+        Fluttertoast.showToast(msg: 'OTP resent to your email'.tr);
       } else {
         Fluttertoast.showToast(
-            msg: response['message'] ?? 'Failed to resend OTP');
+            msg: (response['message'] ?? 'Failed to resend OTP'.tr));
       }
     } catch (e) {
-      Fluttertoast.showToast(msg: 'An error occurred: $e');
+      Fluttertoast.showToast(msg: 'An error occurred: $e'.tr);
     } finally {
       isLoading.value = false;
     }
@@ -79,7 +79,7 @@ class AuthenticationController extends GetxController {
       print(response);
 
       if (response['success']) {
-        Fluttertoast.showToast(msg: 'Login successful');
+        Fluttertoast.showToast(msg: 'Login successful'.tr);
         SharedPreferences prefs = await SharedPreferences.getInstance();
         String? role = prefs.getString("role");
 
@@ -95,10 +95,10 @@ class AuthenticationController extends GetxController {
               transition: Transition.rightToLeft);
         }
       } else {
-        Fluttertoast.showToast(msg: response['message'] ?? 'Invalid OTP');
+        Fluttertoast.showToast(msg: (response['message'] ?? 'Invalid OTP'.tr));
       }
     } catch (e) {
-      Fluttertoast.showToast(msg: 'An error occurred: $e');
+      Fluttertoast.showToast(msg: 'An error occurred: $e'.tr);
     } finally {
       isLoading.value = false;
     }
@@ -123,18 +123,16 @@ class AuthenticationController extends GetxController {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return {
           "success": true,
-          "message": data['message'] ?? "OTP sent successfully"
+          "message": data['message'] ?? "OTP sent successfully".tr
         };
       } else {
-        print("Non-200/201 response received");
         return {
           "success": false,
-          "message": data['message'] ?? "Failed to send OTP"
+          "message": data['message'] ?? "Failed to send OTP".tr
         };
       }
     } catch (e) {
-      print("Request error: $e");
-      return {"success": false, "message": "An error occurred: $e"};
+      return {"success": false, "message": "An error occurred: $e".tr};
     }
   }
 
@@ -150,14 +148,11 @@ class AuthenticationController extends GetxController {
         },
       );
 
-      print("Status code: ${response.statusCode}");
-      print("Raw response body: ${response.body}");
       final Map<String, dynamic> data = json.decode(response.body);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         if (data.containsKey('access_token')) {
           final accessToken = data['access_token'];
-          print("Access Token: $accessToken");
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString("access_token", data['access_token']);
           await prefs.setString("user_id", data['user']['id'] ?? "user");
@@ -176,16 +171,17 @@ class AuthenticationController extends GetxController {
         } else {
           return {
             "success": false,
-            "message": data['message'] ?? "Invalid response from server"
+            "message": data['message'] ?? "Invalid response from server".tr
           };
         }
       } else {
-        print("Non-200/201 response received");
-        return {"success": false, "message": data['message'] ?? "Invalid OTP"};
+        return {
+          "success": false,
+          "message": data['message'] ?? "Invalid OTP".tr
+        };
       }
     } catch (e) {
-      print("Request error: $e");
-      return {"success": false, "message": "An error occurred: $e"};
+      return {"success": false, "message": "An error occurred: $e".tr};
     }
   }
 
@@ -208,7 +204,7 @@ class AuthenticationController extends GetxController {
 
   Future<void> handleLogin() async {
     if (emailController.text.isEmpty || passwordController.text.isEmpty) {
-      Fluttertoast.showToast(msg: 'Email and password cannot be empty');
+      Fluttertoast.showToast(msg: 'Email and password cannot be empty'.tr);
       return;
     }
 
@@ -218,14 +214,10 @@ class AuthenticationController extends GetxController {
       final response =
           await login(emailController.text, passwordController.text);
 
-      print(response);
-
       if (response['success']) {
-        Fluttertoast.showToast(msg: 'Login successful');
+        Fluttertoast.showToast(msg: 'Login successful'.tr);
         SharedPreferences prefs = await SharedPreferences.getInstance();
         String? role = prefs.getString("role");
-
-        print("User role: $role");
 
         if (role == 'admin') {
           Get.offAll(() => Homescreen(), transition: Transition.rightToLeft);
@@ -234,10 +226,10 @@ class AuthenticationController extends GetxController {
               transition: Transition.rightToLeft);
         }
       } else {
-        Fluttertoast.showToast(msg: " Invalid credentials ");
+        Fluttertoast.showToast(msg: " Invalid credentials ".tr);
       }
     } catch (e) {
-      Fluttertoast.showToast(msg: 'An error occurred: $e');
+      Fluttertoast.showToast(msg: 'An error occurred: $e'.tr);
     } finally {
       isLoading.value = false;
     }
@@ -255,13 +247,10 @@ class AuthenticationController extends GetxController {
         },
       );
 
-      print("Status code: ${response.statusCode}");
-      print("Raw response body: ${response.body}");
       final Map<String, dynamic> data = json.decode(response.body);
 
       if (response.statusCode == 201 && data.containsKey('access_token')) {
         final accessToken = data['access_token'];
-        print("Access Token: $accessToken");
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString("access_token", data['access_token']);
         await prefs.setString("user_id", data['user']['id'] ?? "user");
@@ -275,15 +264,10 @@ class AuthenticationController extends GetxController {
           "user": data['user']
         };
       } else {
-        print("Non-201 response received");
-        return {
-          "success": false,
-          "error": "Server returned ${response.statusCode}: ${response.body}"
-        };
+        return {"success": false, "error": "Login failed".tr};
       }
     } catch (e) {
-      print("Request error: $e");
-      return {"success": false, "error": "An error occurred: $e"};
+      return {"success": false, "error": "An error occurred: $e".tr};
     }
   }
 }

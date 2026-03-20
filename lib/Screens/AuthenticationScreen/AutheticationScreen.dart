@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:get/utils.dart';
 import 'package:cleanby_maria/Screens/AuthenticationScreen/controller.dart';
 import 'package:cleanby_maria/Src/appButton.dart';
 import 'package:cleanby_maria/Src/appTextField.dart';
@@ -26,12 +27,10 @@ class AuthenticationScreen extends StatelessWidget {
       resizeToAvoidBottomInset: true,
       body: Column(
         children: [
-          // ── Top hero area (teal) ──────────────────────────────────────────
           Expanded(
             flex: 4,
             child: Stack(
               children: [
-                // Teal background
                 Positioned.fill(
                   child: Container(
                     decoration: const BoxDecoration(
@@ -43,8 +42,6 @@ class AuthenticationScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-
-                // Decorative circle — top right
                 Positioned(
                   top: -50,
                   right: -50,
@@ -57,8 +54,6 @@ class AuthenticationScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-
-                // Decorative circle — bottom left
                 Positioned(
                   bottom: -20,
                   left: -40,
@@ -71,8 +66,6 @@ class AuthenticationScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-
-                // Hero content
                 SafeArea(
                   bottom: false,
                   child: Center(
@@ -81,7 +74,6 @@ class AuthenticationScreen extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // Logo — tinted white
                           Image.asset(
                             "assets/bname.png",
                             height: 54.h,
@@ -89,11 +81,9 @@ class AuthenticationScreen extends StatelessWidget {
                             fit: BoxFit.contain,
                             color: Colors.white,
                           ),
-
                           SizedBox(height: 18.h),
-
                           Text(
-                            "Your clean home,\non demand.",
+                            "Your clean home,\non demand.".tr,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 22.sp,
@@ -103,11 +93,9 @@ class AuthenticationScreen extends StatelessWidget {
                               letterSpacing: -0.4,
                             ),
                           ),
-
                           SizedBox(height: 8.h),
-
                           Text(
-                            "Sign in to manage your bookings",
+                            "Sign in to manage your bookings".tr,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 13.sp,
@@ -122,8 +110,6 @@ class AuthenticationScreen extends StatelessWidget {
               ],
             ),
           ),
-
-          // ── Bottom form area (white) ──────────────────────────────────────
           Expanded(
             flex: 5,
             child: SingleChildScrollView(
@@ -134,10 +120,8 @@ class AuthenticationScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: 36.h),
-
-                    // Heading
                     Text(
-                      "Welcome back 👋",
+                      "Welcome back 👋".tr,
                       style: TextStyle(
                         fontSize: 22.sp,
                         fontWeight: FontWeight.w700,
@@ -145,44 +129,33 @@ class AuthenticationScreen extends StatelessWidget {
                         letterSpacing: -0.4,
                       ),
                     ),
-
                     SizedBox(height: 6.h),
-
                     Text(
-                      "Enter your email to receive a one-time passcode.",
+                      "Enter your email to receive a one-time passcode.".tr,
                       style: TextStyle(
                         fontSize: 13.sp,
                         color: const Color(0xFF999999),
                         height: 1.5,
                       ),
                     ),
-
                     SizedBox(height: 10.h),
-
-                    // Email label
                     Text(
-                      "Email address",
+                      "Email address".tr,
                       style: TextStyle(
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w600,
                         color: const Color(0xFF444444),
                       ),
                     ),
-
                     SizedBox(height: 8.h),
-
-                    // Email field — unchanged widget
                     Apptextfield.primary(
                       labelText: '',
-                      hintText: 'Enter your email',
+                      hintText: 'Enter your email'.tr,
                       controller: _authController.emailController,
                       label: '',
                       keyType: TextInputType.emailAddress,
                     ),
-
                     SizedBox(height: 15.h),
-
-                    // Send OTP button — unchanged logic
                     Obx(
                       () => _authController.isLoading.value
                           ? Center(
@@ -198,7 +171,7 @@ class AuthenticationScreen extends StatelessWidget {
                               ),
                             )
                           : AppButton(
-                              text: "Send OTP",
+                              text: "Send OTP".tr,
                               onPressed: _authController.handleSendOTP,
                               width: double.infinity,
                               height: 54.h,
@@ -206,10 +179,7 @@ class AuthenticationScreen extends StatelessWidget {
                               fontWeight: FontWeight.w600,
                             ),
                     ),
-
                     SizedBox(height: 28.h),
-
-                    // Divider
                     Row(
                       children: [
                         const Expanded(
@@ -217,7 +187,7 @@ class AuthenticationScreen extends StatelessWidget {
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 10.w),
                           child: Text(
-                            "secure & private",
+                            "secure & private".tr,
                             style: TextStyle(
                               fontSize: 11.sp,
                               color: const Color(0xFFCCCCCC),
@@ -228,25 +198,11 @@ class AuthenticationScreen extends StatelessWidget {
                             child: Divider(color: Color(0xFFEEEEEE))),
                       ],
                     ),
-
                     SizedBox(height: 10.h),
-
-                    // // Trust badges
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    //   children: [
-                    //     _trustBadge(Icons.lock_outline_rounded, "OTP Secured"),
-                    //     _trustBadge(Icons.verified_user_outlined, "Verified"),
-                    //     _trustBadge(Icons.privacy_tip_outlined, "Private"),
-                    //   ],
-                    // ),
-
-                    // SizedBox(height: 28.h),
-
-                    // Terms
                     Center(
                       child: Text(
-                        "By continuing you agree to our\nTerms of Service & Privacy Policy",
+                        "By continuing you agree to our\nTerms of Service & Privacy Policy"
+                            .tr,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 10.sp,
@@ -255,7 +211,6 @@ class AuthenticationScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-
                     SizedBox(height: 16.h),
                   ],
                 ),
@@ -281,7 +236,7 @@ class AuthenticationScreen extends StatelessWidget {
         ),
         SizedBox(height: 5.h),
         Text(
-          label,
+          label.tr,
           style: TextStyle(
             fontSize: 10.sp,
             color: const Color(0xFFAAAAAA),

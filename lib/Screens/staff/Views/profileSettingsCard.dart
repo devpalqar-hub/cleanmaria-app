@@ -275,6 +275,7 @@ Widget _buildSettingsOption({
     ),
   );
 }
+
 void _showLanguageDialog(BuildContext context) {
   Get.defaultDialog(
     title: "select language".tr,
@@ -299,6 +300,7 @@ void _showLanguageDialog(BuildContext context) {
     ),
   );
 }
+
 Future<void> changeLanguage(Locale locale) async {
   Get.updateLocale(locale);
 

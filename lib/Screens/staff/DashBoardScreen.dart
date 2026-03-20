@@ -24,12 +24,12 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   final HistoryController hisCtrl = Get.put(HistoryController());
   StaffHomeController sHCtrl = Get.put(StaffHomeController());
 
-  String? userId; // will store user_id from SharedPreferences
+  String? userId;
 
   @override
   void initState() {
     super.initState();
-    _loadUserId(); // load user_id on init
+    _loadUserId();
   }
 
   Future<void> _loadUserId() async {
@@ -38,7 +38,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
       userId = prefs.getString("user_id") ?? "unknown";
     });
     print("Loaded user_id: $userId");
-    // Optionally, you can fetch schedules or other data using this userId
     sHCtrl.fetchShdedule(userId: userId);
   }
 
@@ -51,7 +50,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
         backgroundColor: Colors.white,
         body: GetBuilder<StaffHomeController>(builder: (_) {
           return Container(
-            //  padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -63,7 +61,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         appText.primaryText(
-                          text: "Welcome back",
+                          text: "Welcome back".tr,
                           fontSize: 15.sp,
                           fontWeight: FontWeight.w500,
                         ),
