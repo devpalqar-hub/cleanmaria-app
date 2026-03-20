@@ -20,7 +20,7 @@ class ClientBookingDetailsScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text(
-          "Booking Details",
+          "Booking Details".tr,
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
         ),
         actions: [
@@ -64,11 +64,11 @@ class ClientBookingDetailsScreen extends StatelessWidget {
                                 ? null
                                 : () {
                                     Get.defaultDialog(
-                                      title: 'Cancel booking',
+                                      title: 'Cancel booking'.tr,
                                       middleText:
-                                          'Are you sure you want to cancel this booking?',
-                                      textCancel: 'No',
-                                      textConfirm: 'Yes, cancel',
+                                          'Are you sure you want to cancel this booking?'.tr,
+                                      textCancel: 'No'.tr,
+                                      textConfirm: 'Yes, cancel'.tr,
                                       confirmTextColor: Colors.white,
                                       onConfirm: () async {
                                         Get.back();
@@ -225,13 +225,13 @@ class ClientBookingDetailsScreen extends StatelessWidget {
                           height: 30,
                         ),
                         _itemRow(
-                            "Start Date",
+                            "Start Date".tr,
                             DateFormat(
                               "yyyy-MM-dd",
                             ).format(DateTime.parse(__.bookingDetail!.date!!))),
 
                         _itemRow(
-                            "Service Day",
+                            "Service Day".tr,
                             DateFormat(
                               "EEEE",
                             )
@@ -239,36 +239,36 @@ class ClientBookingDetailsScreen extends StatelessWidget {
                                     DateTime.parse(__.bookingDetail!.date!!))
                                 .toUpperCase()),
                         _itemRow(
-                            "Service Time",
+                            "Service Time".tr,
                             DateFormat(
                               "hh:mm a",
                             ).format(DateTime.parse(__.bookingDetail!.date!!))),
                         _itemRow(
                             "Service Type", __.bookingDetail!.service!.name!!),
 
-                        _itemRow("Recurring Type",
+                        _itemRow("Recurring Type".tr,
                             __.bookingDetail!.reccuingType ?? "One Time"),
-                        _itemRow("No of Rooms",
+                        _itemRow("No of Rooms".tr,
                             (__.bookingDetail!.noOfRooms ?? 0).toString()),
-                        _itemRow("No of Bathrooms",
+                        _itemRow("No of Bathrooms".tr,
                             (__.bookingDetail!.noOfBathRooms ?? 0).toString()),
                         _itemRow(
-                            "Total Area",
+                            "Total Area".tr,
                             (__.bookingDetail!.areaSize ?? 0).toString() +
                                 " Sqft"),
 
-                        _itemRow("Address",
+                        _itemRow("Address".tr,
                             "   ${__.bookingDetail!.bookingAddress!.address!.line1!} , ${__.bookingDetail!.bookingAddress!.address!.city!} - ${__.bookingDetail!.bookingAddress!.address!.state ?? ""}  ${__.bookingDetail!.bookingAddress!.address!.zip!}"),
                         _itemRow(
-                            "Add Ons",
+                            "Add Ons".tr,
                             (__.bookingDetail!.isEco ?? false)
-                                ? "Eco Cleaning"
+                                ? "Eco Cleaning".tr
                                 : (__.bookingDetail!.materialProvided ?? false)
-                                    ? "Material Provided"
-                                    : "No Add ons",
+                                    ? "Material Provided".tr
+                                    : "No Add ons".tr,
                             color: Colors.green),
                         _itemRow(
-                          "Service Price",
+                          "Service Price".tr,
                           "\$ " + (__.bookingDetail!.price ?? "--:--"),
                         )
 

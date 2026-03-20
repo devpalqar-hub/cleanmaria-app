@@ -120,7 +120,7 @@ class ScheduleHistoryController extends GetxController {
         log('Fetched ${schedulesData.length} schedules, page $currentPage of $totalPages');
       } else {
         Fluttertoast.showToast(
-          msg: 'Failed to load schedules',
+          msg: 'Failed to load schedules'.tr,
           backgroundColor: Colors.red,
           textColor: Colors.white,
         );
@@ -128,7 +128,7 @@ class ScheduleHistoryController extends GetxController {
       }
     } catch (e) {
       Fluttertoast.showToast(
-        msg: 'Error: ${e.toString()}',
+       msg: '${'Error'.tr}: ${e.toString()}',
         backgroundColor: Colors.red,
         textColor: Colors.white,
       );

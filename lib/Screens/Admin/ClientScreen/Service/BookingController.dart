@@ -33,19 +33,19 @@ class BookingsController extends GetxController {
   String weektoDay(int i) {
     switch (i) {
       case 0:
-        return "Sun";
+        return "Sun".tr;
       case 1:
-        return "Mon";
+        return "Mon".tr;
       case 2:
-        return "Tue";
+        return "Tue".tr;
       case 3:
-        return "Wed";
+        return "Wed".tr;
       case 4:
-        return "Thu";
+        return "Thu".tr;
       case 5:
-        return "Fri";
+        return "Fri".tr;
       case 6:
-        return "Sat";
+        return "Sat".tr;
       default:
         return "";
     }
@@ -91,7 +91,10 @@ class BookingsController extends GetxController {
       }
       target = calculateTargetDate(year, month);
     }
-    return DateFormat("dd MMM yy | E").format(target);
+    return DateFormat(
+      "dd MMM yy | E",
+      Get.locale?.toString(),
+    ).format(target);
   }
 
   Color getStatusColor(String status) {
@@ -148,7 +151,7 @@ class BookingsController extends GetxController {
     final token = prefs.getString("access_token");
 
     if (token == null || token.isEmpty) {
-      errorMessage = 'Access token is missing';
+      errorMessage = 'Access token is missing'.tr;
       // print("[ERROR] cancelBooking failed: token is missing");
       update();
       return false;
@@ -167,20 +170,20 @@ class BookingsController extends GetxController {
       //print('[DEBUG] Cancel Booking Response Body: ${response.body}');
 
       if (response.statusCode == 201) {
-        Fluttertoast.showToast(msg: "Booking cancelled successfully");
+        Fluttertoast.showToast(msg: "Booking cancelled successfully".tr);
         //  print("[DEBUG] Booking cancelled successfully. Refreshing bookings...");
         await fetchBookings(status, type);
         return true;
       } else {
         final msg =
-            jsonDecode(response.body)['message'] ?? "Failed to cancel booking";
+            jsonDecode(response.body)['message'] ?? "Failed to cancel booking".tr;
         Fluttertoast.showToast(msg: msg);
         // print("[ERROR] Cancel booking failed with message: $msg");
         return false;
       }
     } catch (e) {
       // print("[ERROR] Exception while cancelling booking: $e");
-      Fluttertoast.showToast(msg: "Something went wrong");
+      Fluttertoast.showToast(msg: "Something went wrong".tr);
       return false;
     } finally {
       update();
@@ -199,7 +202,7 @@ class BookingsController extends GetxController {
     final token = prefs.getString("access_token");
 
     if (token == null || token.isEmpty) {
-      errorMessage = 'Access token is missing';
+      errorMessage = 'Access token is missing'.tr;
       isLoading = false;
       update();
       print("[fetchBookings] ERROR: Token missing");
@@ -231,7 +234,9 @@ class BookingsController extends GetxController {
       bookings.value =
           data.map((booking) => BookingModel.fromJson(booking)).toList();
     } else {
-      errorMessage = 'Failed to load bookings (${response.statusCode})';
+     errorMessage = 'failed_to_load_bookings'.trParams({
+        'code': response.statusCode.toString(),
+      });
     }
 
     isLoading = false;
@@ -247,7 +252,7 @@ class BookingsController extends GetxController {
     final token = prefs.getString("access_token");
 
     if (token == null || token.isEmpty) {
-      errorMessage = 'Access token is missing';
+      errorMessage = 'Access token is missing'.tr;
       isLoading = false;
       return;
     }

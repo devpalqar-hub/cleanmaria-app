@@ -44,7 +44,7 @@ class _AddPincodeBottomSheetState extends State<AddPincodeBottomSheet> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Add Zipcode',
+                      'Add Zipcode'.tr,
                       style: GoogleFonts.inter(
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
@@ -73,7 +73,7 @@ class _AddPincodeBottomSheetState extends State<AddPincodeBottomSheet> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Zipcode *',
+                      'Zipcode *'.tr,
                       style: GoogleFonts.inter(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -127,7 +127,7 @@ class _AddPincodeBottomSheetState extends State<AddPincodeBottomSheet> {
                             },
                     ),
                     Text(
-                      'Active',
+                      'Active'.tr,
                       style: GoogleFonts.inter(
                         fontSize: 14,
                         color: Colors.black,
@@ -172,7 +172,7 @@ class _AddPincodeBottomSheetState extends State<AddPincodeBottomSheet> {
                             ),
                           )
                         : Text(
-                            'Add Zipcode',
+                            'Add Zipcode'.tr,
                             style: GoogleFonts.inter(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
@@ -202,7 +202,7 @@ class _AddPincodeBottomSheetState extends State<AddPincodeBottomSheet> {
                       ),
                     ),
                     child: Text(
-                      'Cancel',
+                      'Cancel'.tr,
                       style: GoogleFonts.inter(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,

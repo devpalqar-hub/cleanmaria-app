@@ -71,7 +71,7 @@
 //         'totalDuration': totalDuration,
 //       };
 //     } else {
-//       throw Exception('❌ Failed to calculate estimate');
+//       throw Exception('❌ ${'failed_to_calculate_estimate'.tr}');
 //     }
 //   } catch (e) {
 //     print("🔥 calculateEstimate - Error: $e");

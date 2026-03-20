@@ -43,7 +43,7 @@ class RegionController extends GetxController {
       } else {
         print('[FETCH ZONES] Error: ${response.statusCode}');
         Fluttertoast.showToast(
-          msg: 'Failed to load zones',
+          msg: 'Failed to load zones'.tr,
           toastLength: Toast.LENGTH_SHORT,
           backgroundColor: Colors.red.shade400,
           textColor: Colors.white,
@@ -67,7 +67,7 @@ class RegionController extends GetxController {
   Future<void> createRegion() async {
     if (nameController.text.isEmpty || codeController.text.isEmpty) {
       Fluttertoast.showToast(
-        msg: 'Please fill all fields',
+        msg: 'Please fill all fields'.tr,
         toastLength: Toast.LENGTH_SHORT,
         backgroundColor: Colors.red.shade300,
       );
@@ -114,7 +114,7 @@ class RegionController extends GetxController {
         final responseData = jsonDecode(response.body);
 
         Fluttertoast.showToast(
-          msg: 'Region created successfully',
+          msg: 'Region created successfully'.tr,
           toastLength: Toast.LENGTH_SHORT,
           backgroundColor: Colors.green.shade400,
           textColor: Colors.white,

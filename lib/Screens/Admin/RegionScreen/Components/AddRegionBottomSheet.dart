@@ -36,7 +36,7 @@ class AddRegionBottomSheet extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Create New Region',
+                      'Create New Region'.tr,
                       style: GoogleFonts.inter(
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
@@ -67,7 +67,7 @@ class AddRegionBottomSheet extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Region Name *',
+                      'Region Name *'.tr,
                       style: GoogleFonts.inter(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -79,7 +79,7 @@ class AddRegionBottomSheet extends StatelessWidget {
                       controller: controller.nameController,
                       enabled: !controller.isLoading,
                       decoration: InputDecoration(
-                        hintText: 'e.g., Downtown Manhattan',
+                        hintText: 'e.g., Downtown Manhattan'.tr,
                         hintStyle: GoogleFonts.inter(
                           color: Colors.grey.shade400,
                           fontSize: 14,
@@ -124,7 +124,7 @@ class AddRegionBottomSheet extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Region Code *',
+                      'Region Code *'.tr,
                       style: GoogleFonts.inter(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -204,7 +204,7 @@ class AddRegionBottomSheet extends StatelessWidget {
                             ),
                           )
                         : Text(
-                            'Create Region',
+                            'Create Region'.tr,
                             style: GoogleFonts.inter(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
@@ -237,7 +237,7 @@ class AddRegionBottomSheet extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      'Cancel',
+                      'Cancel'.tr,
                       style: GoogleFonts.inter(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,

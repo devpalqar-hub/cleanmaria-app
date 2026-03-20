@@ -7,12 +7,13 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'translations/translations.dart';
 
 import 'Screens/AuthenticationScreen/AutheticationScreen.dart';
 import 'Screens/Admin/HomeScreen/HomeScreen.dart';
 import 'Screens/staff/DashBoardScreen.dart';
 
-String baseUrl = (true)
+String baseUrl = (false)
     ? "https://app.cleanmaria.com/api"
     : "https://staging.cleanmaria.com/api";
 
@@ -57,18 +58,38 @@ void main() async {
 class CleanbyMaria extends StatelessWidget {
   const CleanbyMaria({super.key});
 
+  Future<Locale> getSavedLocale() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? lang = prefs.getString('languageCode');
+    String? country = prefs.getString('countryCode');
+
+    if (lang != null && country != null) {
+      return Locale(lang, country);
+    }
+    return const Locale('en', 'US');
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      designSize: const Size(390, 850),
-      builder: (context, child) => GetMaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          fontFamily: 'Inter',
-        ),
-        home: SplashScreen(),
-        //const SplashScreen(),
-      ),
+    return FutureBuilder<Locale>(
+      future: getSavedLocale(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const SizedBox();
+        }
+
+        return ScreenUtilInit(
+          designSize: const Size(390, 850),
+          builder: (context, child) => GetMaterialApp(
+            debugShowCheckedModeBanner: false,
+            translations: AppTranslations(),
+            locale: snapshot.data, // ✅ dynamic
+            fallbackLocale: const Locale('en', 'US'),
+            theme: ThemeData(fontFamily: 'Inter'),
+            home: SplashScreen(),
+          ),
+        );
+      },
     );
   }
 }

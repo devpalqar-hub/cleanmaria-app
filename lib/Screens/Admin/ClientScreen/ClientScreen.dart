@@ -41,7 +41,7 @@ class _ClientScreenState extends State<ClientScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         title: Text(
-          "Bookings",
+          "Bookings".tr,
           style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
         ),
         actions: [
@@ -68,7 +68,7 @@ class _ClientScreenState extends State<ClientScreen> {
               controller: searchController,
               onChanged: (_) => setState(() {}),
               decoration: InputDecoration(
-                hintText: "Search...",
+                hintText: "Search...".tr,
                 filled: true,
                 fillColor: Colors.grey.shade100,
                 prefixIcon: const Icon(Icons.search),
@@ -87,12 +87,12 @@ class _ClientScreenState extends State<ClientScreen> {
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: Row(
               children: [
-                _segment("SUBSCRIPTION", selectedMenu == 0, () {
+                _segment("SUBSCRIPTION".tr, selectedMenu == 0, () {
                   setState(() => selectedMenu = 0);
                   bookingsController.fetchBookings("booked", "recurring");
                 }),
                 SizedBox(width: 20.w),
-                _segment("ONE-TIME", selectedMenu == 1, () {
+                _segment("ONE-TIME".tr, selectedMenu == 1, () {
                   setState(() => selectedMenu = 1);
                   bookingsController.fetchBookings("booked", "one_time");
                 }),
@@ -193,7 +193,7 @@ class _BookingListTile extends StatelessWidget {
             .map((e) => e[0])
             .take(2)
             .join()
-        : "NA";
+        : "NA".tr;
 
     return InkWell(
       onTap: onTap,
@@ -257,7 +257,7 @@ class _BookingListTile extends StatelessWidget {
                 ),
                 SizedBox(height: 4.h),
                 Text(
-                  booking.reccuingType ?? "ONE-TIME",
+                  booking.reccuingType ?? "ONE-TIME".tr,
                   style: TextStyle(
                     fontSize: 10.sp,
                     color: Colors.grey,

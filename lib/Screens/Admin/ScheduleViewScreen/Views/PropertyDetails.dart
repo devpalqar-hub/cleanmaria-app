@@ -1,6 +1,7 @@
 import 'package:cleanby_maria/Screens/Admin/ClientScreen/Models/BookingDetailModel.dart';
 import 'package:cleanby_maria/Screens/Admin/ScheduleViewScreen/ScheduleDetailsScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:get/utils.dart';
 
 class PropertyDetailsSection extends StatelessWidget {
   BookingDetailModel property;
@@ -52,19 +53,19 @@ class PropertyDetailsSection extends StatelessWidget {
               _PropertyStat(
                 icon: Icons.bed_outlined,
                 value: '${property.noOfRooms}',
-                label: 'Rooms',
+                label: 'Rooms'.tr,
               ),
               VerticalDivider(),
               _PropertyStat(
                 icon: Icons.bathtub_outlined,
                 value: '${property.noOfBathRooms}',
-                label: 'Bathrooms',
+                label: 'Bathrooms'.tr,
               ),
               VerticalDivider(),
               _PropertyStat(
                 icon: Icons.square_foot_outlined,
                 value: '${property.areaSize} ft²',
-                label: 'Total Area',
+                label: 'Total Area'.tr,
               ),
             ],
           ),

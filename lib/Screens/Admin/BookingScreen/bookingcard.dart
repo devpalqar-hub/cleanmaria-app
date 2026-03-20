@@ -83,8 +83,8 @@
 //             Row(
 //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
 //               children: [
-//                 _infoBox("Price", "\$${booking['price']}"),
-//                 _infoBox("Payment", booking['paymentMethod'] ?? 'offline'),
+//                 _infoBox('price'.tr, "\$${booking['price']}"),
+//                 _infoBox('payment'.tr, booking['paymentMethod'] ?? 'offline'.tr),
 //               ],
 //             ),
 //           ],

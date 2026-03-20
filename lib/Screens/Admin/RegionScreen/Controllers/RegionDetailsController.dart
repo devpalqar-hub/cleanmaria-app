@@ -56,7 +56,7 @@ class RegionDetailsController extends GetxController {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         Fluttertoast.showToast(
-          msg: 'Zone updated successfully',
+          msg: 'Zone updated successfully'.tr,
           backgroundColor: Colors.green.shade400,
           textColor: Colors.white,
         );
@@ -66,7 +66,7 @@ class RegionDetailsController extends GetxController {
       } else {
         final errorData = jsonDecode(response.body);
         Fluttertoast.showToast(
-          msg: errorData['message'] ?? 'Failed to update zone',
+          msg: errorData['message'] ?? 'Failed to update zone'.tr,
           backgroundColor: Colors.red.shade400,
           textColor: Colors.white,
         );
@@ -117,7 +117,7 @@ class RegionDetailsController extends GetxController {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         Fluttertoast.showToast(
-          msg: 'Staff assigned successfully',
+          msg: 'Staff assigned successfully'.tr,
           backgroundColor: Colors.green.shade400,
           textColor: Colors.white,
         );
@@ -130,7 +130,7 @@ class RegionDetailsController extends GetxController {
       } else {
         final errorData = jsonDecode(response.body);
         Fluttertoast.showToast(
-          msg: errorData['message'] ?? 'Failed to assign staff',
+          msg: errorData['message'] ?? 'Failed to assign staff'.tr,
           backgroundColor: Colors.red.shade400,
           textColor: Colors.white,
         );
@@ -154,7 +154,7 @@ class RegionDetailsController extends GetxController {
   Future<bool> assignPincode(String zoneId, String code, bool isActive) async {
     if (code.isEmpty) {
       Fluttertoast.showToast(
-        msg: 'Please enter a pincode',
+        msg: 'Please enter a pincode'.tr,
         backgroundColor: Colors.red.shade400,
         textColor: Colors.white,
       );
@@ -191,7 +191,7 @@ class RegionDetailsController extends GetxController {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         Fluttertoast.showToast(
-          msg: 'Pincode assigned successfully',
+          msg: 'Pincode assigned successfully'.tr,
           backgroundColor: Colors.green.shade400,
           textColor: Colors.white,
         );
@@ -202,7 +202,7 @@ class RegionDetailsController extends GetxController {
       } else {
         final errorData = jsonDecode(response.body);
         Fluttertoast.showToast(
-          msg: errorData['message'] ?? 'Failed to assign pincode',
+          msg: errorData['message'] ?? 'Failed to assign pincode'.tr,
           backgroundColor: Colors.red.shade400,
           textColor: Colors.white,
         );
@@ -248,7 +248,7 @@ class RegionDetailsController extends GetxController {
           response.statusCode == 201 ||
           response.statusCode == 204) {
         Fluttertoast.showToast(
-          msg: 'Pincode deleted successfully',
+          msg: 'Pincode deleted successfully'.tr,
           backgroundColor: Colors.green.shade400,
           textColor: Colors.white,
         );
@@ -258,7 +258,7 @@ class RegionDetailsController extends GetxController {
       } else {
         final errorData = jsonDecode(response.body);
         Fluttertoast.showToast(
-          msg: errorData['message'] ?? 'Failed to delete pincode',
+          msg: errorData['message'] ?? 'Failed to delete pincode'.tr,
           backgroundColor: Colors.red.shade400,
           textColor: Colors.white,
         );
@@ -304,7 +304,7 @@ class RegionDetailsController extends GetxController {
           response.statusCode == 201 ||
           response.statusCode == 204) {
         Fluttertoast.showToast(
-          msg: 'Zone deleted successfully',
+          msg: 'Zone deleted successfully'.tr,
           backgroundColor: Colors.green.shade400,
           textColor: Colors.white,
         );
@@ -314,7 +314,7 @@ class RegionDetailsController extends GetxController {
       } else {
         final errorData = jsonDecode(response.body);
         Fluttertoast.showToast(
-          msg: errorData['message'] ?? 'Failed to delete zone',
+          msg: errorData['message'] ?? 'Failed to delete zone'.tr,
           backgroundColor: Colors.red.shade400,
           textColor: Colors.white,
         );
@@ -367,7 +367,7 @@ class RegionDetailsController extends GetxController {
       } else {
         final errorData = jsonDecode(response.body);
         Fluttertoast.showToast(
-          msg: errorData['message'] ?? 'Failed to fetch staff',
+          msg: errorData['message'] ?? 'Failed to fetch staff'.tr,
           backgroundColor: Colors.red.shade400,
           textColor: Colors.white,
         );
@@ -422,7 +422,7 @@ class RegionDetailsController extends GetxController {
       } else {
         final errorData = jsonDecode(response.body);
         Fluttertoast.showToast(
-          msg: errorData['message'] ?? 'Failed to fetch zone details',
+          msg: errorData['message'] ?? 'Failed to fetch zone details'.tr,
           backgroundColor: Colors.red.shade400,
           textColor: Colors.white,
         );

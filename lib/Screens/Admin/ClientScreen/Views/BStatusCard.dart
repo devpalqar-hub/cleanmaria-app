@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/get_instance.dart';
+import 'package:get/get_utils/src/extensions/export.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BStatusCard extends StatelessWidget {
@@ -16,8 +17,8 @@ class BStatusCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final name = booking.customer?.name ?? 'Unknown';
-    final status = booking.status ?? 'N/A';
+    final name = booking.customer?.name ?? 'Unknown'.tr;
+    final status = booking.status ?? 'N/A'.tr;
 
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
@@ -49,7 +50,7 @@ class BStatusCard extends StatelessWidget {
                     ),
                     SizedBox(width: 5.w),
                     appText.primaryText(
-                      text: booking.reccuingType ?? "One Time",
+                      text: (booking.reccuingType ?? 'one_time').tr,
                       fontSize: 11.sp,
                       fontWeight: FontWeight.w500,
                       color: const Color(0xFF19A4C6),

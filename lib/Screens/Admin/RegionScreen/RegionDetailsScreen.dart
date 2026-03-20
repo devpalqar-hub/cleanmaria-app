@@ -51,7 +51,7 @@ class RegionDetailsScreen extends StatelessWidget {
               ),
             ),
             title: Text(
-              "Zone Details",
+              "Zone Details".tr,
               style: GoogleFonts.inter(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -77,7 +77,8 @@ class RegionDetailsScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Code: ${zoneData['code'] ?? zone.code}',
+  '${'Code:'.tr} ${zoneData['code'] ?? zone.code}',
+
                   style: GoogleFonts.inter(
                     fontSize: 12,
                     color: Colors.grey,
@@ -89,7 +90,7 @@ class RegionDetailsScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Zipcodes",
+                      "Zipcodes".tr,
                       style: GoogleFonts.inter(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -119,7 +120,7 @@ class RegionDetailsScreen extends StatelessWidget {
                           Icon(Icons.add, size: 16),
                           const SizedBox(width: 4),
                           Text(
-                            "Add",
+                            "Add".tr,
                             style: GoogleFonts.inter(
                               fontSize: 12,
                               fontWeight: FontWeight.w500,
@@ -148,7 +149,7 @@ class RegionDetailsScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: Text(
-                      "No zipcode available",
+                      "No zipcode available".tr,
                       style: GoogleFonts.inter(
                         fontSize: 12,
                         color: Colors.grey,
@@ -161,7 +162,7 @@ class RegionDetailsScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Staff",
+                      "Staff".tr,
                       style: GoogleFonts.inter(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -196,7 +197,7 @@ class RegionDetailsScreen extends StatelessWidget {
                           Icon(Icons.add, size: 16),
                           const SizedBox(width: 4),
                           Text(
-                            "Add",
+                            "Add".tr,
                             style: GoogleFonts.inter(
                               fontSize: 12,
                               fontWeight: FontWeight.w500,
@@ -222,7 +223,7 @@ class RegionDetailsScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: Text(
-                      "No staff assigned",
+                      "No staff assigned".tr,
                       style: GoogleFonts.inter(
                         fontSize: 12,
                         color: Colors.grey,
@@ -232,7 +233,7 @@ class RegionDetailsScreen extends StatelessWidget {
                 const SizedBox(height: 24),
                 // Bookings Count
                 Text(
-                  "Bookings: ${zoneData["_count"]?['bookings'] ?? zone.count.bookings}",
+             '${'Bookings:'.tr} ${zoneData["_count"]?['bookings'] ?? zone.count.bookings}',
                   style: GoogleFonts.inter(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
@@ -303,14 +304,14 @@ class RegionDetailsScreen extends StatelessWidget {
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         title: Text(
-          "Delete Zipcode?",
+          "Delete Zipcode?".tr,
           style: GoogleFonts.inter(
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
         ),
         content: Text(
-          "Are you sure you want to delete zipcode $zipcode from this zone?",
+         "${'Are you sure you want to delete zipcode'.tr} $zipcode ${'from this zone?'.tr}",
           style: GoogleFonts.inter(
             fontSize: 12,
             color: Colors.grey.shade700,
@@ -320,7 +321,7 @@ class RegionDetailsScreen extends StatelessWidget {
           TextButton(
             onPressed: () => Navigator.pop(ctx),
             child: Text(
-              "Cancel",
+              "Cancel".tr,
               style: GoogleFonts.inter(
                 color: Colors.grey.shade700,
                 fontWeight: FontWeight.w500,
@@ -333,7 +334,7 @@ class RegionDetailsScreen extends StatelessWidget {
               await ctrl.deletePincode(zipcode, zoneId);
             },
             child: Text(
-              "Delete",
+              "Delete".tr,
               style: GoogleFonts.inter(
                 color: Colors.red,
                 fontWeight: FontWeight.w600,
@@ -357,7 +358,7 @@ class RegionDetailsScreen extends StatelessWidget {
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         title: Text(
-          isActive ? "Disable Zone?" : "Enable Zone?",
+          isActive ? "Disable Zone?".tr : "Enable Zone?".tr,
           style: GoogleFonts.inter(
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -365,8 +366,8 @@ class RegionDetailsScreen extends StatelessWidget {
         ),
         content: Text(
           isActive
-              ? "This zone will be disabled and no longer available for new bookings. You can enable it later."
-              : "This zone will be enabled and available for new bookings.",
+              ? "This zone will be disabled and no longer available for new bookings. You can enable it later.".tr
+              : "This zone will be enabled and available for new bookings.".tr,
           style: GoogleFonts.inter(
             fontSize: 12,
             color: Colors.grey.shade700,
@@ -376,7 +377,7 @@ class RegionDetailsScreen extends StatelessWidget {
           TextButton(
             onPressed: () => Navigator.pop(ctx),
             child: Text(
-              "Cancel",
+              "Cancel".tr,
               style: GoogleFonts.inter(
                 color: Colors.grey.shade700,
                 fontWeight: FontWeight.w500,
@@ -389,7 +390,7 @@ class RegionDetailsScreen extends StatelessWidget {
               await ctrl.updateZone(zoneId, zoneName, !isActive);
             },
             child: Text(
-              isActive ? "Disable" : "Enable",
+              isActive ? "Disable".tr : "Enable".tr,
               style: GoogleFonts.inter(
                 color: isActive ? Colors.red : Colors.green,
                 fontWeight: FontWeight.w600,

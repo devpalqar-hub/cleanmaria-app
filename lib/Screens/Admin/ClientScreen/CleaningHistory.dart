@@ -43,7 +43,7 @@ class _CleaningHistoryState extends State<CleaningHistory> {
             onPressed: () => Navigator.pop(context),
           ),
           title: appText.primaryText(
-              text: "Cleaning History",
+              text: "Cleaning History".tr,
               fontSize: 18.sp,
               fontWeight: FontWeight.w600),
         ),
@@ -91,7 +91,7 @@ class _CleaningHistoryState extends State<CleaningHistory> {
                       children: [
                         for (var data in ctrl.history)
                           StatusCard(
-                              status: data.status ?? "Unknown",
+                              status: data.status ?? "Unknown".tr,
                               color: ctrl.getStatusColor(data.status!),
                               customerName: data.booking!.customer!.name!,
                               time:

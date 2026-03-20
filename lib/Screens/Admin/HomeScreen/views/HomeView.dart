@@ -57,7 +57,7 @@ class _HomeContentState extends State<HomeContent> {
                     OverViewCard(),
                     SizedBox(height: 20.h),
                     appText.primaryText(
-                      text: "Performance Analysis",
+                      text: "Performance Analysis".tr,
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
                     ),
@@ -153,9 +153,9 @@ class _HomeContentState extends State<HomeContent> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        _buildDateInput("From date", hCtrl.fromDateController),
+        _buildDateInput("From date".tr, hCtrl.fromDateController),
         SizedBox(width: 15.w),
-        _buildDateInput("To date", hCtrl.toDateController),
+        _buildDateInput("To date".tr, hCtrl.toDateController),
         SizedBox(width: 12.w),
         GestureDetector(
           onTap: () {
@@ -174,7 +174,7 @@ class _HomeContentState extends State<HomeContent> {
               color: const Color(0xFF17A5C6),
             ),
             child: Center(
-              child: Text("Today",
+              child: Text("Today".tr,
                   style: TextStyle(color: Colors.white, fontSize: 12.sp)),
             ),
           ),
@@ -249,11 +249,11 @@ class _HomeContentState extends State<HomeContent> {
               Row(
                 children: [
                   Text(
-                    "Settings",
+                    "Settings".tr,
                     style: TextStyle(
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w600,
-                      fontFamily: "NunitoSans",
+                      fontFamily: "NunitoSans".tr,
                       color: Colors.black,
                     ),
                   ),
@@ -306,7 +306,7 @@ class _HomeContentState extends State<HomeContent> {
                     padding: EdgeInsets.symmetric(vertical: 14.h),
                   ),
                   child: Text(
-                    "Logout",
+                    "Logout".tr,
                     style: TextStyle(
                       fontSize: 18.sp,
                       fontWeight: FontWeight.w600,

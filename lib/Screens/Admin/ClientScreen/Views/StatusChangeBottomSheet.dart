@@ -48,40 +48,40 @@ class _BookingStatusBottomSheetState extends State<BookingStatusBottomSheet> {
     _statusOptions = [
       if (!widget.isStaff)
         {
-          'status': 'scheduled',
+          'status': 'scheduled'.tr,
           'icon': Icons.event_note,
           'color': Colors.blueAccent,
         },
       {
-        'status': 'missed',
+        'status': 'missed'.tr,
         'icon': Icons.event_busy,
         'color': Colors.red,
       },
       {
-        'status': 'canceled',
+        'status': 'canceled'.tr,
         'icon': Icons.cancel,
         'color': Colors.red,
       },
       if (!widget.isStaff)
         {
-          'status': 'refunded',
+          'status': 'refunded'.tr,
           'icon': Icons.money_off,
           'color': Colors.amber,
         },
       {
-        'status': 'completed',
+        'status': 'completed'.tr,
         'icon': Icons.event_available_rounded,
         'color': Colors.green,
       },
       if (!widget.isStaff)
         {
-          'status': 'payment success',
+          'status': 'payment success'.tr,
           'icon': Icons.paid,
           'color': Colors.green,
         },
       if (!widget.isStaff)
         {
-          'status': 'payment failed',
+          'status': 'payment failed'.tr,
           'icon': Icons.cancel,
           'color': Colors.red,
         },
@@ -117,7 +117,7 @@ class _BookingStatusBottomSheetState extends State<BookingStatusBottomSheet> {
               ),
             ),
 
-            Text('Change  Status',
+            Text('Change  Status'.tr,
                 style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600)),
 
             const SizedBox(height: 24),
@@ -155,7 +155,7 @@ class _BookingStatusBottomSheetState extends State<BookingStatusBottomSheet> {
                   widget.onStatusChanged(selectedStatus);
                   Navigator.pop(context);
                 } else {
-                  Fluttertoast.showToast(msg: 'Update Failed');
+                  Fluttertoast.showToast(msg: 'Update Failed'.tr);
                 }
               },
               style: ElevatedButton.styleFrom(
@@ -169,7 +169,7 @@ class _BookingStatusBottomSheetState extends State<BookingStatusBottomSheet> {
                   ? LoadingAnimationWidget.staggeredDotsWave(
                       color: Colors.blue, size: 25)
                   : Text(
-                      'Save Changes',
+                      'Save Changes'.tr,
                       style: TextStyle(fontSize: 15.sp, color: Colors.white),
                     ),
             ),

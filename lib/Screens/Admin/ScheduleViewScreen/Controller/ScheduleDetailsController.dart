@@ -65,7 +65,7 @@ class ScheduleDetailsController extends GetxController {
       return date + " ( ${bookingDetail!.reccuingType!.capitalize!} )";
     } catch (e) {
       if (bookingDetail!.nextSchedule == null) {
-        return "Completed";
+        return "Completed".tr;
       } else {
         return "${DateFormat("hh:mm").format(DateTime.parse(bookingDetail!.nextSchedule!.startTime!))} - ${DateFormat("hh:mm").format(DateTime.parse(bookingDetail!.nextSchedule!.endTime!))} ";
       }
@@ -76,7 +76,7 @@ class ScheduleDetailsController extends GetxController {
   String formatDuration(Duration duration) {
     // Handle negative duration
     if (duration.isNegative) {
-      return "Completed";
+      return "Completed".tr;
     }
 
     if (duration.inDays > 0) {
@@ -148,10 +148,10 @@ class ScheduleDetailsController extends GetxController {
       }
       isLoading = false;
       update();
-      Fluttertoast.showToast(msg: "Booking canceled successfully");
+      Fluttertoast.showToast(msg: "Booking canceled successfully".tr);
       return true;
     } else {
-      Fluttertoast.showToast(msg: "Failed to cancel booking");
+      Fluttertoast.showToast(msg: "Failed to cancel booking".tr);
     }
 
     log('Cancel Booking Response Body: ${cancelResponse.body}');
@@ -180,10 +180,10 @@ class ScheduleDetailsController extends GetxController {
       }
       isLoading = false;
       update();
-      Fluttertoast.showToast(msg: "Price updated successfully");
+      Fluttertoast.showToast(msg: "Price updated successfully".tr);
       return true;
     } else {
-      Fluttertoast.showToast(msg: "Failed to update price");
+      Fluttertoast.showToast(msg: "Failed to update price".tr);
     }
 
     log('Update Price Response Body: ${response.body}');
@@ -209,15 +209,16 @@ class ScheduleDetailsController extends GetxController {
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       final responseData = json.decode(response.body);
-      final message =
+     final message =
           responseData['message'] ?? 'Payment method updated successfully';
-      Fluttertoast.showToast(msg: message);
+      Fluttertoast.showToast(msg: message.tr);
+      ;
 
       // Reload booking details
       await fetchBookingDetails(bookingId);
       return true;
     } else {
-      Fluttertoast.showToast(msg: "Failed to update payment method");
+      Fluttertoast.showToast(msg: "Failed to update payment method".tr);
     }
 
     log('Update Payment Method Response Body: ${response.body}');

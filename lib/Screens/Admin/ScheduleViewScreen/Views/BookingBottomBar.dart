@@ -83,20 +83,20 @@ class BottomActionBar extends StatelessWidget {
                   return ListTile(
                     contentPadding: EdgeInsets.zero,
                     leading: Icon(
-                      value == 'scheduled'
+                      value == 'scheduled'.tr
                           ? Icons.schedule_rounded
-                          : value == 'in_progress'
+                          : value == 'in_progress'.tr
                               ? Icons.autorenew_rounded
-                              : value == 'completed'
+                              : value == 'completed'.tr
                                   ? Icons.check_circle_outline_rounded
-                                  : value == 'canceled'
+                                  : value == 'canceled'.tr
                                       ? Icons.cancel_outlined
-                                      : value == 'payment_success'
+                                      : value == 'payment_success'.tr
                                           ? Icons.payment_rounded
                                           : Icons.info_outline_rounded,
                       color: (value == 'canceled' || value == 'payment_failed')
                           ? AppColors.red
-                          : value == 'completed'
+                          : value == 'completed'.tr
                               ? Colors.green
                               : AppColors.teal,
                     ),
@@ -112,7 +112,7 @@ class BottomActionBar extends StatelessWidget {
                             schedule!.id!, value);
                         if (success) {
                           Fluttertoast.showToast(
-                            msg: 'Status updated to $display',
+                           msg: '${'Status updated to'.tr} $display',
                             toastLength: Toast.LENGTH_SHORT,
                             gravity: ToastGravity.BOTTOM,
                             backgroundColor: Colors.green,
@@ -120,7 +120,7 @@ class BottomActionBar extends StatelessWidget {
                           );
                         } else {
                           Fluttertoast.showToast(
-                            msg: 'Failed to update status',
+                            msg: 'Failed to update status'.tr,
                             toastLength: Toast.LENGTH_SHORT,
                             gravity: ToastGravity.BOTTOM,
                             backgroundColor: AppColors.red,

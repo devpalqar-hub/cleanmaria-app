@@ -110,12 +110,12 @@ class AuthenticationController extends GetxController {
     try {
       final response = await http.post(
         Uri.parse(otpUrl),
-        body: jsonEncode({"email": email}),
+        body: jsonEncode({"email": email.trim()}),
         headers: {
           "Content-Type": "application/json",
         },
       );
-
+      print(email);
       print("Status code: ${response.statusCode}");
       print("Raw response body: ${response.body}");
       final Map<String, dynamic> data = json.decode(response.body);

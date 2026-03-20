@@ -87,10 +87,10 @@ class RegionScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 6),
-            Text(
-              "${zone.count.pincodes} zipcodes · "
-              "${zone.count.staff} staff · "
-              "${zone.count.bookings} bookings",
+           Text(
+              "${zone.count.pincodes} ${'zipcodes'.tr} · "
+              "${zone.count.staff} ${'staff'.tr} · "
+              "${zone.count.bookings} ${'bookings'.tr}",
               style: const TextStyle(
                 fontSize: 13,
                 color: Colors.grey,
@@ -155,7 +155,7 @@ class RegionScreen extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 16),
                                 Text(
-                                  'No regions yet',
+                                  'No regions yet'.tr,
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
@@ -164,7 +164,7 @@ class RegionScreen extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
-                                  'Tap the + button to create your first region',
+                                  'Tap the + button to create your first region'.tr,
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: Colors.grey.shade400,

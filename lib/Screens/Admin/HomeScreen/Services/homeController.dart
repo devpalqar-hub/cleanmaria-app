@@ -110,7 +110,7 @@ class HomeController extends GetxController {
         totalEarnings = (summaryData['totalEarnings'] ?? 0).toDouble();
         totalStaff = summaryData['totalStaff'] ?? 0;
       } else if (response.statusCode == 401) {
-        Fluttertoast.showToast(msg: "Logout Successful");
+        Fluttertoast.showToast(msg: "Logout Successful".tr);
         prefs.setString("LOGIN", "OUT");
         Get.offAll(() => AuthenticationScreen(),
             transition: Transition.rightToLeft);
@@ -191,11 +191,11 @@ class HomeController extends GetxController {
     DateTime today = DateTime.now();
     DateTime toDate = today;
 
-    if (selectedOption == "Last Week") {
+    if (selectedOption == "Last Week".tr) {
       toDate = today.subtract(const Duration(days: 7));
-    } else if (selectedOption == "Last Month") {
+    } else if (selectedOption == "Last Month".tr) {
       toDate = today.subtract(const Duration(days: 30));
-    } else if (selectedOption == "Last Year") {
+    } else if (selectedOption == "Last Year".tr) {
       toDate = today.subtract(const Duration(days: 365));
     }
 
@@ -234,8 +234,8 @@ class HomeController extends GetxController {
 
   Future<void> loadUser() async {
     final prefs = await SharedPreferences.getInstance();
-    userName = prefs.getString("user_name") ?? "name";
-    userEmail = prefs.getString("email") ?? "email";
+    userName = prefs.getString("user_name") ?? "name".tr;
+    userEmail = prefs.getString("email") ?? "email".tr;
     update();
     setDateRangeFromDropdown(filterRange);
   }

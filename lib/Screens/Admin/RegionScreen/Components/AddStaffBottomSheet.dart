@@ -45,7 +45,7 @@ class _AddStaffBottomSheetState extends State<AddStaffBottomSheet> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Assign Staff',
+                      'Assign Staff'.tr,
                       style: GoogleFonts.inter(
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
@@ -74,7 +74,7 @@ class _AddStaffBottomSheetState extends State<AddStaffBottomSheet> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Select Staff *',
+                      'Select Staff *'.tr,
                       style: GoogleFonts.inter(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -111,8 +111,8 @@ class _AddStaffBottomSheetState extends State<AddStaffBottomSheet> {
                           underline: const SizedBox(),
                           hint: Text(
                             widget.staffList.isEmpty
-                                ? 'No staff available'
-                                : 'Choose a staff member',
+                                ? 'No staff available'.tr
+                                : 'Choose a staff member'.tr,
                             style: GoogleFonts.inter(
                               color: Colors.grey.shade400,
                               fontSize: 14,
@@ -142,7 +142,7 @@ class _AddStaffBottomSheetState extends State<AddStaffBottomSheet> {
                             return DropdownMenuItem<String>(
                               value: staff['id'],
                               child: Text(
-                                '${staff['name'] ?? 'Unknown'} (${staff['email'] ?? 'N/A'})',
+                                '${staff['name'] ?? 'unknown'.tr} (${staff['email'] ?? 'na'.tr})',
                                 style: GoogleFonts.inter(
                                   fontSize: 14,
                                   color: Colors.black,
@@ -192,7 +192,7 @@ class _AddStaffBottomSheetState extends State<AddStaffBottomSheet> {
                             ),
                           )
                         : Text(
-                            'Assign Staff',
+                            'Assign Staff'.tr,
                             style: GoogleFonts.inter(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
@@ -223,7 +223,7 @@ class _AddStaffBottomSheetState extends State<AddStaffBottomSheet> {
                       ),
                     ),
                     child: Text(
-                      'Cancel',
+                      'Cancel'.tr,
                       style: GoogleFonts.inter(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,

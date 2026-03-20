@@ -53,7 +53,7 @@ void showSettingsBottomSheet(
               Row(
                 children: [
                   Text(
-                    "Settings",
+                    "Settings".tr,
                     style: TextStyle(
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w600,
@@ -116,6 +116,14 @@ void showSettingsBottomSheet(
               ),
 
               SizedBox(height: 32.h),
+              _buildSettingsOption(
+                icon: Icons.language,
+                title: "language".tr,
+                onTap: () {
+                  Navigator.pop(context);
+                  _showLanguageDialog(context);
+                },
+              ),
 
               // Settings options
               // _buildSettingsOption(
@@ -139,7 +147,7 @@ void showSettingsBottomSheet(
               // ),
               _buildSettingsOption(
                 icon: Icons.help_outline_rounded,
-                title: "Estimate Service",
+                title: "Estimate Service".tr,
                 onTap: () {
                   // Navigate to help center
                   launchUrl(
@@ -150,7 +158,7 @@ void showSettingsBottomSheet(
 
               _buildSettingsOption(
                 icon: Icons.help_outline_rounded,
-                title: "Help Center",
+                title: "Help Center".tr,
                 onTap: () {
                   // Navigate to help center
                   launchUrl(Uri.parse("https://mariacleaning.com"));
@@ -169,7 +177,7 @@ void showSettingsBottomSheet(
                     SharedPreferences pref =
                         await SharedPreferences.getInstance();
 
-                    Fluttertoast.showToast(msg: "Session Expired");
+                    Fluttertoast.showToast(msg: "Session Expired".tr);
                     pref.setString("LOGIN", "OUT");
 
                     Get.offAll(() => AuthenticationScreen(),
@@ -188,7 +196,7 @@ void showSettingsBottomSheet(
                     elevation: 0,
                   ),
                   child: Text(
-                    "Logout",
+                    "Logout".tr,
                     style: TextStyle(
                       fontSize: 18.sp,
                       fontWeight: FontWeight.w600,
@@ -266,4 +274,35 @@ Widget _buildSettingsOption({
       ),
     ),
   );
+}
+void _showLanguageDialog(BuildContext context) {
+  Get.defaultDialog(
+    title: "select language".tr,
+    content: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ListTile(
+          title: Text("english".tr),
+          onTap: () async {
+            await changeLanguage(const Locale('en', 'US'));
+            Get.back();
+          },
+        ),
+        ListTile(
+          title: Text("spanish".tr),
+          onTap: () async {
+            await changeLanguage(const Locale('es', 'ES'));
+            Get.back();
+          },
+        ),
+      ],
+    ),
+  );
+}
+Future<void> changeLanguage(Locale locale) async {
+  Get.updateLocale(locale);
+
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString('languageCode', locale.languageCode);
+  await prefs.setString('countryCode', locale.countryCode!);
 }

@@ -212,7 +212,7 @@ Future<String?> rescheduleBooking({
       final decoded = jsonDecode(response.body);
 
       // return ONLY message field
-      return decoded["message"]?.toString() ?? "Something went wrong";
+      return decoded["message"]?.toString() ?? "Something went wrong".tr;
     }
   } catch (e) {
     return e.toString();

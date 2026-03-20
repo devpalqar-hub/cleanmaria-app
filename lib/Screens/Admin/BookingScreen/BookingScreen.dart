@@ -30,7 +30,7 @@
 
 //   final List<String> roomCountOptions = ['1', '2', '3', '4', '5+'];
 //   final List<String> bathRoomCountOptions = ['1', '2', '3', '4+'];
-//   final List<String> typeOptions = ['House', 'Studio', 'Apartment'];
+//   final List<String> typeOptions = ['House'.tr, 'Studio'.tr, 'Apartment'.tr];
 
 //   String? selectedSizeOfHome;
 //   String? selectedNoOfRooms;
@@ -65,7 +65,7 @@
 //         selectedNoOfBathRooms == null ||
 //         selectedTypeOfProperty == null ||
 //         selectedSizeOfHome == null) {
-//       Fluttertoast.showToast(msg: "Please fill all fields");
+//       Fluttertoast.showToast(msg: "Please fill all fields".tr);
 //       return;
 //     }
 

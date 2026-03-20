@@ -19,7 +19,7 @@ class OverViewCard extends StatelessWidget {
               count: controller.totalClients.toString(),
               imagePath: "assets/client.png",
               color: const Color(0xffE5FDF3),
-              subtitle: "Total Clients",
+              subtitle: "Total Clients".tr,
             ),
             SizedBox(width: 7.w),
             _overview(
@@ -33,7 +33,7 @@ class OverViewCard extends StatelessWidget {
               count: controller.totalStaff.toString(),
               imagePath: "assets/person.png",
               color: const Color(0xffFDE5E5),
-              subtitle: "Total Staff",
+              subtitle: "Total Staff".tr,
             ),
           ],
         ),
