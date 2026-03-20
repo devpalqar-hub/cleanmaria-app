@@ -476,9 +476,15 @@ class AppTranslations extends Translations {
           // Service Types
           "Post Renovation / Construction":
               "Limpieza post-construcción / renovación",
+              'Update Service': 'Modificar servicio',
           "Move In Out Cleaning": "Limpieza de mudanza (entrada/salida)",
+           'Region Name *': 'Nombre de la región *',
+            'Region Code *': 'Código de la región *',
           "Regular Cleaning": "Limpieza regular",
           "Deep Cleaning": "Limpieza profunda",
+           'Zipcode *': 'Código postal *',
+           'Choose a staff member': 'Elige un miembro del personal',
+},
 
           // User Booking Card
           "Date not set": "Fecha no establecida",
