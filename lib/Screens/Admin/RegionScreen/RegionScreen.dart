@@ -112,8 +112,8 @@ class RegionScreen extends StatelessWidget {
           appBar: AppBar(
             backgroundColor: Colors.white,
             elevation: 0,
-            title: const Text(
-              "Regions",
+            title:  Text(
+              "Regions".tr,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,

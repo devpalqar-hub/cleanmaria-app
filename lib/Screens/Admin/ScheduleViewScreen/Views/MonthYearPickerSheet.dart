@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/utils.dart';
 
 class MonthYearPickerSheet extends StatefulWidget {
   final int currentMonth;
@@ -20,19 +21,19 @@ class _MonthYearPickerSheetState extends State<MonthYearPickerSheet> {
   late int _month;
   late int _year;
 
-  static const List<String> _months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
+  static  List<String> _months = [
+    'January'.tr,
+    'February'.tr,
+    'March'.tr,
+    'April'.tr,
+    'May'.tr,
+    'June'.tr,
+    'July'.tr,
+    'August'.tr,
+    'September'.tr,
+    'October'.tr,
+    'November'.tr,
+    'December'.tr,
   ];
 
   @override
@@ -58,7 +59,7 @@ class _MonthYearPickerSheetState extends State<MonthYearPickerSheet> {
                   borderRadius: BorderRadius.circular(2))),
           const SizedBox(height: 20),
 
-          const Text('Select Month & Year',
+           Text('Select Month & Year'.tr,
               style: TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w700,
@@ -71,7 +72,7 @@ class _MonthYearPickerSheetState extends State<MonthYearPickerSheet> {
             children: [
               _arrowBtn(Icons.chevron_left, () => setState(() => _year--)),
               const SizedBox(width: 24),
-              Text('$_year',
+              Text('$_year'.tr,
                   style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w800,

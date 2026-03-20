@@ -88,6 +88,9 @@ class AppTranslations extends Translations {
           'Failed to update payment method':
               'Error al actualizar el método de pago',
                'Failed to load schedules': 'Error al cargar los horarios',
+               'Failed to load the calender data':
+              'Error al cargar los datos del calendario',
+          'Failed to load the schedules': 'Error al cargar los horarios',
           
          
 

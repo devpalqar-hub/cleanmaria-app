@@ -48,7 +48,7 @@ class Schedulecontroller extends GetxController {
         calenderItems.add(HeatmapDay.fromJson(item));
       update();
     } else {
-      Fluttertoast.showToast(msg: "Failed to load the calender data");
+      Fluttertoast.showToast(msg: "Failed to load the calender data".tr);
     }
 
     isloading = false;
@@ -79,7 +79,7 @@ class Schedulecontroller extends GetxController {
         schedules.add(ScheduleItemModel.fromJson(item));
       update();
     } else {
-      Fluttertoast.showToast(msg: "Failed to load the schedules");
+      Fluttertoast.showToast(msg: "Failed to load the schedules".tr);
     }
 
     isScheduleLoading = false;
