@@ -119,7 +119,7 @@ void showSettingsBottomSheet(
               SizedBox(height: 32.h),
               _buildSettingsOption(
                 icon: Icons.language,
-                title: "language".tr,
+                title: "Language".tr,
                 onTap: () {
                   Navigator.pop(context);
                   _showLanguageDialog(context);
@@ -308,7 +308,7 @@ void _showLanguageDialog(BuildContext context) {
 
               // Title
               Text(
-                "select_language".tr,
+                "Select language".tr,
                 style: GoogleFonts.inter(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,

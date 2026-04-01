@@ -209,7 +209,7 @@ class ScheduleDetailsController extends GetxController {
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       final responseData = json.decode(response.body);
-     final message =
+      final message =
           responseData['message'] ?? 'Payment method updated successfully';
       Fluttertoast.showToast(msg: message.tr);
       ;

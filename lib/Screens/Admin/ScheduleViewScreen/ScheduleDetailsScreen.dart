@@ -118,7 +118,7 @@ class ScheduleDetailsScreen extends StatelessWidget {
                               'friday',
                               'saturday',
                               'sunday'
-                            ][DateTime.parse(ctrl.schedule!.startTime!).toLocal().weekday - 1].tr}, ${DateFormat('dd').format(DateTime.parse(ctrl.schedule!.startTime!).toLocal())} ${[
+                            ][DateTime.parse(ctrl.schedule!.startTime!).weekday - 1].tr}, ${DateFormat('dd').format(DateTime.parse(ctrl.schedule!.startTime!))} ${[
                               'january',
                               'february',
                               'march',
@@ -131,7 +131,7 @@ class ScheduleDetailsScreen extends StatelessWidget {
                               'october',
                               'november',
                               'december'
-                            ][DateTime.parse(ctrl.schedule!.startTime!).toLocal().month - 1].tr} ${DateTime.parse(ctrl.schedule!.startTime!).toLocal().year}"
+                            ][DateTime.parse(ctrl.schedule!.startTime!).month - 1].tr} ${DateTime.parse(ctrl.schedule!.startTime!).year}"
                           : "${[
                               'monday',
                               'tuesday',
@@ -140,7 +140,7 @@ class ScheduleDetailsScreen extends StatelessWidget {
                               'friday',
                               'saturday',
                               'sunday'
-                            ][DateTime.parse(ctrl.bookingDetail!.date!).toLocal().weekday - 1].tr}, ${DateFormat('dd').format(DateTime.parse(ctrl.bookingDetail!.date!).toLocal())} ${[
+                            ][DateTime.parse(ctrl.bookingDetail!.date!).weekday - 1].tr}, ${DateFormat('dd').format(DateTime.parse(ctrl.bookingDetail!.date!))} ${[
                               'january',
                               'february',
                               'march',
@@ -153,7 +153,7 @@ class ScheduleDetailsScreen extends StatelessWidget {
                               'october',
                               'november',
                               'december'
-                            ][DateTime.parse(ctrl.bookingDetail!.date!).toLocal().month - 1].tr} ${DateTime.parse(ctrl.bookingDetail!.date!).toLocal().year}",
+                            ][DateTime.parse(ctrl.bookingDetail!.date!).month - 1].tr} ${DateTime.parse(ctrl.bookingDetail!.date!).year}",
                       timeRange: ctrl.getBookingTime(),
                       address: ctrl.getBookinAddress(),
                       entryCode: (ctrl.bookingDetail!.bookingAddress!
