@@ -358,9 +358,8 @@ class AppTranslations extends Translations {
           'Total Revenue': 'Ingresos totales',
           'Total Staff': 'Personal total',
 
-          "Language": "Idioma",
-          "Select language": "Seleccionar idioma",
-
+          "language": "Idioma",
+          "select_language": "Seleccionar idioma",
           "english": "Inglés",
           "spanish": "Español",
 
