@@ -63,16 +63,48 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
   ];
 
   @override
-  void initState() {
-    super.initState();
-    minimumDate =
-        (widget.startDate != null) ? widget.startDate! : DateTime.now();
-    maximumDate = minimumDate.add(Duration(days: widget.maxDays));
-    minimumDate = DateTime.now().add(Duration(days: 2));
-    selectedDate = minimumDate;
-    displayMonth = DateTime(minimumDate.year, minimumDate.month, 1);
+ @override
+void initState() {
+  super.initState();
+
+ 
+  if (widget.isForReschedule && widget.startDate != null) {
+    minimumDate = DateTime(
+      widget.startDate!.year,
+      widget.startDate!.month,
+      widget.startDate!.day,
+    );
   }
 
+
+  else {
+    minimumDate = DateTime.now().add(
+      const Duration(days: 2),
+    );
+  }
+
+  maximumDate = minimumDate.add(
+    Duration(days: widget.maxDays),
+  );
+
+  selectedDate = minimumDate;
+
+  displayMonth = DateTime(
+    minimumDate.year,
+    minimumDate.month,
+    1,
+  );
+
+  /// fetch slots for initial date
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    ctrl.fetchAvalibility(
+      DateFormat("yyyy-MM-dd").format(selectedDate),
+      zipCode: widget.zipcode,
+      duration: widget.duration,
+      service_id: widget.serviceID,
+    );
+  });
+}
   List<DateTime> generateDates() {
     List<DateTime> dates = [];
     DateTime firstDayOfMonth =

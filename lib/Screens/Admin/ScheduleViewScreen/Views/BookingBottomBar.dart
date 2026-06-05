@@ -189,11 +189,11 @@ class BottomActionBar extends StatelessWidget {
         ),
         child: Row(
           children: [
-            // Change Status (only show if schedule exists)
+            
             if (schedule != null && !isUser)
               Expanded(
                 child: _ActionButton(
-                  label: 'Change Status'.tr, // ✅ Added .tr
+                  label: 'Change Status'.tr, 
                   icon: Icons.swap_horiz_rounded,
                   textColor: AppColors.teal,
                   borderColor: AppColors.teal,
@@ -203,37 +203,48 @@ class BottomActionBar extends StatelessWidget {
             if (schedule != null && !isUser) const SizedBox(width: 10),
 
             // Reschedule
-            if (!isStaff)
-              if (schedule == null || schedule!.status != "rescheduled")
-                Expanded(
-                  child: _ActionButton(
-                    label: 'Reschedule'.tr, // ✅ Added .tr
-                    icon: Icons.calendar_month_outlined,
-                    textColor: AppColors.dark,
-                    borderColor: AppColors.divider,
-                    onTap: () {
-                      String duration =
-                          ((booking.areaSize! * booking.service!.duration!) /
-                                  500)
-                              .round()
-                              .toString();
-                      Get.to(
-                        () => DateTimeScreen(
-                          bookingID: booking.id!,
-                          isForReschedule: true,
-                          zipcode: booking.bookingAddress!.address!.zip!,
-                          serviceID: booking.service!.id!,
-                          duration: duration,
-                          startDate: (booking.nextSchedule != null)
-                              ? booking.nextSchedule!.startDate!.toLocal()
-                              : null,
-                          maxDays:
-                              (booking.reccuingType == "Bi-Weekly") ? 15 : 7,
-                        ),
-                      );
-                    },
-                  ),
-                ),
+if (!isStaff &&
+    schedule?.status != "rescheduled" &&
+    schedule?.status != "payment_success")
+  Expanded(
+    child: _ActionButton(
+      label: 'Reschedule'.tr,
+      icon: Icons.calendar_month_outlined,
+      textColor: AppColors.dark,
+      borderColor: AppColors.divider,
+      onTap: () {
+        String duration =
+            ((booking.areaSize! * booking.service!.duration!) / 500)
+                .round()
+                .toString();
+
+        Get.to(
+          () => DateTimeScreen(
+            bookingID: booking.id!,
+            isForReschedule: true,
+
+            /// Admin reschedule → use schedule date
+            startDate: schedule != null
+                ? DateTime.parse(schedule!.startTime!).toLocal()
+                : (booking.nextSchedule != null
+                    ? booking.nextSchedule!.startDate!.toLocal()
+                    : null),
+
+            zipcode: booking.bookingAddress!.address!.zip!,
+            serviceID: booking.service!.id!,
+            duration: duration,
+
+            /// Admin → no restriction
+            maxDays: isAdmin
+                ? 365
+                : (booking.reccuingType == "Bi-Weekly")
+                    ? 15
+                    : 7,
+          ),
+        );
+      },
+    ),
+  ),
             if (!isStaff) const SizedBox(width: 10),
 
             // Cancel Booking
