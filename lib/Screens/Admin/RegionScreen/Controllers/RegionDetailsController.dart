@@ -202,7 +202,8 @@ class RegionDetailsController extends GetxController {
       } else {
         final errorData = jsonDecode(response.body);
         Fluttertoast.showToast(
-          msg: errorData['message'] ?? 'Failed to assign pincode'.tr,
+          msg: (errorData['message'] ?? 'Failed to assign pincode'.tr)
+              .toString(),
           backgroundColor: Colors.red.shade400,
           textColor: Colors.white,
         );

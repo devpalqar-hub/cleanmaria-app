@@ -79,12 +79,9 @@ class AuthenticationController extends GetxController {
       print(response);
 
       if (response['success']) {
-        Fluttertoast.showToast(msg: 'Login successful'.tr);
         SharedPreferences prefs = await SharedPreferences.getInstance();
         String? role = prefs.getString("role");
-
         print("User role: $role");
-
         if (role == 'admin') {
           Get.offAll(() => Homescreen(), transition: Transition.rightToLeft);
         } else if (role == "customer") {

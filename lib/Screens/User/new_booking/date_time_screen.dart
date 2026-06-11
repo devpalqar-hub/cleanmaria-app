@@ -17,6 +17,7 @@ class DateTimeScreen extends StatefulWidget {
   String serviceID = "";
   int maxDays = 15;
   DateTime? startDate;
+  bool overrideAdmin; // to override the reshedule for the admin;
   DateTimeScreen(
       {super.key,
       this.isForReschedule = false,
@@ -25,6 +26,7 @@ class DateTimeScreen extends StatefulWidget {
       this.duration = "",
       this.startDate,
       this.serviceID = "",
+      this.overrideAdmin = false,
       this.maxDays = 15});
 
   @override
@@ -63,48 +65,73 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
   ];
 
   @override
- @override
-void initState() {
-  super.initState();
+  @override
+  void initState() {
+    super.initState();
 
- 
-  if (widget.isForReschedule && widget.startDate != null) {
-    minimumDate = DateTime(
-      widget.startDate!.year,
-      widget.startDate!.month,
-      widget.startDate!.day,
+    if (widget.isForReschedule && widget.startDate != null) {
+      DateTime temp = DateTime(
+        widget.startDate!.year,
+        widget.startDate!.month,
+        widget.startDate!.day,
+      );
+
+      DateTime today = DateTime(
+        DateTime.now().year,
+        DateTime.now().month,
+        DateTime.now().day,
+      );
+
+      DateTime allowedDate = temp.subtract(
+        Duration(days: widget.maxDays),
+      );
+
+      if (allowedDate.isAfter(today) || allowedDate.isAtSameMomentAs(today)) {
+        minimumDate = allowedDate;
+      } else {
+        if (widget.overrideAdmin) {
+          minimumDate = today;
+        } else {
+          minimumDate = today.add(
+            const Duration(days: 2),
+          );
+        }
+      }
+    } else {
+      minimumDate = DateTime.now().add(
+        const Duration(days: 2),
+      );
+    }
+
+    maximumDate = widget.startDate != null
+        ? widget.startDate!.add(Duration(days: widget.maxDays))
+        : minimumDate.add(
+            Duration(days: widget.maxDays),
+          );
+
+    print(minimumDate);
+    print(widget.maxDays);
+
+    selectedDate = minimumDate;
+    print(widget.startDate);
+    print(maximumDate.toLocal());
+    displayMonth = DateTime(
+      minimumDate.year,
+      minimumDate.month,
+      1,
     );
+
+    /// fetch slots for initial date
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ctrl.fetchAvalibility(
+        DateFormat("yyyy-MM-dd").format(selectedDate),
+        zipCode: widget.zipcode,
+        duration: widget.duration,
+        service_id: widget.serviceID,
+      );
+    });
   }
 
-
-  else {
-    minimumDate = DateTime.now().add(
-      const Duration(days: 2),
-    );
-  }
-
-  maximumDate = minimumDate.add(
-    Duration(days: widget.maxDays),
-  );
-
-  selectedDate = minimumDate;
-
-  displayMonth = DateTime(
-    minimumDate.year,
-    minimumDate.month,
-    1,
-  );
-
-  /// fetch slots for initial date
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    ctrl.fetchAvalibility(
-      DateFormat("yyyy-MM-dd").format(selectedDate),
-      zipCode: widget.zipcode,
-      duration: widget.duration,
-      service_id: widget.serviceID,
-    );
-  });
-}
   List<DateTime> generateDates() {
     List<DateTime> dates = [];
     DateTime firstDayOfMonth =
