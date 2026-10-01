@@ -71,6 +71,7 @@ class CreateBookingController extends GetxController {
   // Payment fields
   String paymentMethod = 'cash'; // 'card' or 'cash'
   double? customPrice; // For admin to override default pricing
+  String couponCode = '';
 
   // Loading states
   bool isLoadingServices = false;
@@ -241,6 +242,7 @@ createBoooking() async {
       "price": customPrice ?? selectedPlan!.finalPrice ?? 0,
       "paymentMethod": apiPaymentMethod,
       "platform": "mobile",
+      if (couponCode.trim().isNotEmpty) "couponCode": couponCode.trim(),
       if (selectedPlan!.recurringTypeId != "notASubcriptionTypeId")
         "recurringTypeId": selectedPlan!.recurringTypeId,
       "address": {

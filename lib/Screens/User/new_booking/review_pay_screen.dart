@@ -331,6 +331,51 @@ class _ReviewPayScreenState extends State<ReviewPayScreen> {
                               SizedBox(height: 12),
                               Divider(height: 24),
                             ],
+                            if (ctrl.selectedService != null &&
+                                ctrl.selectedService!.multiplier != 1)
+                              _priceRow(
+                                "Service Multiplier".tr,
+                                "×${ctrl.selectedService!.multiplier.toString().replaceFirst(RegExp(r'\.0$'), '')}",
+                              ),
+                            SizedBox(height: 8),
+                            Text(
+                              "Coupon Code".tr,
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            TextFormField(
+                              initialValue: ctrl.couponCode,
+                              textCapitalization: TextCapitalization.characters,
+                              decoration: InputDecoration(
+                                hintText: 'Enter coupon code'.tr,
+                                hintStyle: GoogleFonts.inter(
+                                  color: Colors.grey,
+                                  fontSize: 14,
+                                ),
+                                prefixIcon: Icon(Icons.local_offer_outlined,
+                                    color: Colors.grey.shade600, size: 20),
+                                filled: true,
+                                fillColor: Colors.white,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade300),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide:
+                                      BorderSide(color: primaryGreen, width: 2),
+                                ),
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 12),
+                              ),
+                              onChanged: (value) => ctrl.couponCode = value,
+                            ),
+                            SizedBox(height: 12),
+                            Divider(height: 24),
                             _priceRow(
                               "Total".tr, // ✅ Added .tr
                               "\$${(ctrl.customPrice ?? ctrl.selectedPlan?.finalPrice ?? 0).toStringAsFixed(2)}",

@@ -4,7 +4,7 @@ description: "A new Flutter project."
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 2.0.9+32
+version: 2.0.10+33
 
 environment:
   sdk: ^3.5.0
@@ -35,7 +35,7 @@ dependencies:
   firebase_messaging: ^16.1.1
   firebase_core: ^4.4.0
   socket_io_client: ^3.1.4
-  font_awesome_flutter: ^10.12.0
+  font_awesome_flutter: ^11.0.0
   
 
 dev_dependencies:

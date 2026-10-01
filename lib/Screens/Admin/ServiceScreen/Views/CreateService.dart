@@ -72,6 +72,9 @@ class _CreateServiceState extends State<CreateService> {
                   _buildInputField("Square Foot Price".tr,
                       "Enter square foot price".tr, _.squareFootPriceController,
                       isNumber: true),
+                  _buildInputField("Multiplier".tr,
+                      "Enter multiplier (e.g. 1.5)".tr, _.multiplierController,
+                      isNumber: true),
                   SizedBox(height: 20.h),
                   _.isLoading
                       ? const CircularProgressIndicator()

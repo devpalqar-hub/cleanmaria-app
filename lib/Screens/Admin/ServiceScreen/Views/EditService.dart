@@ -31,6 +31,8 @@ class _EditServiceBottomSheetState extends State<EditServiceBottomSheet> {
         widget.service.roomRate?.toString() ?? '';
     controller.squareFootPriceController.text =
         widget.service.squareFootPrice?.toString() ?? '';
+    controller.multiplierController.text =
+        widget.service.multiplier.toString();
   }
 
   @override
@@ -85,6 +87,9 @@ class _EditServiceBottomSheetState extends State<EditServiceBottomSheet> {
                       isNumber: true),
                   _buildInputField("Square Foot Price".tr,
                       "Enter square foot price".tr, _.squareFootPriceController,
+                      isNumber: true),
+                  _buildInputField("Multiplier".tr,
+                      "Enter multiplier (e.g. 1.5)".tr, _.multiplierController,
                       isNumber: true),
                   SizedBox(height: 20.h),
                   _.isLoading

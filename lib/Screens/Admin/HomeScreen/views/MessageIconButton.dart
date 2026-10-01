@@ -28,7 +28,7 @@ class MessageIconButton extends StatelessWidget {
           children: [
             // Message icon
             Center(
-              child: Icon(
+              child: FaIcon(
                 FontAwesomeIcons.message,
                 color: Colors.black54,
                 size: 20,

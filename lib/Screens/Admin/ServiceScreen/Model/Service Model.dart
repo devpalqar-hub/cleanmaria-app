@@ -6,6 +6,7 @@ class ServiceModel {
   final String bathroomRate;
   final String roomRate;
   final String squareFootPrice;
+  final double multiplier;
 
   ServiceModel({
     required this.id,
@@ -15,6 +16,7 @@ class ServiceModel {
     required this.bathroomRate,
     required this.roomRate,
     required this.squareFootPrice,
+    this.multiplier = 1,
   });
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
@@ -26,6 +28,7 @@ class ServiceModel {
       bathroomRate: json['bathroom_rate'] ?? '0',
       roomRate: json['room_rate'] ?? '0',
       squareFootPrice: json['square_foot_price'] ?? '0',
+      multiplier: double.tryParse((json['multiplier'] ?? '1').toString()) ?? 1,
     );
   }
 
@@ -38,6 +41,7 @@ class ServiceModel {
       "bathroom_rate": bathroomRate,
       "room_rate": roomRate,
       "square_foot_price": squareFootPrice,
+      "multiplier": multiplier,
     };
   }
 }

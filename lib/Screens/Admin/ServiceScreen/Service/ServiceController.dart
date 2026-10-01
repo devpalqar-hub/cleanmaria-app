@@ -16,6 +16,7 @@ class ServiceController extends GetxController {
   final TextEditingController roomRateController = TextEditingController();
   final TextEditingController squareFootPriceController =
       TextEditingController();
+  final TextEditingController multiplierController = TextEditingController();
 
   Map<String, String> authHeader = {};
   List<ServiceModel> services = [];
@@ -100,6 +101,7 @@ class ServiceController extends GetxController {
       "bathroom_rate": double.parse(bathroomRateController.text.trim()),
       "room_rate": double.parse(roomRateController.text.trim()),
       "square_foot_price": double.parse(squareFootPriceController.text.trim()),
+      "multiplier": double.tryParse(multiplierController.text.trim()) ?? 1,
     };
 
     print("createService(): Preparing to POST");
@@ -157,6 +159,7 @@ class ServiceController extends GetxController {
       "bathroom_rate": double.parse(bathroomRateController.text.trim()),
       "room_rate": double.parse(roomRateController.text.trim()),
       "square_foot_price": double.parse(squareFootPriceController.text.trim()),
+      "multiplier": double.tryParse(multiplierController.text.trim()) ?? 1,
     };
 
     isLoading = true;
@@ -198,6 +201,7 @@ class ServiceController extends GetxController {
     bathroomRateController.clear();
     roomRateController.clear();
     squareFootPriceController.clear();
+    multiplierController.clear();
     print("clearText(): Controllers cleared.");
     update();
   }

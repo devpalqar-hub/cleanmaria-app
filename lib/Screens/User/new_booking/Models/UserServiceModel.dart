@@ -7,6 +7,7 @@ class UserServiceModel {
   String? bathroomRate;
   String? roomRate;
   String? squareFootPrice;
+  double multiplier = 1;
   bool? isActive;
 
   UserServiceModel(
@@ -29,6 +30,7 @@ class UserServiceModel {
     bathroomRate = json['bathroom_rate'];
     roomRate = json['room_rate'];
     squareFootPrice = json['square_foot_price'];
+    multiplier = double.tryParse((json['multiplier'] ?? '1').toString()) ?? 1;
     isActive = json['isActive'];
   }
 
@@ -42,6 +44,7 @@ class UserServiceModel {
     data['bathroom_rate'] = this.bathroomRate;
     data['room_rate'] = this.roomRate;
     data['square_foot_price'] = this.squareFootPrice;
+    data['multiplier'] = this.multiplier;
     data['isActive'] = this.isActive;
     return data;
   }
